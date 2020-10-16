@@ -10,10 +10,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-    cors({
-        credentials: true,
-        origin: process.env.FRONTEND_URI,
-    })
+	cors({
+		credentials: true,
+		origin: process.env.FRONTEND_URI,
+	})
 );
 app.use(morgan('dev'));
 
