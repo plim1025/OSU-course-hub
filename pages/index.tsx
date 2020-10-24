@@ -5,8 +5,8 @@ const Home: React.FC = () => {
 	return (
 		<div>
 			<Head>
-				<title>Create Next App</title>
-				<link rel='icon' href='/favicon.ico' />
+				<title>OSU Course Hub</title>
+				<link rel='icon' href='/favicon.png' />
 			</Head>
 			Hello World
 		</div>
