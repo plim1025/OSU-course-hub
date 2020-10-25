@@ -42,7 +42,7 @@ const Header: React.FC<Props> = props => {
 		<div style={header}>
 			<img src={'/favicon.png'} style={logo}></img>
 			<h4 style={title}>OSU Course Hub</h4>
-			<Button variant="primary" style={button}>Login</Button>
+			<Button variant="primary" style={button} text='Login' />
 		</div>
 	);
 };

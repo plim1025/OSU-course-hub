@@ -7,7 +7,11 @@ const wrapper = {
 	width: 'calc(100% - 40px)',
 	margin: 'auto',
 	background: '#fff',
-}
+	position: 'fixed',
+	left: '50%',
+	top: '50%',
+	transform: 'translate(-50%, -50%)'
+} as React.CSSProperties
 
 
 
@@ -18,9 +22,7 @@ const Searchbar: React.FC = () => {
 				<Form.Control type="text" size="lg" placeholder="Search..."/>
 			</Form.Group>
 			
-			<Button variant="primary">
-				Submit
-			</Button>
+			<Button variant="primary" text='Submit' />
 		</Form>
 	);
 };
