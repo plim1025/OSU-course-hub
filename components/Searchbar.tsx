@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import Button from './Button';
 import { Form } from 'react-bootstrap';
+
+interface Props {
+	style?: CSSProperties
+}
 
 const wrapper = {
 	maxWidth: 800,
@@ -15,14 +19,14 @@ const wrapper = {
 
 
 
-const Searchbar: React.FC = () => {
+const Searchbar: React.FC<Props> = (props) => {
 	return (
-		<Form style={wrapper}>
+		<Form style={props.style? props.style : wrapper}>
 			<Form.Group controlId="searchbar">
 				<Form.Control type="text" size="lg" placeholder="Search..."/>
 			</Form.Group>
 			
-			<Button variant="primary" text='Submit' />
+			{/* <Button variant="primary" text='Submit' /> */}
 		</Form>
 	);
 };
