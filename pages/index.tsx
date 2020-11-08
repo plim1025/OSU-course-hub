@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
-import Searchbar from '../components/Searchbar';
+import MainSearchbar from '../components/MainSearchbar';
 
 const Home: React.FC = () => {
 	return (
@@ -12,7 +12,8 @@ const Home: React.FC = () => {
 				<link rel='icon' href='/favicon.png' />
 			</Head>
 			<Header searchbarToggled={true}/>
-			<Searchbar />
+			<MainSearchbar />
+
 		</>
 	);
 };

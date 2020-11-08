@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from './Button';
 import Searchbar from './Searchbar';
+import { Form } from 'react-bootstrap';
 
 interface Props {
 	searchbarToggled: boolean;
@@ -11,7 +12,8 @@ const header = {
 	alignItems: 'center',
 	justifyContent: 'center',
 	flexWrap: 'wrap',
-	background: '#343a40'
+	background: '#343a40',
+	padding: '100 0'
 } as React.CSSProperties
 
 const title = {
@@ -40,7 +42,7 @@ const logo = {
 
 // Styling for header searchbar
 const headerSearchBarStyle = {
-	// backgroundColor: 'blue'
+	maxWidth: 250
 };
 
 const headerSearchBar = (searchbarToggled: boolean): JSX.Element => {
@@ -48,7 +50,9 @@ const headerSearchBar = (searchbarToggled: boolean): JSX.Element => {
 		return null;
 	} else {
 		return (
-			<Searchbar style={headerSearchBarStyle}/>
+			<Form>
+				<Searchbar style={headerSearchBarStyle} size="sm"/>
+			</Form>
 		);
 	}
 };
