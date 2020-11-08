@@ -15,3 +15,14 @@ a {
 * {
 	box-sizing: border-box;
 }
+
+.wrapper {
+	max-width: 800px;
+	width: calc(100% - 40px);
+	margin: auto;
+	background: #fff;
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
