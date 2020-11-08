@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from './Button';
+import Searchbar from './Searchbar';
 
 interface Props {
 	searchbarToggled: boolean;
@@ -37,11 +38,26 @@ const logo = {
 	marginBottom: 20,
 }
 
+const headerSearchBarStyle = {
+
+};
+
+const headerSearchBar = (searchbarToggled: boolean): JSX.Element => {
+	if (!searchbarToggled) {
+		return null;
+	} else {
+		return (
+			<Searchbar style={headerSearchBarStyle}/>
+		);
+	}
+};
+
 const Header: React.FC<Props> = props => {
 	return (
 		<div style={header}>
 			<img src={'/favicon.png'} style={logo}></img>
 			<h4 style={title}>OSU Course Hub</h4>
+			{headerSearchBar(props.searchbarToggled)}
 			<Button variant="primary" style={button} text='Login' />
 		</div>
 	);
