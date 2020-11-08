@@ -1,7 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import React, { CSSProperties } from 'react';
 import Button from './Button';
 import AsyncSelect from 'react-select/async';
 import { Form } from 'react-bootstrap';
+
+interface Props {
+	style?: CSSProperties
+}
 
 const wrapper = {
 	maxWidth: 800,
