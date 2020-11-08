@@ -26,7 +26,7 @@ const Searchbar: React.FC<Props> = (props) => {
 				<Form.Control type="text" size="lg" placeholder="Search..."/>
 			</Form.Group>
 			
-			{/* <Button variant="primary" text='Submit' /> */}
+			<Button variant="primary" text='Submit' />
 		</Form>
 	);
 };

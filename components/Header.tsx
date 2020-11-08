@@ -38,8 +38,9 @@ const logo = {
 	marginBottom: 20,
 }
 
+// Styling for header searchbar
 const headerSearchBarStyle = {
-
+	// backgroundColor: 'blue'
 };
 
 const headerSearchBar = (searchbarToggled: boolean): JSX.Element => {
