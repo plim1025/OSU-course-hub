@@ -1,0 +1,21 @@
+{
+   "type": "postgres",
+   "host": "localhost",
+   "port": 5432,
+   "username": "postgres",
+   "password": "!Mzb5kC3GNgF",
+   "database": "osu-course-hub",
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "dist/entity/**/*.{ts,js}"
+   ],
+   "migrations": [
+      "dist/migration/**/*.{ts,js}"
+   ],
+   "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+   }
+}

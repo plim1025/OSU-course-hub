@@ -24,7 +24,7 @@ const headerSearchBarStyle = {
 const Header: React.FC<Props> = props => {
 	return (
 		<Navbar bg='dark' variant='dark'>
-			<Navbar.Brand href='/'>
+			<Navbar.Brand href='/' style={{ fontWeight: 700 }}>
 				<img
 					src={'/favicon.png'}
 					style={logo}
@@ -35,7 +35,7 @@ const Header: React.FC<Props> = props => {
 			{props.searchbarToggled ? (
 				<Searchbar style={headerSearchBarStyle} showButton={false} size='sm' />
 			) : null}
-			<Button variant='primary' text='Login' />
+			<Button style={{ marginLeft: !props.searchbarToggled && 'auto' }} variant='primary' text='Login' />
 		</Navbar>
 	);
 };

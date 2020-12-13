@@ -11,7 +11,7 @@ const Home: React.FC = () => {
 				<title>OSU Course Hub</title>
 				<link rel='icon' href='/favicon.png' />
 			</Head>
-			<Header searchbarToggled={true} />
+			<Header searchbarToggled={false} />
 			<Searchbar showButton={true} size='lg' />
 		</>
 	);
