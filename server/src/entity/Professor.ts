@@ -9,11 +9,11 @@ export class Professor {
     @Column()
     name: string;
 
-    @Column()
-    difficulty: number[];
+    @Column('int', { array: true })
+    difficulty: number[] = [];
 
-    @Column()
-    quality: number[];
+    @Column('int', { array: true })
+    quality: number[] = [];
 
     @OneToMany(() => Comment, comment => comment.professor)
     comments: Comment[];

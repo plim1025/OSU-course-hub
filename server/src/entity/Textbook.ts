@@ -4,7 +4,7 @@ import { Course } from './Course';
 @Entity()
 export class Textbook {
     @PrimaryColumn()
-    ISBN: number;
+    ISBN: string;
 
     @Column()
     title: string;
@@ -12,7 +12,7 @@ export class Textbook {
     @Column()
     author: string;
 
-    @Column()
+    @Column({ nullable: true })
     coverImageUrl: string;
 
     @Column()
@@ -21,10 +21,10 @@ export class Textbook {
     @Column()
     copyrightYear: number;
 
-    @Column()
+    @Column({ nullable: true })
     priceNewUSD: number;
 
-    @Column()
+    @Column({ nullable: true })
     priceUsedUSD: number;
 
     @Column({ nullable: true })

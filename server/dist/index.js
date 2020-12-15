@@ -11,20 +11,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const typeorm_1 = require("typeorm");
-const User_1 = require("./entity/User");
+const Professor_1 = require("./entity/Professor");
 typeorm_1.createConnection()
     .then((connection) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Inserting a new user into the database...');
-    const user = new User_1.User();
-    user.firstName = 'Timber';
-    user.lastName = 'Saw';
-    user.age = 25;
-    yield connection.manager.save(user);
-    console.log(`Saved a new user with id: ${user.id}`);
-    console.log('Loading users from the database...');
-    const users = yield connection.manager.find(User_1.User);
-    console.log('Loaded users: ', users);
-    console.log('Here you can setup and run express/koa/any other framework.');
+    const professor1 = new Professor_1.Professor();
+    professor1.name = 'mock name';
+    yield connection.manager.save(professor1);
+    const prof = yield connection
+        .createQueryBuilder()
+        .select('professor')
+        .from(Professor_1.Professor, 'professor')
+        .where('professor.name = :name', { name: 'mock name' })
+        .getOne();
+    if (prof) {
+        prof === null || prof === void 0 ? void 0 : prof.difficulty.push(2);
+        yield connection.manager.save(prof);
+    }
 }))
     .catch(error => console.log(error));
 //# sourceMappingURL=index.js.map

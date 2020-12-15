@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 import { Course } from './Course';
 import { Professor } from './Professor';
 import { Student } from './Student';
@@ -7,6 +14,9 @@ import { Student } from './Student';
 export class Comment {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column()
+    text: string;
 
     @Column({ nullable: true })
     studentONID: string;
@@ -25,4 +35,10 @@ export class Comment {
 
     @ManyToOne(() => Professor, professor => professor.comments)
     professor: Professor;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 }
