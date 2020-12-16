@@ -1,35 +1,43 @@
-import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Course } from './Course';
 
 @Entity()
+@ObjectType()
 export class Textbook {
+    @Field(() => ID)
     @PrimaryColumn()
-    ISBN: string;
+    readonly ISBN: string;
 
+    @Field()
     @Column()
     title: string;
 
+    @Field()
     @Column()
     author: string;
 
+    @Field({ nullable: true })
     @Column({ nullable: true })
-    coverImageUrl: string;
+    coverImageUrl?: string;
 
+    @Field(() => Int)
     @Column()
     edition: number;
 
+    @Field(() => Int)
     @Column()
     copyrightYear: number;
 
+    @Field({ nullable: true })
     @Column({ nullable: true })
-    priceNewUSD: number;
+    priceNewUSD?: number;
 
+    @Field({ nullable: true })
     @Column({ nullable: true })
-    priceUsedUSD: number;
+    priceUsedUSD?: number;
 
-    @Column({ nullable: true })
-    courseId: number;
-
+    @Field(() => Course)
     @ManyToOne(() => Course, course => course.textbooks)
     course: Course;
 }

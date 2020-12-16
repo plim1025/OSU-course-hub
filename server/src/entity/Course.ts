@@ -1,29 +1,36 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from 'typeorm';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Comment } from './Comment';
-import { Professor } from './Professor';
 import { Textbook } from './Textbook';
 
 @Entity()
+@ObjectType()
 export class Course {
-    @PrimaryColumn()
+    @Field(() => ID)
+    @PrimaryGeneratedColumn()
+    readonly id: number;
+
+    @Field()
+    @Column()
     department: string;
 
-    @PrimaryColumn()
+    @Field(() => Int)
+    @Column()
     number: number;
 
+    @Field(() => [Int])
     @Column({ type: 'int', array: true })
     difficulty: number[] = [];
 
+    @Field(() => [Int])
     @Column({ type: 'int', array: true })
     quality: number[] = [];
 
+    @Field(() => [Textbook])
     @OneToMany(() => Textbook, textbook => textbook.course)
     textbooks: Textbook[];
 
+    @Field(() => [Comment])
     @OneToMany(() => Comment, comment => comment.course)
     comments: Comment[];
-
-    @ManyToMany(() => Professor)
-    @JoinTable()
-    professors: Professor[];
 }

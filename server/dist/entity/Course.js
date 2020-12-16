@@ -10,9 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Course = void 0;
+const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const Comment_1 = require("./Comment");
-const Professor_1 = require("./Professor");
 const Textbook_1 = require("./Textbook");
 let Course = class Course {
     constructor() {
@@ -21,36 +21,43 @@ let Course = class Course {
     }
 };
 __decorate([
-    typeorm_1.PrimaryColumn(),
+    type_graphql_1.Field(() => type_graphql_1.ID),
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], Course.prototype, "id", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    typeorm_1.Column(),
     __metadata("design:type", String)
 ], Course.prototype, "department", void 0);
 __decorate([
-    typeorm_1.PrimaryColumn(),
+    type_graphql_1.Field(() => type_graphql_1.Int),
+    typeorm_1.Column(),
     __metadata("design:type", Number)
 ], Course.prototype, "number", void 0);
 __decorate([
+    type_graphql_1.Field(() => [type_graphql_1.Int]),
     typeorm_1.Column({ type: 'int', array: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "difficulty", void 0);
 __decorate([
+    type_graphql_1.Field(() => [type_graphql_1.Int]),
     typeorm_1.Column({ type: 'int', array: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "quality", void 0);
 __decorate([
+    type_graphql_1.Field(() => [Textbook_1.Textbook]),
     typeorm_1.OneToMany(() => Textbook_1.Textbook, textbook => textbook.course),
     __metadata("design:type", Array)
 ], Course.prototype, "textbooks", void 0);
 __decorate([
+    type_graphql_1.Field(() => [Comment_1.Comment]),
     typeorm_1.OneToMany(() => Comment_1.Comment, comment => comment.course),
     __metadata("design:type", Array)
 ], Course.prototype, "comments", void 0);
-__decorate([
-    typeorm_1.ManyToMany(() => Professor_1.Professor),
-    typeorm_1.JoinTable(),
-    __metadata("design:type", Array)
-], Course.prototype, "professors", void 0);
 Course = __decorate([
-    typeorm_1.Entity()
+    typeorm_1.Entity(),
+    type_graphql_1.ObjectType()
 ], Course);
 exports.Course = Course;
 //# sourceMappingURL=Course.js.map

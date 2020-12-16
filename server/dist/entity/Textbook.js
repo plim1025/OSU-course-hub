@@ -10,52 +10,59 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Textbook = void 0;
+const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const Course_1 = require("./Course");
 let Textbook = class Textbook {
 };
 __decorate([
+    type_graphql_1.Field(() => type_graphql_1.ID),
     typeorm_1.PrimaryColumn(),
     __metadata("design:type", String)
 ], Textbook.prototype, "ISBN", void 0);
 __decorate([
+    type_graphql_1.Field(),
     typeorm_1.Column(),
     __metadata("design:type", String)
 ], Textbook.prototype, "title", void 0);
 __decorate([
+    type_graphql_1.Field(),
     typeorm_1.Column(),
     __metadata("design:type", String)
 ], Textbook.prototype, "author", void 0);
 __decorate([
+    type_graphql_1.Field({ nullable: true }),
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", String)
 ], Textbook.prototype, "coverImageUrl", void 0);
 __decorate([
+    type_graphql_1.Field(() => type_graphql_1.Int),
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], Textbook.prototype, "edition", void 0);
 __decorate([
+    type_graphql_1.Field(() => type_graphql_1.Int),
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], Textbook.prototype, "copyrightYear", void 0);
 __decorate([
+    type_graphql_1.Field({ nullable: true }),
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], Textbook.prototype, "priceNewUSD", void 0);
 __decorate([
+    type_graphql_1.Field({ nullable: true }),
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], Textbook.prototype, "priceUsedUSD", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
-    __metadata("design:type", Number)
-], Textbook.prototype, "courseId", void 0);
-__decorate([
+    type_graphql_1.Field(() => Course_1.Course),
     typeorm_1.ManyToOne(() => Course_1.Course, course => course.textbooks),
     __metadata("design:type", Course_1.Course)
 ], Textbook.prototype, "course", void 0);
 Textbook = __decorate([
-    typeorm_1.Entity()
+    typeorm_1.Entity(),
+    type_graphql_1.ObjectType()
 ], Textbook);
 exports.Textbook = Textbook;
 //# sourceMappingURL=Textbook.js.map

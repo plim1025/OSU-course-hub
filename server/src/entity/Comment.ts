@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from 'type-graphql';
 import {
     Column,
     CreateDateColumn,
@@ -11,34 +12,33 @@ import { Professor } from './Professor';
 import { Student } from './Student';
 
 @Entity()
+@ObjectType()
 export class Comment {
+    @Field(() => ID)
     @PrimaryGeneratedColumn()
-    id: number;
+    readonly id: number;
 
+    @Field()
     @Column()
     text: string;
 
-    @Column({ nullable: true })
-    studentONID: string;
-
-    @ManyToOne(() => Student, student => student.comments)
+    @Field(() => Student)
+    @ManyToOne(() => Student)
     student: Student;
 
-    @Column({ nullable: true })
-    courseId: number;
-
-    @ManyToOne(() => Course, course => course.comments)
+    @Field(() => Course)
+    @ManyToOne(() => Course)
     course: Course;
 
-    @Column({ nullable: true })
-    professorId: number;
-
-    @ManyToOne(() => Professor, professor => professor.comments)
+    @Field(() => Professor)
+    @ManyToOne(() => Professor)
     professor: Professor;
 
+    @Field()
     @CreateDateColumn()
     createdAt: Date;
 
+    @Field()
     @UpdateDateColumn()
     updatedAt: Date;
 }

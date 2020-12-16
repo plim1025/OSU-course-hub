@@ -10,20 +10,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Student = void 0;
+const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const Comment_1 = require("./Comment");
 let Student = class Student {
 };
 __decorate([
+    type_graphql_1.Field(() => type_graphql_1.ID),
     typeorm_1.PrimaryColumn(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Student.prototype, "ONID", void 0);
 __decorate([
+    type_graphql_1.Field(() => [Comment_1.Comment]),
     typeorm_1.OneToMany(() => Comment_1.Comment, comment => comment.student),
     __metadata("design:type", Array)
 ], Student.prototype, "comments", void 0);
 Student = __decorate([
-    typeorm_1.Entity()
+    typeorm_1.Entity(),
+    type_graphql_1.ObjectType()
 ], Student);
 exports.Student = Student;
 //# sourceMappingURL=Student.js.map
