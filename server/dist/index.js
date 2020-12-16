@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,23 +17,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const typeorm_1 = require("typeorm");
-const User_1 = require("./entity/User");
-typeorm_1.createConnection()
-    .then((connection) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Inserting a new user into the database...');
-    const user = new User_1.User();
-    user.firstName = 'Timber';
-    user.lastName = 'Saw';
-    user.age = 25;
-    yield connection.manager.save(user);
-    console.log(`Saved a new user with id: ${user.id}`);
-    console.log('Loading users from the database...');
-    const users = yield connection.manager.find(User_1.User);
-    console.log('Loaded users: ', users);
-    console.log('Here you can setup and run express/koa/any other framework.');
-}))
-    .catch(error => console.log(error));
+const apollo_server_express_1 = require("apollo-server-express");
+const express_1 = __importDefault(require("express"));
+const type_graphql_1 = require("type-graphql");
+const dotenv_1 = __importDefault(require("dotenv"));
+let HelloResolver = class HelloResolver {
+    helloWorld() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return 'Hello World!';
+        });
+    }
+};
+__decorate([
+    type_graphql_1.Query(() => String),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], HelloResolver.prototype, "helloWorld", null);
+HelloResolver = __decorate([
+    type_graphql_1.Resolver()
+], HelloResolver);
+const main = () => __awaiter(void 0, void 0, void 0, function* () {
+    dotenv_1.default.config();
+    const schema = yield type_graphql_1.buildSchema({
+        resolvers: [HelloResolver],
+    });
+    const apolloServer = new apollo_server_express_1.ApolloServer({ schema });
+    const app = express_1.default();
+    apolloServer.applyMiddleware({ app });
+    app.listen(process.env.PORT, () => {
+        console.log(`Server started on port ${process.env.PORT}`);
+    });
+});
+main();
 //# sourceMappingURL=index.js.map
