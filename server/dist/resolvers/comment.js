@@ -9,25 +9,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Student = void 0;
+const dns_1 = require("dns");
 const type_graphql_1 = require("type-graphql");
-const typeorm_1 = require("typeorm");
-const Comment_1 = require("./Comment");
-let Student = class Student extends typeorm_1.BaseEntity {
+let CommentResolver = class CommentResolver {
 };
 __decorate([
-    type_graphql_1.Field(() => type_graphql_1.ID),
-    typeorm_1.PrimaryColumn(),
-    __metadata("design:type", String)
-], Student.prototype, "ONID", void 0);
-__decorate([
-    type_graphql_1.Field(() => [Comment_1.Comment]),
-    typeorm_1.OneToMany(() => Comment_1.Comment, comment => comment.student),
-    __metadata("design:type", Array)
-], Student.prototype, "comments", void 0);
-Student = __decorate([
-    typeorm_1.Entity(),
-    type_graphql_1.ObjectType()
-], Student);
-exports.Student = Student;
-//# sourceMappingURL=Student.js.map
+    type_graphql_1.Query(() => [Comment]),
+    __metadata("design:type", Object)
+], CommentResolver.prototype, "", void 0);
+CommentResolver = __decorate([
+    dns_1.Resolver()
+], CommentResolver);
+//# sourceMappingURL=comment.js.map

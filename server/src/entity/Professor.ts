@@ -1,23 +1,54 @@
-import { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, OneToMany } from 'typeorm';
-import {TaughtCourse} from './TaughtCourse';
+import { Field, ID, Int, ObjectType, Root } from 'type-graphql';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Comment } from './Comment';
 
 @Entity()
-export class Professor {
+@ObjectType()
+export class Professor extends BaseEntity {
+    @Field(() => ID)
     @PrimaryGeneratedColumn()
-    id: string
+    readonly id: number;
 
-    //@PrimaryColumn()
+    @Field()
     @Column()
-    name: string
+    firstName: string;
 
-    //many to many
-    @OneToMany(() => TaughtCourse, course => course.professor) //taught course relation
-    courses: TaughtCourse[]
-
+    @Field()
     @Column()
-    avgQuality: string;
+    lastName: string;
 
-    @Column()
-    avgDifficulty: number;
+    @Field(() => [Int])
+    @Column('int', { array: true })
+    difficulty: number[] = [];
 
+    @Field(() => Int, { nullable: true })
+    averageDifficulty(@Root() parent: Professor): number | null {
+        if (parent.difficulty.length) {
+            return (
+                Math.round(
+                    (parent.difficulty.reduce((a, b) => a + b) / parent.difficulty.length) * 10
+                ) / 10
+            );
+        }
+        return null;
+    }
+
+    @Field(() => [Int])
+    @Column('int', { array: true })
+    quality: number[] = [];
+
+    @Field(() => Int, { nullable: true })
+    averageQuality(@Root() parent: Professor): number | null {
+        if (parent.quality.length) {
+            return (
+                Math.round((parent.quality.reduce((a, b) => a + b) / parent.quality.length) * 10) /
+                10
+            );
+        }
+        return null;
+    }
+
+    @Field(() => [Comment])
+    @OneToMany(() => Comment, comment => comment.professor)
+    comments: Comment[];
 }

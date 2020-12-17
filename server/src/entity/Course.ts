@@ -1,31 +1,54 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm';
-import {Textbook} from './Textbook';
-import {Comment} from './Comment'
-import { TaughtCourse } from './TaughtCourse';
+import { Field, ID, Int, ObjectType, Root } from 'type-graphql';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Comment } from './Comment';
 
 @Entity()
-export class Course {
+@ObjectType()
+export class Course extends BaseEntity {
+    @Field(() => ID)
     @PrimaryGeneratedColumn()
-    id: number; //course id
+    readonly id: number;
 
-    //many to many
-    @OneToMany(() => TaughtCourse, taughtCourses => taughtCourses.course) //taught courses (w/ different professors) relation
-    taughtCourses: TaughtCourse[];
+    @Field()
+    @Column()
+    department: string;
 
-    @OneToMany(() => Comment, comment => comment.course) //comments relation
+    @Field()
+    @Column()
+    number: string;
+
+    @Field(() => [Int])
+    @Column({ type: 'int', array: true })
+    difficulty: number[] = [];
+
+    @Field(() => Int, { nullable: true })
+    averageDifficulty(@Root() parent: Course): number | null {
+        if (parent.difficulty.length) {
+            return (
+                Math.round(
+                    (parent.difficulty.reduce((a, b) => a + b) / parent.difficulty.length) * 10
+                ) / 10
+            );
+        }
+        return null;
+    }
+
+    @Field(() => [Int])
+    @Column({ type: 'int', array: true })
+    quality: number[] = [];
+
+    @Field(() => Int, { nullable: true })
+    averageQuality(@Root() parent: Course): number | null {
+        if (parent.quality.length) {
+            return (
+                Math.round((parent.quality.reduce((a, b) => a + b) / parent.quality.length) * 10) /
+                10
+            );
+        }
+        return null;
+    }
+
+    @Field(() => [Comment])
+    @OneToMany(() => Comment, comment => comment.course)
     comments: Comment[];
-
-    @Column()
-    difficulty: number;
-
-    @Column()
-    quality: string;
-
-    @Column()
-    textbookISBN: string;
-
-    //many to many
-    @OneToOne(() => Textbook) //textbook relation
-    @JoinColumn()
-    textbook: Textbook;
 }

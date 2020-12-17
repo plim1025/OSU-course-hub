@@ -1,26 +1,45 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn, UpdateDateColumn } from 'typeorm';
-import {Course} from "./Course";
-import {Student} from './Student';
-import {Professor} from './Professor';
+import { Field, ID, ObjectType } from 'type-graphql';
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
+import { Course } from './Course';
+import { Professor } from './Professor';
+import { Student } from './Student';
 
 @Entity()
-export class Comment {
-    //@PrimaryColumn - manually assign type
-    //@PrimaryGeneratedColumn("uuid") - generates random string id
+@ObjectType()
+export class Comment extends BaseEntity {
+    @Field(() => ID)
     @PrimaryGeneratedColumn()
-    readonly id: number; //comment id
+    readonly id: number;
 
-    @ManyToOne(() => Course, course => course.comments) //course relation
-    course: Course;
+    @Field()
+    @Column()
+    text: string;
 
-    //one to many
-    @OneToOne(() => Student) //student relation
-    @JoinColumn()
+    @Field(() => Student)
+    @ManyToOne(() => Student)
     student: Student;
 
-    @OneToOne(() => Professor) //professor relation
+    @Field(() => Course)
+    @ManyToOne(() => Course)
+    course: Course;
+
+    @Field(() => Professor)
+    @ManyToOne(() => Professor)
     professor: Professor;
 
-    //@UpdateDateColumn();
+    @Field()
+    @CreateDateColumn()
+    createdAt: Date;
 
+    @Field()
+    @UpdateDateColumn()
+    updatedAt: Date;
 }

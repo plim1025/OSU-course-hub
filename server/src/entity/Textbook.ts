@@ -1,24 +1,38 @@
-import { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column } from 'typeorm';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
-export class Textbook {
+@ObjectType()
+export class Textbook extends BaseEntity {
+    @Field(() => ID)
     @PrimaryColumn()
-    isbn: number;
+    readonly ISBN: string;
 
+    @Field()
     @Column()
     title: string;
 
+    @Field()
     @Column()
     author: string;
 
-    @Column()
-    coverImageURL: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    coverImageUrl?: string;
 
+    @Field(() => Int)
     @Column()
     edition: number;
 
+    @Field(() => Int)
     @Column()
-    year: number;
+    copyrightYear: number;
 
-    //relate to course
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    priceNewUSD?: number;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    priceUsedUSD?: number;
 }
