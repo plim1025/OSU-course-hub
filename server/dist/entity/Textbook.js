@@ -20,6 +20,11 @@ __decorate([
     __metadata("design:type", String)
 ], Textbook.prototype, "ISBN", void 0);
 __decorate([
+    type_graphql_1.Field(() => type_graphql_1.Int),
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], Textbook.prototype, "yearUsed", void 0);
+__decorate([
     type_graphql_1.Field(),
     typeorm_1.Column(),
     __metadata("design:type", String)
