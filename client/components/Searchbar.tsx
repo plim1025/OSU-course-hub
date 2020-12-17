@@ -1,7 +1,7 @@
-import React, { useState, CSSProperties } from 'react';
-import Button from './Button';
-import AsyncSelect from 'react-select/async';
+import React, { CSSProperties, useState } from 'react';
 import { Form } from 'react-bootstrap';
+import AsyncSelect from 'react-select/async';
+import Button from './Button';
 
 interface Props {
 	showButton: boolean;
@@ -32,6 +32,7 @@ const select = {
 	control: (provided: any) => ({
 		...provided,
 		cursor: 'text',
+		minHeight: 48,
 	}),
 };
 

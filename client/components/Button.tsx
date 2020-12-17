@@ -5,6 +5,7 @@ interface Props {
 	variant: string;
 	style?: React.CSSProperties;
 	text: string;
+	onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
 const button = {
@@ -13,7 +14,11 @@ const button = {
 
 const Searchbar: React.FC<Props> = props => {
 	return (
-		<Button style={{ ...button, ...props.style }} variant={props.variant}>
+		<Button
+			style={{ ...button, ...props.style }}
+			onClick={props.onClick}
+			variant={props.variant}
+		>
 			{props.text}
 		</Button>
 	);

@@ -1,42 +1,48 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
-        "types": [
-            "node",
-            "express"
-        ],
-        "lib": [
-            "dom",
-            "es6",
-            "es2017",
-            "esnext.asynciterable"
-        ],
-        "skipLibCheck": true,
-        "sourceMap": true,
-        "outDir": "./dist",
-        "moduleResolution": "node",
-        "removeComments": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "strictFunctionTypes": true,
-        "noImplicitThis": true,
-        "noUnusedLocals": false,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "resolveJsonModule": true,
-        "baseUrl": "."
-    },
-    "exclude": [
-        "node_modules"
+  "compilerOptions": {
+    "jsx": "preserve",
+    "target": "es6",
+    "module": "commonjs",
+    "types": [
+      "node"
     ],
-    "include": [
-        "./src/**/*.tsx",
-        "./src/**/*.ts"
-    ]
+    "lib": [
+      "dom",
+      "es6",
+      "es2017",
+      "esnext.asynciterable"
+    ],
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "allowJs": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "isolatedModules": true
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }
