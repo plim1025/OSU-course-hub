@@ -12,8 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Textbook = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
-const Course_1 = require("./Course");
-let Textbook = class Textbook {
+let Textbook = class Textbook extends typeorm_1.BaseEntity {
 };
 __decorate([
     type_graphql_1.Field(() => type_graphql_1.ID),
@@ -55,11 +54,6 @@ __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], Textbook.prototype, "priceUsedUSD", void 0);
-__decorate([
-    type_graphql_1.Field(() => Course_1.Course),
-    typeorm_1.ManyToOne(() => Course_1.Course, course => course.textbooks),
-    __metadata("design:type", Course_1.Course)
-], Textbook.prototype, "course", void 0);
 Textbook = __decorate([
     typeorm_1.Entity(),
     type_graphql_1.ObjectType()

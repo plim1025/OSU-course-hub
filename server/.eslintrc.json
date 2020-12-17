@@ -34,6 +34,7 @@
         "no-plusplus": "off",
         "radix": "off",
         "lines-between-class-members": "off",
+        "max-classes-per-file": "off",
         "node/no-unsupported-features/es-syntax": "off",
         "node/no-missing-import": "off",
         "import/prefer-default-export": "off",

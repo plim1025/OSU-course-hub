@@ -1,26 +1,26 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { BaseEntity, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Course } from './Course';
-import { Professor } from './Professor';
+import { Textbook } from './Textbook';
 
 @Entity()
 @ObjectType()
-export class CourseProfessor extends BaseEntity {
+export class CourseTextbook extends BaseEntity {
     @Field(() => ID)
     @PrimaryColumn()
     readonly courseId: number;
 
     @Field(() => ID)
     @PrimaryColumn()
-    readonly professorId: string;
+    readonly ISBN: string;
 
     @Field(() => Course)
     @OneToOne(() => Course)
     @JoinColumn()
     course: Course;
 
-    @Field(() => Professor)
-    @OneToOne(() => Professor)
+    @Field(() => Textbook)
+    @OneToOne(() => Textbook)
     @JoinColumn()
-    professor: Professor;
+    textbook: Textbook;
 }

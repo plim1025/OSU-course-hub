@@ -15,7 +15,7 @@ const typeorm_1 = require("typeorm");
 const Course_1 = require("./Course");
 const Professor_1 = require("./Professor");
 const Student_1 = require("./Student");
-let Comment = class Comment {
+let Comment = class Comment extends typeorm_1.BaseEntity {
 };
 __decorate([
     type_graphql_1.Field(() => type_graphql_1.ID),

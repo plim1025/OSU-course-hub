@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
+    BaseEntity,
     Column,
     CreateDateColumn,
     Entity,
@@ -13,7 +14,7 @@ import { Student } from './Student';
 
 @Entity()
 @ObjectType()
-export class Comment {
+export class Comment extends BaseEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
     readonly id: number;
