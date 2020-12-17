@@ -1,25 +1,24 @@
-import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
-import express from 'express';
-import { buildSchema, Resolver, Query } from 'type-graphql';
 import dotenv from 'dotenv';
-
-@Resolver()
-class HelloResolver {
-    @Query(() => String)
-    async helloWorld() {
-        return 'Hello World!';
-    }
-}
+import express from 'express';
+import 'reflect-metadata';
+import { buildSchema } from 'type-graphql';
+import { createConnection } from 'typeorm';
+import { CourseResolver } from './resolvers/course';
 
 const main = async () => {
     dotenv.config();
+    await createConnection();
 
-    const schema = await buildSchema({
-        resolvers: [HelloResolver],
+    const apolloServer = new ApolloServer({
+        schema: await buildSchema({
+            resolvers: [CourseResolver],
+        }),
+        context: ({ req, res }) => ({
+            req,
+            res,
+        }),
     });
-
-    const apolloServer = new ApolloServer({ schema });
 
     const app = express();
 
@@ -30,4 +29,4 @@ const main = async () => {
     });
 };
 
-main();
+main().catch(err => console.log(err));
