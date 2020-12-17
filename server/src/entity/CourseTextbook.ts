@@ -1,5 +1,5 @@
-import { Field, ID, ObjectType } from 'type-graphql';
-import { BaseEntity, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Course } from './Course';
 import { Textbook } from './Textbook';
 
@@ -23,4 +23,8 @@ export class CourseTextbook extends BaseEntity {
     @OneToOne(() => Textbook)
     @JoinColumn()
     textbook: Textbook;
+
+    @Field(() => Int)
+    @Column()
+    yearUsed: number;
 }
