@@ -48,7 +48,7 @@ let CourseResolver = class CourseResolver {
     }
     createCourse({ department, number }) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!(department in util_1.Departments)) {
+            if (!util_1.Departments.includes(department)) {
                 return [
                     {
                         field: 'department',

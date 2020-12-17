@@ -24,7 +24,7 @@ export class CourseResolver {
     async createCourse(
         @Arg('input') { department, number }: CourseInput
     ): Promise<Course | FieldError[]> {
-        if (!(department in Departments)) {
+        if (!Departments.includes(department)) {
             return [
                 {
                     field: 'department',
@@ -34,4 +34,23 @@ export class CourseResolver {
         }
         return Course.create({ department, number }).save();
     }
+
+    /*@Mutation(() => Course)
+    async createCourse(
+        @Arg('input') input: CourseInput
+    ): Promise<Course | FieldError[]> {
+        console.log(input.department);
+        console.log(Departments.includes(input.department));
+        if (!Departments.includes(input.department)) {
+            return [
+                {
+                    field: 'department',
+                    message: 'department not valid',
+                },
+            ];
+        }
+        const course = Course.create(input);
+        await course.save();
+        return course;
+    }*/
 }

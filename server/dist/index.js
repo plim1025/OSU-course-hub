@@ -19,12 +19,13 @@ require("reflect-metadata");
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const course_1 = require("./resolvers/course");
+const student_1 = require("./resolvers/student");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     dotenv_1.default.config();
     yield typeorm_1.createConnection();
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield type_graphql_1.buildSchema({
-            resolvers: [course_1.CourseResolver],
+            resolvers: [course_1.CourseResolver, student_1.StudentResolver],
         }),
         context: ({ req, res }) => ({
             req,

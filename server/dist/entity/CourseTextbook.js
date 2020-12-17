@@ -38,6 +38,11 @@ __decorate([
     typeorm_1.JoinColumn(),
     __metadata("design:type", Textbook_1.Textbook)
 ], CourseTextbook.prototype, "textbook", void 0);
+__decorate([
+    type_graphql_1.Field(() => type_graphql_1.Int),
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], CourseTextbook.prototype, "yearUsed", void 0);
 CourseTextbook = __decorate([
     typeorm_1.Entity(),
     type_graphql_1.ObjectType()
