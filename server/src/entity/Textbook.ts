@@ -8,6 +8,10 @@ export class Textbook extends BaseEntity {
     @PrimaryColumn()
     readonly ISBN: string;
 
+    @Field(() => Int)
+    @Column()
+    yearUsed: number;
+
     @Field()
     @Column()
     title: string;
