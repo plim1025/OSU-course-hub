@@ -3,8 +3,8 @@
    "host": "localhost",
    "port": 5432,
    "username": "postgres",
-   "password": "!Mzb5kC3GNgF",
-   "database": "osu-course-hub",
+   "password": "Daisyt2455",
+   "database": "postgres",
    "synchronize": true,
    "logging": false,
    "entities": [
