@@ -1,13 +1,31 @@
 import { Field, ObjectType } from 'type-graphql';
 
 @ObjectType()
-export class FieldError {
+export class Error {
     @Field()
-    field: string;
+    path: string;
 
     @Field()
     message: string;
 }
+
+export const Colleges = [
+    'Agricultural Science',
+    'Business',
+    'Earth, Ocean, and Atmospheric Sciences',
+    'Education',
+    'Engineering',
+    'Forestry',
+    'Liberal Arts',
+    'Pharmacy',
+    'Public Health and Human Sciences',
+    'Science',
+    'Veterinary Medicine',
+    'Graduate School',
+    'Internatinoal Programs',
+    'Reserve Officer Training Corps',
+    'University Honors College',
+];
 
 export const Departments = [
     'AAE',

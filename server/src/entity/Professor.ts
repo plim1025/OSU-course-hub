@@ -17,6 +17,10 @@ export class Professor extends BaseEntity {
     @Column()
     lastName: string;
 
+    @Field()
+    @Column()
+    college: string;
+
     @Field(() => [Int])
     @Column('int', { array: true })
     difficulty: number[] = [];
