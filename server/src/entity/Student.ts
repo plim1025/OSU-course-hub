@@ -9,7 +9,6 @@ export class Student extends BaseEntity {
     @PrimaryColumn()
     readonly ONID: string;
 
-    @Field(() => [Comment])
     @OneToMany(() => Comment, comment => comment.student)
     comments: Comment[];
 }
