@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType, Root } from 'type-graphql';
+import { Field, Float, ID, Int, ObjectType, Root } from 'type-graphql';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Comment } from './Comment';
 
@@ -21,7 +21,7 @@ export class Course extends BaseEntity {
     @Column({ type: 'int', array: true })
     difficulty: number[] = [];
 
-    @Field(() => Int, { nullable: true })
+    @Field(() => Float, { nullable: true })
     averageDifficulty(@Root() parent: Course): number | null {
         if (parent.difficulty.length) {
             return (
@@ -37,7 +37,7 @@ export class Course extends BaseEntity {
     @Column({ type: 'int', array: true })
     quality: number[] = [];
 
-    @Field(() => Int, { nullable: true })
+    @Field(() => Float, { nullable: true })
     averageQuality(@Root() parent: Course): number | null {
         if (parent.quality.length) {
             return (

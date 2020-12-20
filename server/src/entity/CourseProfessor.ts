@@ -27,4 +27,8 @@ export class CourseProfessor extends BaseEntity {
     @Field()
     @Column()
     termTaught: string;
+
+    @Field()
+    @Column()
+    yearTaught: string;
 }

@@ -1,4 +1,5 @@
 import { MaxLength, MinLength } from 'class-validator';
+import { CourseProfessor } from 'src/entity/CourseProfessor';
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Professor } from '../entity/Professor';
 import { Colleges, Error } from '../util';
@@ -36,10 +37,8 @@ export class ProfessorResolver {
     }
 
     @Query(() => ProfessorResponse)
-    async professor(
-        @Arg('input') { firstName, lastName, college }: ProfessorInput
-    ): Promise<ProfessorResponse> {
-        const professor = await Professor.findOne({ firstName, lastName, college });
+    async professor(@Arg('professorID') id: number): Promise<ProfessorResponse> {
+        const professor = await Professor.findOne({ id });
         if (professor) {
             return { professor };
         }
@@ -72,7 +71,7 @@ export class ProfessorResolver {
 
     @Mutation(() => ProfessorResponse)
     async rateQualityProfessor(
-        @Arg('input') { firstName, lastName, college }: ProfessorInput,
+        @Arg('professorID') id: number,
         @Arg('rating') rating: number
     ): Promise<ProfessorResponse> {
         if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
@@ -83,7 +82,7 @@ export class ProfessorResolver {
                 },
             };
         }
-        const professor = await Professor.findOne({ firstName, lastName, college });
+        const professor = await Professor.findOne({ id });
         if (!professor) {
             return {
                 error: {
@@ -99,7 +98,7 @@ export class ProfessorResolver {
 
     @Mutation(() => ProfessorResponse)
     async rateDifficultyProfessor(
-        @Arg('input') { firstName, lastName, college }: ProfessorInput,
+        @Arg('professorID') id: number,
         @Arg('rating') rating: number
     ): Promise<ProfessorResponse> {
         if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
@@ -110,7 +109,7 @@ export class ProfessorResolver {
                 },
             };
         }
-        const professor = await Professor.findOne({ firstName, lastName, college });
+        const professor = await Professor.findOne({ id });
         if (!professor) {
             return {
                 error: {
@@ -123,4 +122,16 @@ export class ProfessorResolver {
         professor.save();
         return { professor };
     }
+
+    // @Mutation(() => ProfessorResponse)
+    // async addCourseToProfessor(
+    //     @Arg('professorID') professorID: number,
+    //     @Arg('courseID') courseID: number,
+    //     @Arg('term') term: string,
+    // ) {
+    //     if(term) {
+
+    //     }
+    //     const courseProfessor = await CourseProfessor.create({ })
+    // }
 }

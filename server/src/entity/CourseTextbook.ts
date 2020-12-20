@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Course } from './Course';
 import { Textbook } from './Textbook';
@@ -27,4 +27,8 @@ export class CourseTextbook extends BaseEntity {
     @Field()
     @Column()
     termUsed: string;
+
+    @Field()
+    @Column()
+    yearUsed: string;
 }
