@@ -1,7 +1,6 @@
 import { Length } from 'class-validator';
 import { Arg, Field, InputType, Mutation, Query, Resolver } from 'type-graphql';
 import { Student } from '../entity/Student';
-import { FieldError } from '../util';
 
 @InputType()
 class StudentInput {
@@ -28,7 +27,7 @@ export class StudentResolver {
     //Create a student
     async createStudent(
         @Arg('input') { ONID }: StudentInput
-    ): Promise<Student | FieldError[]> {
+    ): Promise<Student> {
         return Student.create({ ONID }).save();
     }
 }

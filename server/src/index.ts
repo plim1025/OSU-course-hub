@@ -5,6 +5,7 @@ import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
 import { CourseResolver } from './resolvers/course';
+import { ProfessorResolver } from './resolvers/professor';
 import { StudentResolver } from './resolvers/student';
 
 const main = async () => {
@@ -13,7 +14,7 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [CourseResolver, StudentResolver],
+            resolvers: [CourseResolver, ProfessorResolver, StudentResolver],
         }),
         context: ({ req, res }) => ({
             req,
