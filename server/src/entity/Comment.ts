@@ -38,8 +38,4 @@ export class Comment extends BaseEntity {
     @Field()
     @CreateDateColumn()
     createdAt: Date;
-
-    @Field()
-    @UpdateDateColumn()
-    updatedAt: Date;
 }

@@ -1,28 +1,22 @@
-import { IsInt, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { MaxLength, MinLength } from 'class-validator';
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Professor } from '../entity/Professor';
-import { Error, Colleges } from '../util';
+import { Colleges, Error } from '../util';
 
 @InputType()
 class ProfessorInput {
     @Field()
-    @MinLength(1)
-    @MaxLength(255)
+    @MinLength(1, { message: 'First name cannot be blank' })
+    @MaxLength(255, { message: 'First name cannot be longer than 255 characters' })
     firstName: string;
 
-    @MinLength(1)
-    @MaxLength(255)
     @Field()
+    @MinLength(1, { message: 'Last name cannot be blank' })
+    @MaxLength(255, { message: 'Last name cannot be longer than 255 characters' })
     lastName: string;
 
     @Field()
     college: string;
-
-    @IsInt()
-    @Min(0)
-    @Max(10)
-    @Field({ nullable: true })
-    rating?: number;
 }
 
 @ObjectType()
@@ -76,19 +70,57 @@ export class ProfessorResolver {
         return { professor };
     }
 
-    // @Mutation(() => ProfessorResponse)
-    // async rateQualityProfessor(
-    //     @Arg('input') { firstName, lastName, college, rating }: ProfessorInput
-    // ): Promise<ProfessorResponse> {
-    //     const professor = await Professor.findOne({ firstName, lastName, college });
-    //     if (!professor) {
-    //         return {
-    //             error: {
-    //                 path: 'src/resolvers/professor.ts',
-    //                 message: 'could not find professor with given firstName/lastName/college',
-    //             },
-    //         };
-    //     }
-    //     professor.quality.push(rating);
-    // }
+    @Mutation(() => ProfessorResponse)
+    async rateQualityProfessor(
+        @Arg('input') { firstName, lastName, college }: ProfessorInput,
+        @Arg('rating') rating: number
+    ): Promise<ProfessorResponse> {
+        if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
+            return {
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: 'Invalid quality rating for professor',
+                },
+            };
+        }
+        const professor = await Professor.findOne({ firstName, lastName, college });
+        if (!professor) {
+            return {
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: 'Could not find professor with given firstName/lastName/college',
+                },
+            };
+        }
+        professor.quality.push(rating);
+        professor.save();
+        return { professor };
+    }
+
+    @Mutation(() => ProfessorResponse)
+    async rateDifficultyProfessor(
+        @Arg('input') { firstName, lastName, college }: ProfessorInput,
+        @Arg('rating') rating: number
+    ): Promise<ProfessorResponse> {
+        if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
+            return {
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: 'Invalid difficulty rating for professor',
+                },
+            };
+        }
+        const professor = await Professor.findOne({ firstName, lastName, college });
+        if (!professor) {
+            return {
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: 'Could not find professor with given firstName/lastName/college',
+                },
+            };
+        }
+        professor.difficulty.push(rating);
+        professor.save();
+        return { professor };
+    }
 }
