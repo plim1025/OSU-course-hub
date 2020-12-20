@@ -41,6 +41,11 @@ const Header: React.FC<Props> = props => {
 		}
 	}, []);
 
+	const logout = () => {
+		window.sessionStorage.removeItem('request-onid');
+		window.location.reload();
+	};
+
 	return (
 		<Navbar bg='dark' variant='dark' collapseOnSelect expand='md'>
 			<Navbar.Brand href='/' style={{ fontWeight: 700 }}>
@@ -65,7 +70,7 @@ const Header: React.FC<Props> = props => {
 						{ONID}
 					</Navbar.Text>
 					<Nav style={{ padding: '0 20px' }}>
-						<Nav.Link onClick={() => console.log('logout')}>Logout</Nav.Link>
+						<Nav.Link onClick={logout}>Logout</Nav.Link>
 					</Nav>
 				</Navbar.Collapse>
 			) : (

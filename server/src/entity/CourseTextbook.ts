@@ -24,7 +24,7 @@ export class CourseTextbook extends BaseEntity {
     @JoinColumn()
     textbook: Textbook;
 
-    @Field(() => Int)
+    @Field()
     @Column()
-    yearUsed: number;
+    termUsed: string;
 }
