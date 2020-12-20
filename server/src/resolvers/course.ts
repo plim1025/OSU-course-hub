@@ -13,9 +13,11 @@ class CourseInput {
 @Resolver()
 export class CourseResolver {
     @Query(() => [Course])
-    async course(): Promise<Course[]> {
+    async courses(): Promise<Course[]> {
         return Course.find({});
     }
+
+    // @Query(() => Course)
 
     // @Mutation(() => Course)
     // async createCourse(

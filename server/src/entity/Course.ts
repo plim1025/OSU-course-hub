@@ -48,7 +48,6 @@ export class Course extends BaseEntity {
         return null;
     }
 
-    @Field(() => [Comment])
     @OneToMany(() => Comment, comment => comment.course)
     comments: Comment[];
 }
