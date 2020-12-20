@@ -30,5 +30,5 @@ export class CourseTextbook extends BaseEntity {
 
     @Field()
     @Column()
-    yearUsed: string;
+    yearUsed: number;
 }

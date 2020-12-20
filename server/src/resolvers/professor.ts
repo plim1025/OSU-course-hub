@@ -127,9 +127,10 @@ export class ProfessorResolver {
     // async addCourseToProfessor(
     //     @Arg('professorID') professorID: number,
     //     @Arg('courseID') courseID: number,
-    //     @Arg('term') term: string,
+    //     @Arg('termTaught') termTaught: string,
+    //     @Arg('yearTaught') yearTaught: string,
     // ) {
-    //     if(term) {
+    //     if(termTaught) {
 
     //     }
     //     const courseProfessor = await CourseProfessor.create({ })
