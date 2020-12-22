@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Course } from './Course';
 import { Professor } from './Professor';
 
@@ -8,21 +8,11 @@ import { Professor } from './Professor';
 export class CourseProfessor extends BaseEntity {
     @Field(() => ID)
     @PrimaryColumn()
-    readonly courseId: number;
+    readonly courseID: number;
 
     @Field(() => ID)
     @PrimaryColumn()
-    readonly professorId: string;
-
-    @Field(() => Course)
-    @OneToOne(() => Course)
-    @JoinColumn()
-    course: Course;
-
-    @Field(() => Professor)
-    @OneToOne(() => Professor)
-    @JoinColumn()
-    professor: Professor;
+    readonly professorID: number;
 
     @Field()
     @Column()
@@ -31,4 +21,10 @@ export class CourseProfessor extends BaseEntity {
     @Field()
     @Column()
     yearTaught: number;
+
+    @ManyToOne(() => Course, course => course.courseProfessor)
+    course: Course;
+
+    @ManyToOne(() => Professor, professor => professor.courseProfessor)
+    professor: Professor;
 }

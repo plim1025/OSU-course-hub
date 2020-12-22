@@ -9,6 +9,8 @@ export class Error {
     message: string;
 }
 
+export const Terms = ['Fall', 'Winter', 'Spring', 'Summer'];
+
 export const Colleges = [
     'Agricultural Science',
     'Business',
