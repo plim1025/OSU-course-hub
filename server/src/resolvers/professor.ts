@@ -1,8 +1,9 @@
 import { MaxLength, MinLength } from 'class-validator';
-import { CourseProfessor } from 'src/entity/CourseProfessor';
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Course } from '../entity/Course';
+import { CourseProfessor } from '../entity/CourseProfessor';
 import { Professor } from '../entity/Professor';
-import { Colleges, Error } from '../util';
+import { Colleges, Error, Terms } from '../util';
 
 @InputType()
 class ProfessorInput {
@@ -45,9 +46,16 @@ export class ProfessorResolver {
         return {
             error: {
                 path: 'src/resolvers/professor.ts',
-                message: 'Could not find professor with given firstName/lastName/college',
+                message: 'Could not find professor with given ID',
             },
         };
+    }
+
+    @Query(() => [Course])
+    async professorCourses(@Arg('professorID') id: number): Promise<Course[]> {
+        const courses = await CourseProfessor.find({ professorID: id });
+        const courseIDs = courses.map(course => course.courseID);
+        return Course.findByIds(courseIDs);
     }
 
     @Mutation(() => ProfessorResponse)
@@ -87,12 +95,12 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Could not find professor with given firstName/lastName/college',
+                    message: 'Could not find professor with given ID',
                 },
             };
         }
         professor.quality.push(rating);
-        professor.save();
+        await professor.save();
         return { professor };
     }
 
@@ -114,25 +122,71 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Could not find professor with given firstName/lastName/college',
+                    message: 'Could not find professor with given ID',
                 },
             };
         }
         professor.difficulty.push(rating);
-        professor.save();
+        await professor.save();
         return { professor };
     }
 
-    // @Mutation(() => ProfessorResponse)
-    // async addCourseToProfessor(
-    //     @Arg('professorID') professorID: number,
-    //     @Arg('courseID') courseID: number,
-    //     @Arg('termTaught') termTaught: string,
-    //     @Arg('yearTaught') yearTaught: string,
-    // ) {
-    //     if(termTaught) {
-
-    //     }
-    //     const courseProfessor = await CourseProfessor.create({ })
-    // }
+    @Mutation(() => ProfessorResponse)
+    async addCourseToProfessor(
+        @Arg('professorID') professorID: number,
+        @Arg('courseID') courseID: number,
+        @Arg('termTaught') termTaught: string,
+        @Arg('yearTaught') yearTaught: number
+    ): Promise<ProfessorResponse> {
+        if (Terms.indexOf(termTaught) === -1) {
+            return {
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: 'Invalid term',
+                },
+            };
+        }
+        if (yearTaught.toString().length !== 4) {
+            return {
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: 'Invalid year',
+                },
+            };
+        }
+        const course = await Course.findOne({ id: courseID });
+        const professor = await Professor.findOne({ id: professorID });
+        if (!course) {
+            return {
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: 'Could not find course with given ID',
+                },
+            };
+        }
+        if (!professor) {
+            return {
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: 'Could not find professor with given ID',
+                },
+            };
+        }
+        const duplicateCourseProfessor = await CourseProfessor.findOne({ courseID, professorID });
+        if (duplicateCourseProfessor) {
+            return {
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: 'Course taught by professor already exists',
+                },
+            };
+        }
+        await CourseProfessor.create({
+            courseID,
+            professorID,
+            termTaught,
+            yearTaught,
+        }).save();
+        return { professor };
+    }
 }

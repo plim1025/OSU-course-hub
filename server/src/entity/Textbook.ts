@@ -1,5 +1,6 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { CourseTextbook } from './CourseTextbook';
 
 @Entity()
 @ObjectType()
@@ -35,4 +36,7 @@ export class Textbook extends BaseEntity {
     @Field({ nullable: true })
     @Column({ nullable: true })
     priceUsedUSD?: number;
+
+    @OneToMany(() => CourseTextbook, courseTextbook => courseTextbook.textbook)
+    courseTextbook: CourseTextbook[];
 }
