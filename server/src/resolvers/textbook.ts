@@ -1,16 +1,47 @@
+import { Max, Min } from 'class-validator';
+import {
+    Arg,
+    Field,
+    ID,
+    InputType,
+    Int,
+    Mutation,
+    ObjectType,
+    Query,
+    Resolver,
+} from 'type-graphql';
 import { Course } from '../entity/Course';
-import { Textbook } from '../entity/Textbook';
-import { Arg, Mutation, Query, Resolver, Field, ObjectType } from 'type-graphql';
 import { CourseTextbook } from '../entity/CourseTextbook';
+import { Textbook } from '../entity/Textbook';
 import { Error, Terms } from '../util';
 
-@ObjectType()
-class CourseTextbookResponse {
-    @Field(() => Error, { nullable: true })
-    error?: Error;
+@InputType()
+class TextbookInput {
+    @Field(() => ID)
+    ISBN: string;
 
-    @Field(() => [CourseTextbook], { nullable: true })
-    textbook?: CourseTextbook[];
+    @Field()
+    title: string;
+
+    @Field()
+    author: string;
+
+    @Field({ nullable: true })
+    coverImageUrl?: string;
+
+    @Field(() => Int)
+    edition: number;
+
+    @Field(() => Int)
+    @Min(1000)
+    @Max(9999)
+    copyrightYear: number;
+
+    @Field({ nullable: true })
+    priceNewUSD?: number;
+
+    @Field({ nullable: true })
+    priceUsedUSD?: number;
 }
 
 @ObjectType()
@@ -24,30 +55,16 @@ class TextbookResponse {
 
 @Resolver()
 export class TextbookResolver {
-    @Query(() => [CourseTextbook])
-    async getTextbooks(): Promise<CourseTextbook[]> {
-        return CourseTextbook.find({});
-    }
-
-    @Query(() => CourseTextbookResponse)
-    async getTextbookByID(@Arg('id') id: number): Promise<CourseTextbookResponse> {
+    @Query(() => [Textbook])
+    async getCourseTextbooks(@Arg('courseID') id: number): Promise<Textbook[]> {
         const textbooks = await CourseTextbook.find({ courseID: id });
-
-        if (textbooks) {
-            return { textbook: textbooks };
-        } else {
-            return {
-                error: {
-                    path: 'src/resolvers/textbook.ts',
-                    message: 'Could not find textbook with given ID',
-                },
-            };
-        }
+        const textbookISBNs = textbooks.map(textbook => textbook.ISBN);
+        return Textbook.findByIds(textbookISBNs);
     }
 
     @Mutation(() => TextbookResponse)
     async addTextbookToCourse(
-        @Arg('textbookID') textbookID: string,
+        @Arg('input') input: TextbookInput,
         @Arg('courseID') courseID: number,
         @Arg('termUsed') termUsed: string,
         @Arg('yearUsed') yearUsed: number
@@ -60,7 +77,6 @@ export class TextbookResolver {
                 },
             };
         }
-
         if (yearUsed.toString().length !== 4) {
             return {
                 error: {
@@ -69,10 +85,11 @@ export class TextbookResolver {
                 },
             };
         }
-
+        let textbook = await Textbook.findOne({ ISBN: input.ISBN });
+        if (!textbook) {
+            textbook = await Textbook.create(input).save();
+        }
         const course = await Course.findOne({ id: courseID });
-        const textbook = await Textbook.findOne({ ISBN: textbookID });
-
         if (!course) {
             return {
                 error: {
@@ -81,17 +98,7 @@ export class TextbookResolver {
                 },
             };
         }
-
-        if (!textbook) {
-            return {
-                error: {
-                    path: 'src/resolvers/textbook.ts',
-                    message: 'Could not find textbook with given ID',
-                },
-            };
-        }
-
-        const duplicateTextbook = CourseTextbook.findOne({ courseID, ISBN: textbookID });
+        const duplicateTextbook = await CourseTextbook.findOne({ courseID, ISBN: input.ISBN });
         if (duplicateTextbook) {
             return {
                 error: {
@@ -100,10 +107,9 @@ export class TextbookResolver {
                 },
             };
         }
-
         await CourseTextbook.create({
             courseID,
-            ISBN: textbookID,
+            ISBN: input.ISBN,
             termUsed,
             yearUsed,
         }).save();
