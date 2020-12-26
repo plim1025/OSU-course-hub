@@ -7,6 +7,8 @@ import { createConnection } from 'typeorm';
 import { CourseResolver } from './resolvers/course';
 import { ProfessorResolver } from './resolvers/professor';
 import { StudentResolver } from './resolvers/student';
+import { TextbookResolver } from './resolvers/textbook';
+import { CommentResolver } from './resolvers/comment';
 
 const main = async () => {
     dotenv.config();
@@ -14,7 +16,13 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [CourseResolver, ProfessorResolver, StudentResolver],
+            resolvers: [
+                CourseResolver,
+                ProfessorResolver,
+                StudentResolver,
+                TextbookResolver,
+                CommentResolver,
+            ],
         }),
         context: ({ req, res }) => ({
             req,

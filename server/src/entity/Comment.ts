@@ -6,7 +6,6 @@ import {
     Entity,
     ManyToOne,
     PrimaryGeneratedColumn,
-    UpdateDateColumn,
 } from 'typeorm';
 import { Course } from './Course';
 import { Professor } from './Professor';
@@ -23,15 +22,24 @@ export class Comment extends BaseEntity {
     @Column()
     text: string;
 
-    @Field(() => Student)
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    ONID?: string;
+
     @ManyToOne(() => Student)
     student: Student;
 
-    @Field(() => Course)
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    courseID?: number;
+
     @ManyToOne(() => Course)
     course: Course;
 
-    @Field(() => Professor)
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    professorID?: number;
+
     @ManyToOne(() => Professor)
     professor: Professor;
 
