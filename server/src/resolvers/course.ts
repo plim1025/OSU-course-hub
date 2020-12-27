@@ -98,7 +98,7 @@ export class CourseResolver {
     }
 
     @Mutation(() => CourseResponse)
-    async rateDifficultyProfessor(
+    async rateDifficultyCourse(
         @Arg('courseID') id: number,
         @Arg('rating') rating: number
     ): Promise<CourseResponse> {

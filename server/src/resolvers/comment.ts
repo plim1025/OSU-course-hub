@@ -37,7 +37,7 @@ export class CommentResolver {
     async courseComments(@Arg('courseID') id: number): Promise<Comment[]> {
         const comments = await Comment.find({});
         return comments
-            .filter(comment => comment.course.id === id)
+            .filter(comment => comment.course?.id === id)
             .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
     }
 
@@ -45,7 +45,7 @@ export class CommentResolver {
     async professorComments(@Arg('professorID') id: number): Promise<Comment[]> {
         const comments = await Comment.find({});
         return comments
-            .filter(comment => comment.professor.id === id)
+            .filter(comment => comment.professor?.id === id)
             .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
     }
 
@@ -53,7 +53,7 @@ export class CommentResolver {
     async studentComments(@Arg('ONID') ONID: string): Promise<Comment[]> {
         const comments = await Comment.find({});
         return comments
-            .filter(comment => comment.student.ONID === ONID)
+            .filter(comment => comment.student?.ONID === ONID)
             .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
     }
 
