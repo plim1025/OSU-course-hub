@@ -3,8 +3,17 @@ import Head from 'next/head';
 import React from 'react';
 import Header from '../components/Header';
 import ProfessorInfo from '../components/ProfessorInfo';
+import { useQuery } from '@apollo/client';
+import {PROFESSORS} from 'utils/graphql';
 
-const Home: React.FC = () => {
+const Info: React.FC = () => {
+	const { loading, error, data } = useQuery(PROFESSORS);
+	if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+	}
+	console.log(data);
 	return (
 		<>
 			<Head>
@@ -12,9 +21,9 @@ const Home: React.FC = () => {
 				<link rel='icon' href='/favicon.png' />
 			</Head>
 			<Header searchbarToggled={false} />
-            <ProfessorInfo />   
+            <ProfessorInfo professors={data.professors}/>   
 		</>
 	);
 };
 
-export default Home;
+export default Info;
