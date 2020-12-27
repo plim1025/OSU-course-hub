@@ -34,6 +34,12 @@ class CommentResponse {
 @Resolver()
 export class CommentResolver {
     @Query(() => [Comment])
+    async comments(): Promise<Comment[]> {
+        const comments = await Comment.find({});
+        return comments.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
+    }
+
+    @Query(() => [Comment])
     async courseComments(@Arg('courseID') id: number): Promise<Comment[]> {
         const comments = await Comment.find({});
         return comments

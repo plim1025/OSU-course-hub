@@ -1,14 +1,15 @@
 import { ApolloServer } from 'apollo-server-express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
+import { CommentResolver } from './resolvers/comment';
 import { CourseResolver } from './resolvers/course';
 import { ProfessorResolver } from './resolvers/professor';
 import { StudentResolver } from './resolvers/student';
 import { TextbookResolver } from './resolvers/textbook';
-import { CommentResolver } from './resolvers/comment';
 
 const main = async () => {
     dotenv.config();
@@ -31,6 +32,8 @@ const main = async () => {
     });
 
     const app = express();
+
+    app.use(cors({ origin: process.env.CORS_ORIGIN }));
 
     apolloServer.applyMiddleware({ app });
 
