@@ -50,6 +50,26 @@ export class Course extends BaseEntity {
         return null;
     }
 
+    @Field()
+    @Column()
+    campus: string;
+
+    @Field()
+    @Column()
+    recommend: boolean;
+
+    @Field()
+    @Column()
+    baccCore: boolean;
+
+    @Field(() => String, { nullable: true })
+    @Column()
+    gradeReceived: string;
+
+    @Field(() => String, { nullable: true })
+    @Column()
+    tags: string;
+
     @OneToMany(() => Comment, comment => comment.course)
     comments: Comment[];
 
