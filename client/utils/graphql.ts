@@ -12,7 +12,7 @@ export const PROFESSORS = gql`
 			difficulty
 			averageDifficulty
 			quality
-			averageQuality
+            averageQuality,
 		}
 	}
 `;
@@ -34,20 +34,12 @@ export const PROFESSOR = gql `
     }
 `;
 
-//fix
 export const PROFESSOR_COURSES = gql `
     query ProfessorCourses($professorID: Float!){
         professorCourses(professorID: $professorID){
-            course {
-                id,
-                department,
-                number,
-                difficulty,
-                averageDifficulty,
-                quality,
-                averageQuality,
-                comments 
-            }
+            id,
+            department,
+            number,
         }
     }
 `;
@@ -134,19 +126,6 @@ export const COURSE = gql `
     }
 `;
 
-//fix
-export const COURSE_PROFESSORS = gql `
-    query CourseProfessors($courseID: Float!){
-        courseProfessors(courseID: $courseID){
-            course {
-                id,
-                department,
-                number,
-            }
-        }
-    }
-`;
-
 export const CREATE_COURSE = gql `
     mutation CourseInfo($department: String!, $number: String!){
         createCourse(input: {department: $department, number: $number}){
@@ -172,7 +151,6 @@ export const RATE_QUALITY_COURSE = gql `
     }
 `;
 
-//fix
 export const RATE_DIFFICULTY_COURSE = gql `
     mutation CourseInfo($courseID: Float!, $rating: Float!){
         rateDifficultyCourse(courseID: $courseID, rating: $rating){
@@ -187,24 +165,25 @@ export const RATE_DIFFICULTY_COURSE = gql `
 `;
 
 //Textbook queries and mutations
+//fix
 export const COURSE_TEXTBOOKS = `
     query CourseTextbookInfo($courseID: Float!){
         getCourseTextbooks(courseID: $courseID){
-            textbook {
-                IBSN,
-                title,
-                author,
-            }
+            ISBN,
+            title,
+            author,
         }
     }
 `; 
 
+//fix
 export const ADD_TEXTBOOK_TO_COURSE = `
-    mutation CourseTextbookInfo($ISBN: Float!, $title: String!, $author: String!, $edition: Float!,
-        $copyRightYear: Float!, $priceNewUSD: Float!, $priceUsedUSD: Float!) {
-            addTextbookToCourse(input: {ISBN: 895867546, title: "Test", author: "Yep", edition: 4, 
-            copyrightYear: 2010, priceNewUSD: 80, priceUsedUSD: 30}, 
-            courseID: 1, termUsed: "Fall", yearUsed: 2020){
+    mutation CourseTextbookInfo($ISBN: String!, $title: String!, $author: String!, $edition: Float!,
+        $copyrightYear: Float!, $priceNewUSD: Float!, $priceUsedUSD: Float!, $courseID: Float!, 
+        $termUsed: String!, $yearUsed: Float!) {
+            addTextbookToCourse(input: {ISBN: $ISBN, title: $title, author: $author, edition: $edition, 
+            copyrightYear: $copyrightYear, priceNewUSD: $priceNewUSD, priceUsedUSD: $priceUsedUSD}, 
+            courseID: $courseID, termUsed: $termUsed, yearUsed: $yearUsed){
                 textbook {
                     ISBN,
                     title,
@@ -219,23 +198,30 @@ export const STUDENTS = gql`
     query students {
         students {
             ONID,
-            comments
         }
     }
 `;
 
 export const STUDENT = gql`
-    query student($ONID: Float!) {
+    query student($ONID: String!) {
         student(ONID: $ONID) {
             student {
                 ONID,
-                comments
             }
         }
     }
 `;
 
+export const CREATE_STUDENT = gql `
+    mutation StudentInfo($ONID: String!){
+        createStudent(input: {ONID: $ONID}){
+            ONID   
+        }
+    }
+`;
+
 //Comment queries and mutations
+//fix
 export const COURSE_COMMENTS = gql `
     query courseComments($courseID: Float!){
         courseComments(courseID: $courseID){
@@ -249,6 +235,7 @@ export const COURSE_COMMENTS = gql `
     }
 `;
 
+//fix
 export const PROFESSOR_COMMENTS = gql `
     query professorComments($professorID: Float!){
         professorComments(professorID: $professorID){
@@ -262,6 +249,7 @@ export const PROFESSOR_COMMENTS = gql `
     }
 `;
 
+//fix
 export const STUDENT_COMMENTS = gql `
     query studentComments($ONID: Float!){
         studentComments(ONID: $ONID){
@@ -276,7 +264,7 @@ export const STUDENT_COMMENTS = gql `
 `;
 
 export const CREATE_COMMENT = gql `
-    mutation createComment($text: String!, $ONID: Float!, $professorID: Float!, $courseID: Float!){
+    mutation createComment($text: String!, $ONID: String!, $professorID: Float!, $courseID: Float!){
         createComment(input: {text: $text, ONID: $ONID, professorID: $professorID, courseID: $courseID}){
             comment {
                 text,

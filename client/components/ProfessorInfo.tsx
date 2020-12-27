@@ -4,8 +4,10 @@ import { Button } from 'react-bootstrap';
 import {useQuery, useMutation, gql} from '@apollo/client';
 import {CREATE_PROFESSOR, PROFESSOR, RATE_QUALITY_PROFESSOR, 
     RATE_DIFFICULTY_PROFESSOR, PROFESSOR_COURSES, ADD_COURSE_TO_PROFESSOR,
-    COURSES, COURSE, COURSE_PROFESSORS, CREATE_COURSE, RATE_QUALITY_COURSE,
-    RATE_DIFFICULTY_COURSE} from '../utils/graphql';
+    COURSES, COURSE, CREATE_COURSE, RATE_QUALITY_COURSE,
+    RATE_DIFFICULTY_COURSE, COURSE_TEXTBOOKS, ADD_TEXTBOOK_TO_COURSE, STUDENTS,
+    STUDENT, CREATE_STUDENT, COURSE_COMMENTS, PROFESSOR_COMMENTS,
+    STUDENT_COMMENTS, CREATE_COMMENT} from '../utils/graphql';
 
 //Dummy data
 /*var tags = ['Easy Grader', 'Caring', 'Heavy Accent', 'Clear Instructions', 'Lecture-Heavy'];
@@ -158,6 +160,23 @@ const ProfessorInfo: React.FC<Props> = (props) => {
             rating: 3
         }
     });
+    /*const [addTextbookToCourse] = useMutation(ADD_TEXTBOOK_TO_COURSE, {
+        variables: {
+            ISBN: "895567546", title: "Cool", author: "Test", edition: 4, 
+            copyrightYear: 2010, priceNewUSD: 80, priceUsedUSD: 30,  
+            courseID: 1, termUsed: "Fall", yearUsed: 2020
+        }
+    });*/
+    const [createStudent] = useMutation(CREATE_STUDENT, {
+        variables: {
+            ONID: "784567464"
+        }
+    });
+    const [createComment] = useMutation(CREATE_COMMENT, {
+        variables: {
+            text: "hey", ONID: "523345498", professorID: 1, courseID: 1
+        }
+    });
     /*const {loading, error, data} = useQuery(PROFESSOR, {
         variables: {professorID: 1},
     });
@@ -174,12 +193,12 @@ const ProfessorInfo: React.FC<Props> = (props) => {
 	} else if (loading) {
 		return <div>Loading...</div>;
     }*/
-    const {loading, error, data} = useQuery(COURSES);
+    /*const {loading, error, data} = useQuery(COURSES);
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
-    }
+    }*/
     /*const {loading, error, data} = useQuery(COURSE, {
         variables: {courseID: 1}
     });
@@ -188,7 +207,29 @@ const ProfessorInfo: React.FC<Props> = (props) => {
 	} else if (loading) {
 		return <div>Loading...</div>;
     }*/
-    /*const {loading, error, data} = useQuery(COURSE_PROFESSORS, {
+    /*const {loading, error, data} = useQuery(COURSE_TEXTBOOKS, {
+        variables: {courseID: 1}
+    });
+    if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }*/
+    const {loading, error, data} = useQuery(STUDENTS);
+    if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }
+    /*const {loading, error, data} = useQuery(STUDENT, {
+        variables: {ONID: "523345498"}
+    });
+    if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }*/
+    /*const {loading, error, data} = useQuery(COURSE_COMMENTS, {
         variables: {courseID: 1}
     });
     if (error) {
@@ -258,6 +299,22 @@ const ProfessorInfo: React.FC<Props> = (props) => {
             }}
             >
                 <button type="submit">Rate Course by Difficulty</button>
+            </form>
+            <form
+            onSubmit={e => {
+                e.preventDefault();
+                createStudent();
+            }}
+            >
+                <button type="submit">Create Student</button>
+            </form>
+            <form
+            onSubmit={e => {
+                e.preventDefault();
+                createComment();
+            }}
+            >
+                <button type="submit">Create Comment</button>
             </form>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}
             {professors.map((professor: Professor) => {
