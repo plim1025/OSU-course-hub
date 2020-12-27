@@ -43,6 +43,26 @@ export class Comment extends BaseEntity {
     @ManyToOne(() => Professor)
     professor: Professor;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    campus?: string;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    recommend?: boolean;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    baccCore?: boolean;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    gradeReceived?: string;
+
+    @Field(() => [String])
+    @Column({ type: 'text', array: true })
+    tags: string[] = [];
+
     @Field()
     @CreateDateColumn()
     createdAt: Date;

@@ -3,7 +3,7 @@ import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'ty
 import { Course } from '../entity/Course';
 import { CourseProfessor } from '../entity/CourseProfessor';
 import { Professor } from '../entity/Professor';
-import { Departments, Error, Terms, CourseTags } from '../util';
+import { Departments, Error, Terms } from '../util';
 
 @InputType()
 class CourseInput {
@@ -41,7 +41,7 @@ export class CourseResolver {
         return {
             error: {
                 path: 'src/resolvers/course.ts',
-                message: 'Could not find course with given ID',
+                message: `Could not find course with given ID: ${id}`,
             },
         };
     }
@@ -57,13 +57,19 @@ export class CourseResolver {
     async createCourse(@Arg('input') { department, number }: CourseInput): Promise<CourseResponse> {
         if (Departments.indexOf(department) === -1) {
             return {
-                error: { path: 'src/resolvers/course.ts', message: 'Department does not exist' },
+                error: {
+                    path: 'src/resolvers/course.ts',
+                    message: `Invalid department: ${department}`,
+                },
             };
         }
         const duplicateCourse = await Course.findOne({ department, number });
         if (duplicateCourse) {
             return {
-                error: { path: 'src/resolvers/course.ts', message: 'Course already exists' },
+                error: {
+                    path: 'src/resolvers/course.ts',
+                    message: `Course with department ${department} and number ${number} already exists`,
+                },
             };
         }
         const course = await Course.create({ department, number }).save();
@@ -79,7 +85,7 @@ export class CourseResolver {
             return {
                 error: {
                     path: 'src/resolvers/course.ts',
-                    message: 'Invalid quality rating for course',
+                    message: `Invalid quality rating for course: ${rating}`,
                 },
             };
         }
@@ -88,7 +94,7 @@ export class CourseResolver {
             return {
                 error: {
                     path: 'src/resolvers/course.ts',
-                    message: 'Could not find course with given ID',
+                    message: `Could not find course with given ID: ${id}`,
                 },
             };
         }
@@ -106,7 +112,7 @@ export class CourseResolver {
             return {
                 error: {
                     path: 'src/resolvers/course.ts',
-                    message: 'Invalid difficulty rating for course',
+                    message: `Invalid difficulty rating for course ${id}`,
                 },
             };
         }
@@ -115,7 +121,7 @@ export class CourseResolver {
             return {
                 error: {
                     path: 'src/resolvers/course.ts',
-                    message: 'Could not find course with given ID',
+                    message: `Could not find course with given ID: ${id}`,
                 },
             };
         }
@@ -135,7 +141,7 @@ export class CourseResolver {
             return {
                 error: {
                     path: 'src/resolvers/course.ts',
-                    message: 'Invalid term',
+                    message: `Invalid term: ${termTaught}`,
                 },
             };
         }
@@ -143,7 +149,7 @@ export class CourseResolver {
             return {
                 error: {
                     path: 'src/resolvers/course.ts',
-                    message: 'Invalid year',
+                    message: `Invalid year: ${yearTaught}`,
                 },
             };
         }
@@ -153,7 +159,7 @@ export class CourseResolver {
             return {
                 error: {
                     path: 'src/resolvers/course.ts',
-                    message: 'Could not find course with given ID',
+                    message: `Could not find course with given ID: ${courseID}`,
                 },
             };
         }
@@ -161,7 +167,7 @@ export class CourseResolver {
             return {
                 error: {
                     path: 'src/resolvers/course.ts',
-                    message: 'Could not find professor with given ID',
+                    message: `Could not find professor with given ID: ${professorID}`,
                 },
             };
         }
@@ -170,7 +176,7 @@ export class CourseResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Course taught by professor already exists',
+                    message: `Course with ID: ${courseID} taught by professor with ID: ${professorID} already exists`,
                 },
             };
         }
@@ -180,35 +186,6 @@ export class CourseResolver {
             termTaught,
             yearTaught,
         }).save();
-        return { course };
-    }
-
-    @Mutation(() => CourseResponse)
-    async addTagToCourse(
-        @Arg('courseID') courseID: number,
-        @Arg('tag') tag: string
-    ): Promise<CourseResponse> {
-        if (CourseTags.indexOf(tag) === -1) {
-            return {
-                error: {
-                    path: 'src/resolvers/course.ts',
-                    message: 'Tag does not exist',
-                },
-            };
-        }
-
-        const course = await Course.findOne({ id: courseID });
-        if (course) {
-            course.tags.push(tag);
-            await course.save();
-        } else {
-            return {
-                error: {
-                    path: 'src/resolvers/course.ts',
-                    message: 'Could not find course with given ID',
-                },
-            };
-        }
         return { course };
     }
 }

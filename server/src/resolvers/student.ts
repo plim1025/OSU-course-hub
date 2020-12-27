@@ -36,7 +36,7 @@ export class StudentResolver {
         return {
             error: {
                 path: 'src/resolvers/student.ts',
-                message: 'Could not find student with given ONID',
+                message: `Could not find student with given ONID: ${ONID}`,
             },
         };
     }
