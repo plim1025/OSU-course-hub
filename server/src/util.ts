@@ -29,6 +29,9 @@ export const Colleges = [
     'University Honors College',
 ];
 
+export const ProfessorTags = ['Heavy Accent', 'Interesting Lecture', 'Harsh Grader'];
+export const CourseTags = ['Easy Course', 'A lot of assignments', 'Better prepare early'];
+
 export const Departments = [
     'AAE',
     'ACTG',

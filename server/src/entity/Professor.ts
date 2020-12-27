@@ -57,9 +57,9 @@ export class Professor extends BaseEntity {
     @Column()
     gradeReceived: string;
 
-    @Field(() => String, { nullable: true })
-    @Column()
-    tags: string;
+    @Field(() => [String], { nullable: true })
+    @Column({ type: 'text', array: true })
+    tags: string[];
 
     @OneToMany(() => Comment, comment => comment.professor)
     comments: Comment[];
