@@ -3,7 +3,7 @@ import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'ty
 import { Course } from '../entity/Course';
 import { CourseProfessor } from '../entity/CourseProfessor';
 import { Professor } from '../entity/Professor';
-import { Departments, Error, Terms } from '../util';
+import { Departments, Error, Terms, CourseTags } from '../util';
 
 @InputType()
 class CourseInput {
@@ -180,6 +180,35 @@ export class CourseResolver {
             termTaught,
             yearTaught,
         }).save();
+        return { course };
+    }
+
+    @Mutation(() => CourseResponse)
+    async addTagToCourse(
+        @Arg('courseID') courseID: number,
+        @Arg('tag') tag: string
+    ): Promise<CourseResponse> {
+        if (CourseTags.indexOf(tag) === -1) {
+            return {
+                error: {
+                    path: 'src/resolvers/course.ts',
+                    message: 'Tag does not exist',
+                },
+            };
+        }
+
+        const course = await Course.findOne({ id: courseID });
+        if (course) {
+            course.tags.push(tag);
+            await course.save();
+        } else {
+            return {
+                error: {
+                    path: 'src/resolvers/course.ts',
+                    message: 'Could not find course with given ID',
+                },
+            };
+        }
         return { course };
     }
 }
