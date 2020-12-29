@@ -4,7 +4,7 @@ import { Comment } from '../entity/Comment';
 import { Course } from '../entity/Course';
 import { Professor } from '../entity/Professor';
 import { Student } from '../entity/Student';
-import { Error } from '../util';
+import { Campuses, Error, Grades, Tags } from '../util';
 
 @InputType()
 class CommentInput {
@@ -20,6 +20,21 @@ class CommentInput {
 
     @Field({ nullable: true })
     courseID?: number;
+
+    @Field({ nullable: true })
+    campus?: string;
+
+    @Field({ nullable: true })
+    recommend?: boolean;
+
+    @Field({ nullable: true })
+    baccCore?: boolean;
+
+    @Field({ nullable: true })
+    gradeReceived?: string;
+
+    @Field(() => [String])
+    tags: string[];
 }
 
 @ObjectType()
@@ -34,10 +49,16 @@ class CommentResponse {
 @Resolver()
 export class CommentResolver {
     @Query(() => [Comment])
+    async comments(): Promise<Comment[]> {
+        const comments = await Comment.find({});
+        return comments.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
+    }
+
+    @Query(() => [Comment])
     async courseComments(@Arg('courseID') id: number): Promise<Comment[]> {
         const comments = await Comment.find({});
         return comments
-            .filter(comment => comment.course?.id === id)
+            .filter(comment => comment.courseID === id)
             .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
     }
 
@@ -45,7 +66,7 @@ export class CommentResolver {
     async professorComments(@Arg('professorID') id: number): Promise<Comment[]> {
         const comments = await Comment.find({});
         return comments
-            .filter(comment => comment.professor?.id === id)
+            .filter(comment => comment.professorID === id)
             .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
     }
 
@@ -53,45 +74,102 @@ export class CommentResolver {
     async studentComments(@Arg('ONID') ONID: string): Promise<Comment[]> {
         const comments = await Comment.find({});
         return comments
-            .filter(comment => comment.student?.ONID === ONID)
+            .filter(comment => comment.ONID === ONID)
             .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
     }
 
     @Mutation(() => CommentResponse)
     async createComment(
-        @Arg('input') { text, ONID, professorID, courseID }: CommentInput
+        @Arg('input')
+        {
+            text,
+            ONID,
+            professorID,
+            courseID,
+            campus,
+            recommend,
+            baccCore,
+            gradeReceived,
+            tags,
+        }: CommentInput
     ): Promise<CommentResponse> {
         const student = await Student.findOne({ ONID });
         if (!student) {
             return {
                 error: {
                     path: 'src/resolvers/comment.ts',
-                    message: 'Could not find student with given ONID',
+                    message: `Could not find student with given ONID: ${ONID}`,
                 },
             };
+        }
+        if (campus && Campuses.indexOf(campus) === -1) {
+            return {
+                error: {
+                    path: 'src/resolvers/comment.ts',
+                    message: `Invalid campus: ${campus}`,
+                },
+            };
+        }
+        if (gradeReceived && Grades.indexOf(gradeReceived) === -1) {
+            return {
+                error: {
+                    path: 'src/resolvers/comment.ts',
+                    message: `Invalid grade: ${gradeReceived}`,
+                },
+            };
+        }
+        if (tags) {
+            for (let i = 0; i < tags.length; i++) {
+                if (Tags.indexOf(tags[i]) === -1) {
+                    return {
+                        error: {
+                            path: 'src/resolvers/comment.ts',
+                            message: `Invalid tag: ${tags[i]}`,
+                        },
+                    };
+                }
+            }
         }
         if (professorID) {
             const professor = await Professor.find({ id: professorID });
             if (professor) {
-                const comment = await Comment.create({ text, ONID, professorID }).save();
+                const comment = await Comment.create({
+                    text,
+                    ONID,
+                    professorID,
+                    campus,
+                    recommend,
+                    baccCore,
+                    gradeReceived,
+                    tags,
+                }).save();
                 return { comment };
             }
             return {
                 error: {
                     path: 'src/resolvers/comment.ts',
-                    message: 'Could not find professor with given ID',
+                    message: `Could not find professor with given ID: ${professorID}`,
                 },
             };
         }
         const course = await Course.find({ id: courseID });
         if (course) {
-            const comment = await Comment.create({ text, ONID, courseID }).save();
+            const comment = await Comment.create({
+                text,
+                ONID,
+                courseID,
+                campus,
+                recommend,
+                baccCore,
+                gradeReceived,
+                tags,
+            }).save();
             return { comment };
         }
         return {
             error: {
                 path: 'src/resolvers/comment.ts',
-                message: 'Could not find course with given ID',
+                message: `Could not find course with given ID: ${courseID}`,
             },
         };
     }

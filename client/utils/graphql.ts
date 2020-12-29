@@ -1,7 +1,5 @@
 import { gql } from '@apollo/client';
 
-
-//Professor queries and mutations
 export const PROFESSORS = gql`
 	query professors {
 		professors {
@@ -165,9 +163,8 @@ export const RATE_DIFFICULTY_COURSE = gql `
 `;
 
 //Textbook queries and mutations
-//fix
-export const COURSE_TEXTBOOKS = `
-    query CourseTextbookInfo($courseID: Float!){
+export const COURSE_TEXTBOOKS = gql `
+    query TextbookInfo($courseID: Float!){
         getCourseTextbooks(courseID: $courseID){
             ISBN,
             title,
@@ -177,8 +174,8 @@ export const COURSE_TEXTBOOKS = `
 `; 
 
 //fix
-export const ADD_TEXTBOOK_TO_COURSE = `
-    mutation CourseTextbookInfo($ISBN: String!, $title: String!, $author: String!, $edition: Float!,
+export const ADD_TEXTBOOK_TO_COURSE = gql `
+    mutation TextbookInfo($ISBN: String!, $title: String!, $author: String!, $edition: Float!,
         $copyrightYear: Float!, $priceNewUSD: Float!, $priceUsedUSD: Float!, $courseID: Float!, 
         $termUsed: String!, $yearUsed: Float!) {
             addTextbookToCourse(input: {ISBN: $ISBN, title: $title, author: $author, edition: $edition, 
@@ -188,6 +185,10 @@ export const ADD_TEXTBOOK_TO_COURSE = `
                     ISBN,
                     title,
                     author
+                },
+                error {
+                    path,
+                    message
                 }
             }
     }
@@ -221,51 +222,43 @@ export const CREATE_STUDENT = gql `
 `;
 
 //Comment queries and mutations
-//fix
 export const COURSE_COMMENTS = gql `
     query courseComments($courseID: Float!){
         courseComments(courseID: $courseID){
-            comments {
-                text,
-                ONID,
-                professorID,
-                courseID
-            }
+            id,
+            text,
         }
     }
 `;
 
-//fix
 export const PROFESSOR_COMMENTS = gql `
     query professorComments($professorID: Float!){
         professorComments(professorID: $professorID){
-            comments {
-                text,
-                ONID,
-                professorID,
-                courseID
-            }
+            id,
+            text,
+            ONID,
+            campus,
+            tags
         }
     }
 `;
 
-//fix
 export const STUDENT_COMMENTS = gql `
-    query studentComments($ONID: Float!){
+    query studentComments($ONID: String!){
         studentComments(ONID: $ONID){
-            comments {
-                text,
-                ONID,
-                professorID,
-                courseID
-            }
+            id,
+            text
         }
     }
 `;
 
 export const CREATE_COMMENT = gql `
-    mutation createComment($text: String!, $ONID: String!, $professorID: Float!, $courseID: Float!){
-        createComment(input: {text: $text, ONID: $ONID, professorID: $professorID, courseID: $courseID}){
+    mutation createComment($text: String!, $ONID: String!, $professorID: Float!, $courseID: Float!, 
+        $campus: String!, $recommend: Boolean, $baccCore: Boolean, $gradeReceived: String!,
+        $tags: [String!]!){
+        createComment(input: {text: $text, ONID: $ONID, professorID: $professorID, courseID: $courseID,
+        campus: $campus, recommend: $recommend, baccCore: $baccCore, gradeReceived: $gradeReceived,
+        tags: $tags}){
             comment {
                 text,
                 ONID,

@@ -11,6 +11,10 @@ export class Error {
 
 export const Terms = ['Fall', 'Winter', 'Spring', 'Summer'];
 
+export const Campuses = ['Corvallis', 'Cascades', 'Ecampus', 'Hybrid'];
+
+export const Grades = ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F'];
+
 export const Colleges = [
     'Agricultural Science',
     'Business',
@@ -27,6 +31,24 @@ export const Colleges = [
     'Internatinoal Programs',
     'Reserve Officer Training Corps',
     'University Honors College',
+];
+
+export const Tags = [
+    'Gives good feedback',
+    'Respected',
+    'Lots of homework',
+    'Accessible outside class',
+    'Lots of reading',
+    'Attendance mandatory',
+    'Test heavy',
+    'Group projects',
+    'Clear grading criteria',
+    'Pop quizzes',
+    'Lecture heavy',
+    'Caring',
+    'Extra credit',
+    'Lots of papers',
+    'Tough grader',
 ];
 
 export const Departments = [

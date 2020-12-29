@@ -73,7 +73,7 @@ export class TextbookResolver {
             return {
                 error: {
                     path: 'src/resolvers/textbook.ts',
-                    message: 'Invalid Term',
+                    message: `Invalid Term: ${termUsed}`,
                 },
             };
         }
@@ -81,20 +81,7 @@ export class TextbookResolver {
             return {
                 error: {
                     path: 'src/resolvers/textbook.ts',
-                    message: 'Invalid Year',
-                },
-            };
-        }
-        let textbook = await Textbook.findOne({ ISBN: input.ISBN });
-        if (!textbook) {
-            textbook = await Textbook.create(input).save();
-        }
-        const course = await Course.findOne({ id: courseID });
-        if (!course) {
-            return {
-                error: {
-                    path: 'src/resolvers/textbook.ts',
-                    message: 'Could not find course with given ID',
+                    message: `Invalid Year: ${yearUsed}`,
                 },
             };
         }
@@ -103,9 +90,22 @@ export class TextbookResolver {
             return {
                 error: {
                     path: 'src/resolvers/textbook.ts',
-                    message: 'Textbook for the course already exists',
+                    message: `Textbook with ISBN: ${input.ISBN} for course with ID: ${courseID} already exists`,
                 },
             };
+        }
+        const course = await Course.findOne({ id: courseID });
+        if (!course) {
+            return {
+                error: {
+                    path: 'src/resolvers/textbook.ts',
+                    message: `Could not find course with given ID: ${courseID}`,
+                },
+            };
+        }
+        let textbook = await Textbook.findOne({ ISBN: input.ISBN });
+        if (!textbook) {
+            textbook = await Textbook.create(input).save();
         }
         await CourseTextbook.create({
             courseID,

@@ -1,40 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
+import React, {useState} from 'react';
 import { Button } from 'react-bootstrap';
-import {useQuery, useMutation, gql} from '@apollo/client';
-import {CREATE_PROFESSOR, PROFESSOR, RATE_QUALITY_PROFESSOR, 
-    RATE_DIFFICULTY_PROFESSOR, PROFESSOR_COURSES, ADD_COURSE_TO_PROFESSOR,
-    COURSES, COURSE, CREATE_COURSE, RATE_QUALITY_COURSE,
-    RATE_DIFFICULTY_COURSE, COURSE_TEXTBOOKS, ADD_TEXTBOOK_TO_COURSE, STUDENTS,
-    STUDENT, CREATE_STUDENT, COURSE_COMMENTS, PROFESSOR_COMMENTS,
-    STUDENT_COMMENTS, CREATE_COMMENT} from '../utils/graphql';
-
-//Dummy data
-/*var tags = ['Easy Grader', 'Caring', 'Heavy Accent', 'Clear Instructions', 'Lecture-Heavy'];
-var courses = [];
-
-var course1 = {
-    abbr: "CS",
-    num: "161"
-};
-
-var course2 = {
-    abbr: "CS",
-    num: "261"
-};
-
-courses.push(course1);
-courses.push(course2);
-
-var professor = {
-    firstName: "James",
-    lastName: "Chance",
-    department: "College of Engineering",
-    avgDifficulty: 3.2,
-    avgQuality: 4.1,
-    numRatings: 27,
-    course: courses,
-};*/
+import {useQuery, useMutation} from '@apollo/client';
+import {PROFESSOR_COURSES, PROFESSOR_COMMENTS} from '../utils/graphql';
 
 //CSS
 const info = {
@@ -95,19 +63,6 @@ const department = {
     marginTop: 0,
     color: '#6b6a6a',
 }
-
-//graphQL
-
-const GET_COURSE = gql `
-    query course ($courseID: Number!) {
-        course {
-            id,
-            department,
-            number,
-        }
-    }
-`;
-
 interface Professor {
     id: number,
     firstName: string,
@@ -119,203 +74,82 @@ interface Professor {
     averageQuality: number
 
 }
+interface Course {
+    id: number,
+    department: string,
+    number: number
+}
+interface Comment {
+    id: number,
+    text: string,
+    ONID: string,
+    campus: string,
+    tags: string[]
+}
 interface Props {
     professors: Professor[],
     onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
-const ProfessorInfo: React.FC<Props> = (props) => {
-    const {professors} = props;
-    const [createProfessor] = useMutation(CREATE_PROFESSOR);
-    const [rateQualityProfessor] = useMutation(RATE_QUALITY_PROFESSOR, {
-        variables: {
-            professorID: 1,
-            rating: 5
-        }
-    });
-    const [rateDifficultyProfessor] = useMutation(RATE_DIFFICULTY_PROFESSOR, {
-        variables: {
-            professorID: 1,
-            rating: 2
-        }
-    });
-    const [addCourseToProfessor] = useMutation(ADD_COURSE_TO_PROFESSOR, {
-        variables: {
-            professorID: 1,
-            courseID: 1,
-            termTaught: "Fall",
-            yearTaught: 2020
-        }
-    });
-    const [createCourse] = useMutation(CREATE_COURSE);
-    const [rateQualityCourse] = useMutation(RATE_QUALITY_COURSE, {
-        variables: {
-            courseID: 1,
-            rating: 4
-        }
-    });
-    const [rateDifficultyCourse] = useMutation(RATE_DIFFICULTY_COURSE, {
-        variables: {
-            courseID: 1,
-            rating: 3
-        }
-    });
-    /*const [addTextbookToCourse] = useMutation(ADD_TEXTBOOK_TO_COURSE, {
-        variables: {
-            ISBN: "895567546", title: "Cool", author: "Test", edition: 4, 
-            copyrightYear: 2010, priceNewUSD: 80, priceUsedUSD: 30,  
-            courseID: 1, termUsed: "Fall", yearUsed: 2020
-        }
-    });*/
-    const [createStudent] = useMutation(CREATE_STUDENT, {
-        variables: {
-            ONID: "784567464"
-        }
-    });
-    const [createComment] = useMutation(CREATE_COMMENT, {
-        variables: {
-            text: "hey", ONID: "523345498", professorID: 1, courseID: 1
-        }
-    });
-    /*const {loading, error, data} = useQuery(PROFESSOR, {
+const ProfessorCourses = () => {
+    const {loading, error, data} = useQuery(PROFESSOR_COURSES, {
         variables: {professorID: 1},
     });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }*/
-    /*const {loading, error, data} = useQuery(PROFESSOR_COURSES, {
-        variables: {professorID: 1},
-    });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }*/
-    /*const {loading, error, data} = useQuery(COURSES);
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }*/
-    /*const {loading, error, data} = useQuery(COURSE, {
-        variables: {courseID: 1}
-    });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }*/
-    /*const {loading, error, data} = useQuery(COURSE_TEXTBOOKS, {
-        variables: {courseID: 1}
-    });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }*/
-    const {loading, error, data} = useQuery(STUDENTS);
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
     }
-    /*const {loading, error, data} = useQuery(STUDENT, {
-        variables: {ONID: "523345498"}
+    const courses = data.professorCourses;
+    return (
+        <div style={courseBlock}>
+            <h4>Courses: </h4>
+            {courses.map((course: Course) => {
+                return (
+                    <p style={courseList}>{course.department} {course.number}</p>
+                );
+            })}
+        </div>
+    );
+}
+
+const ProfessorComments = () => {
+    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
+        variables: {professorID: 1},
     });
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
-    }*/
-    /*const {loading, error, data} = useQuery(COURSE_COMMENTS, {
-        variables: {courseID: 1}
-    });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }*/
-    console.log(data);
-    //console.log(data.professor.professor);
+    }
+    const comments = data.professorComments;
+    var tags: string[] = [];
+    comments.forEach(comment => comment.tags.forEach(tag => tags.push(tag)));
+    
+    function onlyUnique(value: any, index: any, self: any) {
+        return self.indexOf(value) === index;
+    }
+    tags = tags.filter(onlyUnique);
+    console.log(tags);
+
+    return (
+        <div style={tagBlock}>
+            <h4>Tags: </h4>
+            {tags.map((tag) => {
+                return (
+                    <p style={tagList}><span style={aTag}>{tag}</span></p>
+                );
+            })}
+        </div>
+    );
+}
+
+const ProfessorInfo: React.FC<Props> = (props) => {
+    const {professors} = props;
     console.log("Professors: ", professors);
     console.log(professors.length);
 	return (
         <div>
-            <h2>Testing mutations:</h2>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                createProfessor({ variables: { firstName: "Hey", lastName: "Test2", college: "Science" } });
-            }}
-            >
-                <button type="submit">Create Professor</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                rateQualityProfessor();
-            }}
-            >
-                <button type="submit">Rate Professor by Quality</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                rateDifficultyProfessor();
-            }}
-            >
-                <button type="submit">Rate Professor by Difficulty</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                addCourseToProfessor();
-            }}
-            >
-                <button type="submit">Add Course to Professor</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                createCourse({ variables: { department: "CS", number: "261"} });
-            }}
-            >
-                <button type="submit">Create Course</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                rateQualityCourse();
-            }}
-            >
-                <button type="submit">Rate Course by Quality</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                rateDifficultyCourse();
-            }}
-            >
-                <button type="submit">Rate Course by Difficulty</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                createStudent();
-            }}
-            >
-                <button type="submit">Create Student</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                createComment();
-            }}
-            >
-                <button type="submit">Create Comment</button>
-            </form>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}
             {professors.map((professor: Professor) => {
                 return (
@@ -334,18 +168,12 @@ const ProfessorInfo: React.FC<Props> = (props) => {
                             <span style={constant}>/5</span>
                         </h3>
                         <h5>Based on <b>{professor.quality.length}</b> ratings.</h5>
-                        <h4>Ratings: {professor.quality.map((rating) => {return(<p>{rating}</p>)})}</h4>
+                        <ProfessorCourses />
+                        <ProfessorComments />
                     </div> 
                 )
             })}
         </div>
-        /*{professors.forEach(professor => <h1>{professor.firstName}</h1>)}
-            {professors.map((professor: Professor) => {
-              <h1 style={professorName}>
-                {professor.firstName} {professor.lastName}
-                <Button style={rateBtn}>Rate</Button>
-              </h1>  
-            })}*/
         /*<div style={courseBlock}>
                 <h4>Courses: </h4>
                 {professor.course.map((course) => {

@@ -46,7 +46,7 @@ export class ProfessorResolver {
         return {
             error: {
                 path: 'src/resolvers/professor.ts',
-                message: 'Could not find professor with given ID',
+                message: `Could not find professor with given ID: ${id}`,
             },
         };
     }
@@ -64,13 +64,19 @@ export class ProfessorResolver {
     ): Promise<ProfessorResponse> {
         if (Colleges.indexOf(college) === -1) {
             return {
-                error: { path: 'src/resolvers/professor.ts', message: 'College does not exist' },
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: `Invalid college: ${college}`,
+                },
             };
         }
         const duplicateProfessor = await Professor.findOne({ firstName, lastName, college });
         if (duplicateProfessor) {
             return {
-                error: { path: 'src/resolvers/professor.ts', message: 'Professor already exists' },
+                error: {
+                    path: 'src/resolvers/professor.ts',
+                    message: `Professor with first name: ${firstName} and last name: ${lastName} in college ${college} already exists`,
+                },
             };
         }
         const professor = await Professor.create({ firstName, lastName, college }).save();
@@ -86,7 +92,7 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Invalid quality rating for professor',
+                    message: `Invalid quality rating for professor: ${rating}`,
                 },
             };
         }
@@ -95,7 +101,7 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Could not find professor with given ID',
+                    message: `Could not find professor with given ID: ${id}`,
                 },
             };
         }
@@ -113,7 +119,7 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Invalid difficulty rating for professor',
+                    message: `Invalid difficulty rating for professor: ${rating}`,
                 },
             };
         }
@@ -122,7 +128,7 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Could not find professor with given ID',
+                    message: `Could not find professor with given ID: ${id}`,
                 },
             };
         }
@@ -142,7 +148,7 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Invalid term',
+                    message: `Invalid term: ${termTaught}`,
                 },
             };
         }
@@ -150,7 +156,7 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Invalid year',
+                    message: `Invalid year: ${yearTaught}`,
                 },
             };
         }
@@ -160,7 +166,7 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Could not find course with given ID',
+                    message: `Could not find course with given ID: ${courseID}`,
                 },
             };
         }
@@ -168,7 +174,7 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Could not find professor with given ID',
+                    message: `Could not find professor with given ID: ${professorID}`,
                 },
             };
         }
@@ -177,7 +183,7 @@ export class ProfessorResolver {
             return {
                 error: {
                     path: 'src/resolvers/professor.ts',
-                    message: 'Course taught by professor already exists',
+                    message: `Course with ID: ${courseID} taught by professor with ID: ${professorID} already exists`,
                 },
             };
         }
