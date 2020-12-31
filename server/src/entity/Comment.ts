@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
     BaseEntity,
     Column,
@@ -66,4 +66,10 @@ export class Comment extends BaseEntity {
     @Field()
     @CreateDateColumn()
     createdAt: Date;
+
+    @Field(() => Int)
+    likes: number;
+
+    @Field(() => Int)
+    dislikes: number;
 }
