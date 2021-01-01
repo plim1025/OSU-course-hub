@@ -184,7 +184,7 @@ export class CommentResolver {
         return true;
     }
 
-    @Mutation(() => Number)
+    @Mutation(() => CommentResponse)
     async upvote(@Arg('id') id: number): Promise<CommentResponse> {
         let comment = await Comment.findOne({ id });
 
@@ -202,7 +202,7 @@ export class CommentResolver {
         }
     }
 
-    @Mutation(() => Number)
+    @Mutation(() => CommentResponse)
     async downvote(@Arg('id') id: number): Promise<CommentResponse> {
         let comment = await Comment.findOne({ id });
 

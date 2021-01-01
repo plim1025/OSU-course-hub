@@ -67,9 +67,11 @@ export class Comment extends BaseEntity {
     @CreateDateColumn()
     createdAt: Date;
 
-    @Field(() => Int)
+    @Field()
+    @Column()
     likes: number;
 
-    @Field(() => Int)
+    @Field()
+    @Column()
     dislikes: number;
 }
