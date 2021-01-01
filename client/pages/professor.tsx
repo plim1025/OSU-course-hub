@@ -22,8 +22,8 @@ const Info: React.FC = () => {
 				<link rel='icon' href='/favicon.png' />
 			</Head>
 			<Header searchbarToggled={false} />
-            <ProfessorInfo professors={data.professors}/>
-			{/*<TestingAPI professors={data.professors}/>*/}     
+            {/*<ProfessorInfo professors={data.professors}/>*/}
+			<TestingAPI professors={data.professors}/>    
 		</>
 	);
 };

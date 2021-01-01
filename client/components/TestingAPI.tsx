@@ -137,9 +137,9 @@ const TestingAPI: React.FC<Props> = (props) => {
     });
     const [createComment] = useMutation(CREATE_COMMENT, {
         variables: {
-            text: "hey", ONID: "523365498", professorID: 1, courseID: 1, 
+            comment: {text: "hey", ONID: "523365498", professorID: 1, 
             campus: "Corvallis", recommend: true, baccCore: false, gradeReceived: "A", 
-            tags: ["Lots of homework", "Lots of reading"]
+            tags: ["Lots of homework", "Lots of reading"]}
         }
     });
     /*const {loading, error, data} = useQuery(PROFESSOR, {

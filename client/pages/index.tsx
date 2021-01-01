@@ -5,6 +5,17 @@ import React from 'react';
 import { PROFESSORS } from 'utils/graphql';
 import Header from '../components/Header';
 import Searchbar from '../components/Searchbar';
+import RecentComments from '../components/RecentComments';
+import HighestRatedProfessor from '../components/HighestRatedProfessor';
+
+const container = {
+	display: 'flex',
+	flexDirection: 'row',
+	flexWrap: 'nowrap',
+	flexFlow: 'center',
+	alignContent: 'flex-start',
+	//margin: 'auto',
+}
 
 const Home: React.FC = () => {
 	const { loading, error, data } = useQuery(PROFESSORS);
@@ -22,6 +33,10 @@ const Home: React.FC = () => {
 			</Head>
 			<Header searchbarToggled={false} />
 			<Searchbar showButton={true} size='lg' />
+			<div style={container}>
+				<HighestRatedProfessor />
+				<RecentComments />
+			</div>
 		</>
 	);
 };

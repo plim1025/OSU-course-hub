@@ -113,7 +113,7 @@ const ProfessorCourses = () => {
     );
 }
 
-const ProfessorComments = () => {
+const ProfessorTags = () => {
     const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
         variables: {professorID: 1},
     });
@@ -169,7 +169,7 @@ const ProfessorInfo: React.FC<Props> = (props) => {
                         </h3>
                         <h5>Based on <b>{professor.quality.length}</b> ratings.</h5>
                         <ProfessorCourses />
-                        <ProfessorComments />
+                        <ProfessorTags />
                     </div> 
                 )
             })}
