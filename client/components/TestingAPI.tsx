@@ -7,7 +7,7 @@ import {CREATE_PROFESSOR, PROFESSOR, RATE_QUALITY_PROFESSOR,
     COURSES, COURSE, CREATE_COURSE, RATE_QUALITY_COURSE,
     RATE_DIFFICULTY_COURSE, COURSE_TEXTBOOKS, ADD_TEXTBOOK_TO_COURSE, STUDENTS,
     STUDENT, CREATE_STUDENT, COURSE_COMMENTS, PROFESSOR_COMMENTS,
-    STUDENT_COMMENTS, CREATE_COMMENT} from '../utils/graphql';
+    STUDENT_COMMENTS, CREATE_COMMENT, DELETE_COMMENT} from '../utils/graphql';
 
 //CSS
 const info = {
@@ -141,6 +141,9 @@ const TestingAPI: React.FC<Props> = (props) => {
             campus: "Corvallis", recommend: true, baccCore: false, gradeReceived: "A", 
             tags: ["Lots of homework", "Lots of reading"]}
         }
+    });
+    const [deleteComment] = useMutation(DELETE_COMMENT, {
+        variables: {id: 3}
     });
     /*const {loading, error, data} = useQuery(PROFESSOR, {
         variables: {professorID: 1},
@@ -305,6 +308,14 @@ const TestingAPI: React.FC<Props> = (props) => {
             }}
             >
                 <button type="submit">Create Comment</button>
+            </form>
+            <form
+            onSubmit={e => {
+                e.preventDefault();
+                deleteComment();
+            }}
+            >
+                <button type="submit">Delete Comment</button>
             </form>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}
             {professors.map((professor: Professor) => {

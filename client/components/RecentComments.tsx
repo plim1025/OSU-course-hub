@@ -105,10 +105,13 @@ const RecentComments: React.FC = () => {
             <h3>Recent Comment:</h3>
             <div style={details}>
                 <CourseOrProfessor comment={recentComment}/>
-                <span style={item}>Grade: <b>{recentComment.gradeReceived}</b></span>
+                <span style={item}>Grade: <b>{recentComment.gradeReceived ? 
+                    (recentComment.gradeReceived) : ('N/A')}</b></span>
                 <span style={item}>Created on: <b>{formattedDate.toDateString()}</b></span>
-                <span style={item}>Campus: <b>{recentComment.campus}</b></span>
+                <span style={item}>Campus: <b>{recentComment.campus ? 
+                    (recentComment.campus) : ('N/A')}</b></span>
             </div>
+            <br />
             <br />
             {recentComment.tags.map((tag) => {
                 return (

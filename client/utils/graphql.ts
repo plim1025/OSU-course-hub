@@ -325,6 +325,12 @@ export const CREATE_COMMENT = gql `
     }
 `;
 
+export const DELETE_COMMENT = gql `
+    mutation DeleteComment($id: Float!){
+        deleteComment(id: $id)
+    }
+`;
+
 /*export const CREATE_COMMENT = gql `
     mutation createComment($comment: CommentInput!){
         createComment(comment: $comment){
