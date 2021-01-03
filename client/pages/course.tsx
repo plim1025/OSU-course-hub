@@ -1,19 +1,23 @@
+import { useQuery } from '@apollo/client';
 import React from 'react';
-import { Card } from 'react-bootstrap';
 import Comment from '../components/Comment';
-
-const date = new Date();
-
-const data = {
-	quality: 4,
-	text: 'This course is awesome!!',
-	difficulty: 3,
-	tags: ['easy', 'fun'],
-	campus: 'Corvallis',
-	gradeReceived: 'A',
-	createdAt: date,
-};
+import { COMMENTS } from 'utils/graphql';
+import { Container } from 'react-bootstrap';
 
 export default function course() {
-	return <Comment props={data}></Comment>;
+	const { loading, error, data } = useQuery(COMMENTS);
+
+	if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+	}
+
+	return (
+		<Container style={{ height: '800px' }}>
+			{data.comments.map((comment, i) => {
+				return <Comment key={i} props={comment} />;
+			})}
+		</Container>
+	);
 }
