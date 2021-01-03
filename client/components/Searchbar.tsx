@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/client';
 import React, { CSSProperties, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import AsyncSelect from 'react-select/async';
@@ -10,8 +11,8 @@ interface Props {
 }
 
 const largeWrapper = {
-	maxWidth: 800,
-	width: 'calc(100% - 40px)',
+	maxWidth: 1000,
+	width: 'calc(100% - 80px)',
 	margin: 'auto',
 	background: '#fff',
 	position: 'fixed',
