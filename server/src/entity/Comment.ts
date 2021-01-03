@@ -22,6 +22,14 @@ export class Comment extends BaseEntity {
     @Column()
     text: string;
 
+    @Field(() => Int)
+    @Column()
+    difficulty: number;
+
+    @Field(() => Int)
+    @Column()
+    quality: number;
+
     @Field({ nullable: true })
     @Column({ nullable: true })
     ONID?: string;

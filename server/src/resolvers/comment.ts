@@ -1,5 +1,5 @@
-import { MaxLength } from 'class-validator';
-import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Max, MaxLength, Min } from 'class-validator';
+import { Arg, Field, InputType, Int, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Comment } from '../entity/Comment';
 import { Course } from '../entity/Course';
 import { Professor } from '../entity/Professor';
@@ -11,6 +11,16 @@ class CommentInput {
     @Field()
     @MaxLength(524)
     text: string;
+
+    @Field(() => Int)
+    @Min(1)
+    @Max(10)
+    difficulty: number;
+
+    @Field(() => Int)
+    @Min(1)
+    @Max(10)
+    quality: number;
 
     @Field()
     ONID: string;
@@ -83,6 +93,8 @@ export class CommentResolver {
         @Arg('input')
         {
             text,
+            difficulty,
+            quality,
             ONID,
             professorID,
             courseID,
@@ -135,6 +147,8 @@ export class CommentResolver {
             if (professor) {
                 const comment = await Comment.create({
                     text,
+                    difficulty,
+                    quality,
                     ONID,
                     professorID,
                     campus,
@@ -158,6 +172,8 @@ export class CommentResolver {
         if (course) {
             const comment = await Comment.create({
                 text,
+                difficulty,
+                quality,
                 ONID,
                 courseID,
                 campus,
