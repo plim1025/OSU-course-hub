@@ -3,10 +3,13 @@ import React, {useState} from 'react';
 import { Button } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {PROFESSOR_COURSES, PROFESSOR_COMMENTS} from '../utils/graphql';
+import {Card} from 'react-bootstrap';
 
 //CSS
 const info = {
     margin: 'auto',
+    marginTop: 50,
+    padding: 10,
     width: '70%',
     paddingTop: '50px',
     //textAlign: 'center',
@@ -87,7 +90,8 @@ interface Comment {
     tags: string[]
 }
 interface Props {
-    professors: Professor[],
+    //professors: Professor[],
+    professor: Professor,
     onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
@@ -114,6 +118,7 @@ const ProfessorCourses = () => {
 }
 
 const ProfessorTags = () => {
+    //make the professorID dynamic
     const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
         variables: {professorID: 1},
     });
@@ -145,34 +150,29 @@ const ProfessorTags = () => {
 }
 
 const ProfessorInfo: React.FC<Props> = (props) => {
-    const {professors} = props;
-    console.log("Professors: ", professors);
-    console.log(professors.length);
+    const {professor} = props;
+    console.log("Professor: ", professor);
 	return (
         <div>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}
-            {professors.map((professor: Professor) => {
-                return (
-                    <div key={professor.id} style={info}>
-                        <h1 style={professorName}>
-                            {professor.firstName} {professor.lastName}
-                            <Button style={rateBtn}>Rate</Button>
-                        </h1>
-                        <h5 style={department}>{professor.college}</h5>
-                        <h3>Quality: 
-                            <span style={variable}>{professor.averageQuality}</span>
-                            <span style={constant}>/5</span>
-                        </h3>
-                        <h3>Difficulty: 
-                            <span style={variable}>{professor.averageDifficulty}</span>
-                            <span style={constant}>/5</span>
-                        </h3>
-                        <h5>Based on <b>{professor.quality.length}</b> ratings.</h5>
-                        <ProfessorCourses />
-                        <ProfessorTags />
-                    </div> 
-                )
-            })}
+            <Card key={professor.id} style={info} bg="light" border="dark">
+                <h1 style={professorName}>
+                    {professor.firstName} {professor.lastName}
+                    <Button style={rateBtn}>Rate</Button>
+                </h1>
+                <h5 style={department}>{professor.college}</h5>
+                <h3>Quality: 
+                    <span style={variable}>{professor.averageQuality}</span>
+                    <span style={constant}>/5</span>
+                </h3>
+                <h3>Difficulty: 
+                    <span style={variable}>{professor.averageDifficulty}</span>
+                    <span style={constant}>/5</span>
+                </h3>
+                <h5>Based on <b>{professor.quality.length}</b> ratings.</h5>
+                <ProfessorCourses />
+                <ProfessorTags />
+            </Card> 
         </div>
         /*<div style={courseBlock}>
                 <h4>Courses: </h4>

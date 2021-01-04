@@ -10,7 +10,7 @@ interface Props {
 }
 
 const largeWrapper = {
-	maxWidth: 800,
+	maxWidth: 1000,
 	width: 'calc(100% - 40px)',
 	margin: 'auto',
 	background: '#fff',

@@ -3,19 +3,19 @@ import React, {useState} from 'react';
 import {useQuery, useMutation} from '@apollo/client';
 import {COMMENTS, COURSES, PROFESSORS} from '../utils/graphql';
 import { isInlineFragment } from '@apollo/client/utilities';
+import {Card, CardColumns} from 'react-bootstrap';
 
-const comment = {
+const commentBlock = {
     marginLeft: 100,
     marginRight: 50,
-    marginTop: 50,
+    marginTop: 10,
     borderSize: 2,
-    borderColor: '#eb8934',
+    //borderColor: '#eb8934',
     borderRadius: 15,
     borderStyle: 'solid',
-    width: "40%",
+    width: 500,
     padding: 10,
     paddingRight: 0,
-    backgroundColor: '#f2f2f2',
 }
 
 const details = {
@@ -24,20 +24,6 @@ const details = {
 
 const item = {
     marginRight: 10
-}
-
-const tagList = {
-    marginTop: 5,
-    marginRight: 5,
-    fontSize: 12,
-    fontWeight: 600,
-    display: 'inline',
-}
-
-const aTag = {
-    padding: 5,
-    backgroundColor: '#d9d7d7',
-    borderRadius: 20
 }
 
 const GetProfessor = ({id}) => {
@@ -53,7 +39,7 @@ const GetProfessor = ({id}) => {
     console.log(professor);
     return (
         <div>
-            <h4><b>{professor[0].firstName} {professor[0].lastName}</b></h4>
+            <h5><b>{professor[0].firstName} {professor[0].lastName}</b></h5>
         </div>
     )
 }
@@ -70,7 +56,7 @@ const GetCourse = ({id}) => {
     console.log(course);
     return (
         <div>
-            <h4><b>{course[0].department} {course[0].number}</b></h4>
+            <h5><b>{course[0].department} {course[0].number}</b></h5>
         </div>
     )
 }
@@ -96,31 +82,27 @@ const RecentComments: React.FC = () => {
 		return <div>Loading...</div>;
     }
     const comments = data.comments;
-    const recentComment = comments[comments.length - 1];
-    const time = Date.parse(recentComment.createdAt);
-    const formattedDate = new Date(time);
+    const recentComments = comments.slice(Math.max(comments.length - 4, 1));
+    console.log(recentComments);
+    recentComments.reverse();
+    var time, formattedDate;
     console.log(comments);
     return (
-        <div style={comment}>
-            <h3>Recent Comment:</h3>
-            <div style={details}>
-                <CourseOrProfessor comment={recentComment}/>
-                <span style={item}>Grade: <b>{recentComment.gradeReceived ? 
-                    (recentComment.gradeReceived) : ('N/A')}</b></span>
-                <span style={item}>Created on: <b>{formattedDate.toDateString()}</b></span>
-                <span style={item}>Campus: <b>{recentComment.campus ? 
-                    (recentComment.campus) : ('N/A')}</b></span>
-            </div>
-            <br />
-            <br />
-            {recentComment.tags.map((tag) => {
+        <div>
+            {recentComments.map((comment) => {
+                time = Date.parse(comment.createdAt);
+                formattedDate = new Date(time);
                 return (
-                    <p style={tagList}><span style={aTag}>{tag}</span></p>
+                    <Card style={commentBlock} bg="light" border="dark">
+                        <div style={details}>
+                            <CourseOrProfessor comment={comment}/>
+                            <span style={item}>Created on: <b>{formattedDate.toDateString()}</b></span>
+                        </div>
+                        <br />
+                        <Card.Text>{comment.text}</Card.Text>
+                    </Card>
                 );
             })}
-            <br />
-            <br />
-            <h5>{recentComment.text}</h5>
         </div>
     );
 }
