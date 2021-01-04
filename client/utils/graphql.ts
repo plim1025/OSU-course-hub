@@ -7,10 +7,6 @@ export const PROFESSORS = gql`
 			firstName
 			lastName
 			college
-			difficulty
-			averageDifficulty
-			quality
-			averageQuality
 		}
 	}
 `;
@@ -31,6 +27,8 @@ export const COMMENTS = gql`
 			createdAt
 			likes
 			dislikes
+			quality
+			difficulty
 		}
 	}
 `;
@@ -55,6 +53,28 @@ export const PROFESSOR = gql`
 				firstName
 				lastName
 				college
+			}
+		}
+	}
+`;
+
+export const LIKE = gql`
+	mutation upvote($id: Float!) {
+		upvote(id: $id) {
+			comment {
+				id
+				likes
+			}
+		}
+	}
+`;
+
+export const DISLIKE = gql`
+	mutation downvote($id: Float!) {
+		downvote(id: $id) {
+			comment {
+				id
+				dislikes
 			}
 		}
 	}

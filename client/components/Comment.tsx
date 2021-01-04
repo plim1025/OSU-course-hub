@@ -1,7 +1,7 @@
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import React from 'react';
-import { Container, Col, Row } from 'react-bootstrap';
-import { COURSE, PROFESSOR } from 'utils/graphql';
+import { Card, Button, Row } from 'react-bootstrap';
+import { COURSE, PROFESSOR, LIKE, DISLIKE } from 'utils/graphql';
 
 interface Props {
 	props: {
@@ -18,13 +18,18 @@ interface Props {
 		recommend: boolean;
 		tags: string[];
 		text: string;
+		quality: number;
+		difficulty: number;
 	};
 }
 
 const Searchbar: React.FC<Props> = props => {
 	const data = props.props;
 	const date = new Date(data.createdAt);
+	const [addLike, { likeCount }] = useMutation(LIKE);
+	const [addDislike, { dislikeCount }] = useMutation(DISLIKE);
 
+	// Fetch professor name or course name
 	let fetchedData;
 	if (data.courseID) {
 		fetchedData = useQuery(COURSE, {
@@ -44,32 +49,79 @@ const Searchbar: React.FC<Props> = props => {
 		}
 	}
 
+	// Issue: Connect to login, user can only choose like or dislike and clicking like/dislike 2nd time should cancel it.
+	// 		  Add quality and difficulty (done)
+	//        Style the Components (done)
+	//		  Display N/A for the field (done)
+	//		  Change to Card (done)
+
 	return (
-		<Container
-			className='shadow mb-4 p-3'
-			style={{ height: '300px', backgroundColor: '#e6e6e6' }}
-			fluid
-		>
-			{fetchedData.course && (
-				<h5>
-					{fetchedData.course.department} {fetchedData.course.number}
-				</h5>
-			)}
-			{fetchedData.professor && (
-				<h5>
-					{fetchedData.professor.firstName} {fetchedData.professor.lastName}
-				</h5>
-			)}
-			<p className='mt-2'>Created At: {date.toDateString()}</p>
-			{data.campus && <p>Campus: {data.campus}</p>}
-			{data.recommend && <p>Recommend: {data.recommend ? 'yes' : 'no'}</p>}
-			{data.gradeReceived && <p>Grade Received: {data.gradeReceived}</p>}
-			<span>Tags: </span>
-			{data.tags.map((tag: string, i) => {
-				return <span key={i}>'{tag}' </span>;
-			})}
-			<p className='mt-3'>Text: {data.text}</p>
-		</Container>
+		<Card className='shadow mb-5 p-4 w-75' /*style={{ width: '1000px' }}*/>
+			<Row className='pl-3 pr-4'>
+				{fetchedData.course && (
+					<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
+						{fetchedData.course.department} {fetchedData.course.number}
+					</Card.Title>
+				)}
+				{fetchedData.professor && (
+					<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
+						{fetchedData.professor.firstName} {fetchedData.professor.lastName}
+					</Card.Title>
+				)}
+				<Card.Text className='text-right ml-auto text-muted'>
+					<strong>Created At</strong> {date.toDateString()}
+				</Card.Text>
+			</Row>
+			<Card.Text className='mt-2 text-left' style={{ whiteSpace: 'pre-wrap' }}>
+				<strong>Campus:</strong> {data.campus}
+				{'  '}
+				<strong>Recommend:</strong> {data.recommend ? 'Yes' : 'No'}
+				{'  '}
+				<strong>Grade Received</strong>: {data.gradeReceived ? data.gradeReceived : 'N/A'}
+				{'  '}
+				<strong>Bacc Core:</strong> {data.baccCore ? 'Yes' : 'No'}
+			</Card.Text>
+			<Card.Text className='h4 pt-1 pb-2' style={{ whiteSpace: 'pre-wrap' }}>
+				Quality: {data.quality}
+				{'  '}Difficulty: {data.difficulty}
+			</Card.Text>
+			<div className='mt-2'>
+				<span>Tags: </span>
+				{data.tags.map((tag: string, i) => {
+					return (
+						<span key={i} className='border rounded border-info ml-2 p-1'>
+							{tag}{' '}
+						</span>
+					);
+				})}
+			</div>
+			<Card.Text className='mt-3'>Text: {data.text}</Card.Text>
+			<Card.Text>
+				Likes: {data.likes} Dislikes: {data.dislikes}
+			</Card.Text>
+			<Row className='pl-3'>
+				<Button
+					className='mr-3'
+					variant='outline-primary'
+					onClick={() => {
+						const id = parseFloat(data.id);
+						addLike({ variables: { id } });
+					}}
+				>
+					Like
+				</Button>
+				<Button
+					className='mr-3'
+					variant='outline-primary'
+					onClick={() => {
+						const id = parseFloat(data.id);
+						addDislike({ variables: { id } });
+					}}
+				>
+					Dislike
+				</Button>
+			</Row>
+		</Card>
 	);
 };
 

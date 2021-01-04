@@ -14,8 +14,8 @@ export default function course() {
 	}
 
 	return (
-		<Container style={{ height: '800px' }}>
-			{data.comments.map((comment, i) => {
+		<Container style={{ height: '1000px' }}>
+			{data.comments.map((comment, i: number) => {
 				return <Comment key={i} props={comment} />;
 			})}
 		</Container>
