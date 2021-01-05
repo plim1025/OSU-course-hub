@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import React, { CSSProperties, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import Select from 'react-select';
+import Select, { GroupType, InputActionTypes } from 'react-select';
 import { COURSES, PROFESSORS } from 'utils/graphql';
 import { CourseData, ProfessorData } from 'utils/types';
 import Button from './Button';
@@ -51,7 +51,7 @@ const Searchbar: React.FC<Props> = props => {
 		COURSES
 	);
 
-	const handleInputChange = (newValue: string, { action }) => {
+	const handleInputChange = (newValue: string, { action }: { action: InputActionTypes }) => {
 		if (action === 'input-change') {
 			openMenu(true);
 		}
@@ -59,7 +59,7 @@ const Searchbar: React.FC<Props> = props => {
 		return newValue;
 	};
 
-	const handleChange = () => {
+	const handleChange = (newValue: any) => {
 		openMenu(false);
 	};
 
@@ -84,21 +84,22 @@ const Searchbar: React.FC<Props> = props => {
 				options={
 					professorData && courseData
 						? [
-								...professorData.professors.map(
-									professor =>
+								...professorData.professors.map(professor => ({
+									id: professor.id,
+									value: `${professor.firstName} ${professor.lastName} ${professor.college}`,
+									label:
 										`${professor.firstName} ${professor.lastName}`
 											.toLowerCase()
 											.split(' ')
 											.map(s => s.charAt(0).toUpperCase() + s.substring(1))
-											.join(' ') + ` - College of ${professor.college}`
-								),
-								...courseData.courses.map(
-									course => `${course.department} ${course.number}`
-								),
-						  ].map(name => ({
-								value: name,
-								label: name,
-						  }))
+											.join(' ') + ` - College of ${professor.college}`,
+								})),
+								...courseData.courses.map(course => ({
+									id: course.id,
+									value: `${course.department} ${course.number}`,
+									label: `${course.department} ${course.number}`,
+								})),
+						  ]
 						: []
 				}
 			/>
