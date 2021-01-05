@@ -16,7 +16,7 @@ export default function course() {
 
 	return (
 		<>
-			<Header searchbarToggled={true} />
+			<Header searchbarToggled={false} />
 			<Container style={{ height: '1000px' }}>
 				{data.comments.map((comment, i: number) => {
 					return <Comment key={i} props={comment} />;
