@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React from 'react';
 import { Card, Button, Row } from 'react-bootstrap';
-import { COURSE, PROFESSOR, LIKE, DISLIKE } from 'utils/graphql';
+import { COURSE, PROFESSOR } from 'utils/graphql';
 
 interface Props {
 	props: {
@@ -26,8 +26,6 @@ interface Props {
 const Searchbar: React.FC<Props> = props => {
 	const data = props.props;
 	const date = new Date(data.createdAt);
-	const [addLike, { likeCount }] = useMutation(LIKE);
-	const [addDislike, { dislikeCount }] = useMutation(DISLIKE);
 
 	// Fetch professor name or course name
 	let fetchedData;
@@ -105,7 +103,8 @@ const Searchbar: React.FC<Props> = props => {
 					variant='outline-primary'
 					onClick={() => {
 						const id = parseFloat(data.id);
-						addLike({ variables: { id } });
+						console.log(id);
+						console.log(window.sessionStorage.getItem('request-onid'));
 					}}
 				>
 					Like
@@ -115,7 +114,8 @@ const Searchbar: React.FC<Props> = props => {
 					variant='outline-primary'
 					onClick={() => {
 						const id = parseFloat(data.id);
-						addDislike({ variables: { id } });
+						console.log(id);
+						console.log(window.sessionStorage.getItem('request-onid'));
 					}}
 				>
 					Dislike

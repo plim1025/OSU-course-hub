@@ -58,24 +58,24 @@ export const PROFESSOR = gql`
 	}
 `;
 
-export const LIKE = gql`
-	mutation upvote($id: Float!) {
-		upvote(id: $id) {
-			comment {
-				id
-				likes
-			}
-		}
-	}
-`;
+// export const LIKE = gql`
+// 	mutation upvote($id: Float!) {
+// 		upvote(id: $id) {
+// 			comment {
+// 				id
+// 				likes
+// 			}
+// 		}
+// 	}
+// `;
 
-export const DISLIKE = gql`
-	mutation downvote($id: Float!) {
-		downvote(id: $id) {
-			comment {
-				id
-				dislikes
-			}
-		}
-	}
-`;
+// export const DISLIKE = gql`
+// 	mutation downvote($id: Float!) {
+// 		downvote(id: $id) {
+// 			comment {
+// 				id
+// 				dislikes
+// 			}
+// 		}
+// 	}
+// `;
