@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState} from 'react';
 import { Button } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
-import {PROFESSOR_COURSES, PROFESSOR_COMMENTS} from '../utils/graphql';
+import {COURSE_PROFESSORS, COURSE_COMMENTS} from '../utils/graphql';
 import {Card} from 'react-bootstrap';
 
 //CSS
@@ -15,16 +15,16 @@ const info = {
     //textAlign: 'center',
 }
 
-const professorName = {
+const courseName = {
     fontWeight: 600,
     marginBottom: 0,
 }
 
-const courseBlock = {
+const professorBlock = {
     marginTop: 10,
 }
 
-const courseList = {
+const professorList = {
     marginRight: 10,
     display: 'inline',
 }
@@ -62,10 +62,6 @@ const constant = {
     fontSize: 20,
 }
 
-const department = {
-    marginTop: 0,
-    color: '#6b6a6a',
-}
 interface Professor {
     id: number,
     firstName: string,
@@ -80,7 +76,11 @@ interface Professor {
 interface Course {
     id: number,
     department: string,
-    number: number
+    number: number,
+    difficulty: number[],
+    averageDifficulty: number,
+    quality: number[],
+    averageQuality: number
 }
 interface Comment {
     id: number,
@@ -89,45 +89,40 @@ interface Comment {
     campus: string,
     tags: string[]
 }
-interface Props {
-    //professors: Professor[],
-    professor: Professor,
-    onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-}
 
-const ProfessorCourses = () => {
-    const {loading, error, data} = useQuery(PROFESSOR_COURSES, {
-        variables: {professorID: 1},
+const CourseProfessors = () => {
+    const {loading, error, data} = useQuery(COURSE_PROFESSORS, {
+        variables: {courseID: 1},
     });
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
     }
-    const courses = data.professorCourses;
+    const professors = data.courseProfessors;
     return (
-        <div style={courseBlock}>
-            <h4>Courses: </h4>
-            {courses.map((course: Course) => {
+        <div style={professorBlock}>
+            <h4>Professors: </h4>
+            {professors.map((professor: Professor) => {
                 return (
-                    <p style={courseList}><b>{course.department} {course.number}</b></p>
+                    <p style={professorList}><b>{professor.firstName} {professor.lastName}</b></p>
                 );
             })}
         </div>
     );
 }
 
-const ProfessorTags = () => {
+const CourseTags = () => {
     //make the professorID dynamic
-    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: 1},
+    const {loading, error, data} = useQuery(COURSE_COMMENTS, {
+        variables: {courseID: 1},
     });
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
     }
-    const comments = data.professorComments;
+    const comments = data.courseComments;
     var tags: string[] = [];
     comments.forEach(comment => comment.tags.forEach(tag => tags.push(tag)));
     
@@ -149,49 +144,36 @@ const ProfessorTags = () => {
     );
 }
 
-const ProfessorInfo: React.FC<Props> = (props) => {
-    const {professor} = props;
-    console.log("Professor: ", professor);
+interface Props {
+    course: Course,
+    onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+}
+
+const CourseInfo: React.FC<Props> = (props) => {
+    const {course} = props;
+    console.log("Course: ", course);
 	return (
         <div>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}
-            <Card key={professor.id} style={info} bg="light" border="dark">
-                <h1 style={professorName}>
-                    {professor.firstName} {professor.lastName}
+            <Card key={course.id} style={info} bg="light" border="dark">
+                <h1 style={courseName}>
+                    {course.department} {course.number}
                     <Button style={rateBtn}>Rate</Button>
                 </h1>
-                <h5 style={department}>{professor.college}</h5>
                 <h3>Quality: 
-                    <span style={variable}>{professor.averageQuality}</span>
+                    <span style={variable}>{course.averageQuality}</span>
                     <span style={constant}>/5</span>
                 </h3>
                 <h3>Difficulty: 
-                    <span style={variable}>{professor.averageDifficulty}</span>
+                    <span style={variable}>{course.averageDifficulty}</span>
                     <span style={constant}>/5</span>
                 </h3>
-                <h5>Based on <b>{professor.quality.length}</b> ratings.</h5>
-                <ProfessorCourses />
-                <ProfessorTags />
+                <h5>Based on <b>{course.quality.length}</b> ratings.</h5>
+                <CourseProfessors />
+                <CourseTags />
             </Card> 
         </div>
-        /*<div style={courseBlock}>
-                <h4>Courses: </h4>
-                {professor.course.map((course) => {
-                    return (
-                        <p style={courseList}>{course.abbr} {course.num}</p>
-                    );
-                })}
-            </div>
-            <div style={tagBlock}>
-                <h4>Tags: </h4>
-                {tags.map((tag) => {
-                    return (
-                        <p style={tagList}><span style={aTag}>{tag}</span></p>
-                    );
-                })}
-            </div>
-        </div>*/
 	);
 };
 
-export default ProfessorInfo;
+export default CourseInfo;

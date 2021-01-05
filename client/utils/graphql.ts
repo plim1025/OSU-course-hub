@@ -130,6 +130,21 @@ export const COURSE = gql `
     }
 `;
 
+export const COURSE_PROFESSORS = gql `
+    query CourseProfessors($courseID: Float!){
+        courseProfessors(courseID: $courseID){
+            id
+            firstName
+            lastName
+            college
+            difficulty
+            averageDifficulty
+            quality
+            averageQuality
+        }
+    }
+`;
+
 export const CREATE_COURSE = gql `
     mutation CourseInfo($department: String!, $number: String!){
         createCourse(input: {department: $department, number: $number}){
