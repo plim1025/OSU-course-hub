@@ -156,6 +156,8 @@ export class CommentResolver {
                     baccCore,
                     gradeReceived,
                     tags,
+                    likes: 0,
+                    dislikes: 0,
                 }).save();
                 return { comment };
             }
@@ -179,6 +181,8 @@ export class CommentResolver {
                 baccCore,
                 gradeReceived,
                 tags,
+                likes: 0,
+                dislikes: 0,
             }).save();
             return { comment };
         }
@@ -194,5 +198,41 @@ export class CommentResolver {
     async deleteComment(@Arg('id') id: number): Promise<boolean> {
         await Comment.delete({ id });
         return true;
+    }
+
+    @Mutation(() => CommentResponse)
+    async upvote(@Arg('id') id: number): Promise<CommentResponse> {
+        let comment = await Comment.findOne({ id });
+
+        if (comment) {
+            comment.likes += 1;
+            await comment.save();
+            return { comment };
+        } else {
+            return {
+                error: {
+                    path: 'src/resolvers/comment.ts',
+                    message: `Could not find comment with given ID: ${id}`,
+                },
+            };
+        }
+    }
+
+    @Mutation(() => CommentResponse)
+    async downvote(@Arg('id') id: number): Promise<CommentResponse> {
+        let comment = await Comment.findOne({ id });
+
+        if (comment) {
+            comment.dislikes += 1;
+            await comment.save();
+            return { comment };
+        } else {
+            return {
+                error: {
+                    path: 'src/resolvers/comment.ts',
+                    message: `Could not find comment with given ID: ${id}`,
+                },
+            };
+        }
     }
 }
