@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
 import React from 'react';
 import { PROFESSORS } from 'utils/graphql';

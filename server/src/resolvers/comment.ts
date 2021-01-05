@@ -1,5 +1,5 @@
-import { MaxLength } from 'class-validator';
-import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Max, MaxLength, Min } from 'class-validator';
+import { Arg, Field, InputType, Int, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Comment } from '../entity/Comment';
 import { Course } from '../entity/Course';
 import { Professor } from '../entity/Professor';
@@ -11,6 +11,16 @@ class CommentInput {
     @Field()
     @MaxLength(524)
     text: string;
+
+    @Field(() => Int)
+    @Min(1)
+    @Max(10)
+    difficulty: number;
+
+    @Field(() => Int)
+    @Min(1)
+    @Max(10)
+    quality: number;
 
     @Field()
     ONID: string;
@@ -83,6 +93,8 @@ export class CommentResolver {
         @Arg('input')
         {
             text,
+            difficulty,
+            quality,
             ONID,
             professorID,
             courseID,
@@ -135,6 +147,8 @@ export class CommentResolver {
             if (professor) {
                 const comment = await Comment.create({
                     text,
+                    difficulty,
+                    quality,
                     ONID,
                     professorID,
                     campus,
@@ -142,6 +156,8 @@ export class CommentResolver {
                     baccCore,
                     gradeReceived,
                     tags,
+                    likes: 0,
+                    dislikes: 0,
                 }).save();
                 return { comment };
             }
@@ -156,6 +172,8 @@ export class CommentResolver {
         if (course) {
             const comment = await Comment.create({
                 text,
+                difficulty,
+                quality,
                 ONID,
                 courseID,
                 campus,
@@ -163,6 +181,8 @@ export class CommentResolver {
                 baccCore,
                 gradeReceived,
                 tags,
+                likes: 0,
+                dislikes: 0,
             }).save();
             return { comment };
         }
@@ -178,5 +198,41 @@ export class CommentResolver {
     async deleteComment(@Arg('id') id: number): Promise<boolean> {
         await Comment.delete({ id });
         return true;
+    }
+
+    @Mutation(() => CommentResponse)
+    async upvote(@Arg('id') id: number): Promise<CommentResponse> {
+        let comment = await Comment.findOne({ id });
+
+        if (comment) {
+            comment.likes += 1;
+            await comment.save();
+            return { comment };
+        } else {
+            return {
+                error: {
+                    path: 'src/resolvers/comment.ts',
+                    message: `Could not find comment with given ID: ${id}`,
+                },
+            };
+        }
+    }
+
+    @Mutation(() => CommentResponse)
+    async downvote(@Arg('id') id: number): Promise<CommentResponse> {
+        let comment = await Comment.findOne({ id });
+
+        if (comment) {
+            comment.dislikes += 1;
+            await comment.save();
+            return { comment };
+        } else {
+            return {
+                error: {
+                    path: 'src/resolvers/comment.ts',
+                    message: `Could not find comment with given ID: ${id}`,
+                },
+            };
+        }
     }
 }

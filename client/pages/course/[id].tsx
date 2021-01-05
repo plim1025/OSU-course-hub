@@ -5,10 +5,32 @@ import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header';
 import TestingAPI from '../../components/TestingAPI';
 import { ApolloClient, getApolloContext, useQuery } from '@apollo/client';
-import {COURSES, COURSE} from 'utils/graphql';
+import {COURSES, COURSE, COURSE_COMMENTS} from 'utils/graphql';
+import Comment from '../../components/Comment';
 import { useRouter } from 'next/router'
+import { Container } from 'react-bootstrap';
 
-export default function Professor() {
+const CourseComments = () => {
+    const { loading, error, data } = useQuery(COURSE_COMMENTS, {
+        variables: {courseID: 1}
+    });
+	if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }
+    const comments = data.courseComments;
+    console.log(comments);
+	return (
+		<Container style={{ height: '1000px' }}>
+			{comments.map((comment, i: number) => {
+				return <Comment key={i} props={comment} />;
+			})}
+		</Container>
+	);
+}
+
+export default function Course() {
 	const router = useRouter();
 	/*const [queryId, setQueryId] = useState(null)
 	useEffect(() => {
@@ -49,7 +71,7 @@ export default function Professor() {
 				</Head>
 				<Header searchbarToggled={false} />
 				<CourseInfo course={course}/>
-				{/*<TestingAPI professors={data.professors}/>*/}     
+                <CourseComments />
 			</>
 		);
 	}
@@ -61,15 +83,3 @@ export default function Professor() {
 		)
 	}
 }
-
-/*export async function getStaticPaths() {
-	const { data } = await apolloClient.query({
-		query: PROFESSORS,
-	});
-	const paths = data.professors.map((professor) => `professor/${professor.id}`);
-	console.log(paths);
-    return {
-      paths,
-      fallback: false
-    }
-}*/

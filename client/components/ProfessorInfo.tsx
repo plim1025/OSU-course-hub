@@ -87,10 +87,11 @@ interface Comment {
     text: string,
     ONID: string,
     campus: string,
-    tags: string[]
+    tags: string[],
+    quality: number,
+    difficulty: number
 }
 interface Props {
-    //professors: Professor[],
     professor: Professor,
     onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
@@ -110,7 +111,7 @@ const ProfessorCourses = () => {
             <h4>Courses: </h4>
             {courses.map((course: Course) => {
                 return (
-                    <p style={courseList}><b>{course.department} {course.number}</b></p>
+                    <p style={courseList} key={course.id}><b>{course.department} {course.number}</b></p>
                 );
             })}
         </div>
@@ -142,16 +143,41 @@ const ProfessorTags = () => {
             <h4>Tags: </h4>
             {tags.map((tag) => {
                 return (
-                    <p style={tagList}><span style={aTag}>{tag}</span></p>
+                    <p style={tagList} key={tag}><span style={aTag}>{tag}</span></p>
                 );
             })}
         </div>
     );
 }
 
+const GetDifficultyQuality = (difficulty, quality) => {
+    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
+        variables: {professorID: 1},
+    });
+    if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }
+    const comments = data.professorComments;
+    comments.forEach((comment) => {
+        quality.push(comment.quality)
+        difficulty.push(comment.difficulty)
+    });
+    console.log(quality)
+    console.log(difficulty)
+}
+
 const ProfessorInfo: React.FC<Props> = (props) => {
     const {professor} = props;
     console.log("Professor: ", professor);
+    var difficulty: number[] = []
+    var quality: number[] = []
+    GetDifficultyQuality(difficulty, quality)
+    const averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
+    console.log(averageQuality)
+    const averageDifficulty = (difficulty.reduce((a, b) => a + b, 0) / difficulty.length)
+    console.log(averageDifficulty)
 	return (
         <div>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}
@@ -162,35 +188,18 @@ const ProfessorInfo: React.FC<Props> = (props) => {
                 </h1>
                 <h5 style={department}>{professor.college}</h5>
                 <h3>Quality: 
-                    <span style={variable}>{professor.averageQuality}</span>
+                    <span style={variable}>{averageQuality}</span>
                     <span style={constant}>/5</span>
                 </h3>
                 <h3>Difficulty: 
-                    <span style={variable}>{professor.averageDifficulty}</span>
+                    <span style={variable}>{averageDifficulty}</span>
                     <span style={constant}>/5</span>
                 </h3>
-                <h5>Based on <b>{professor.quality.length}</b> ratings.</h5>
+                <h5>Based on <b>{quality.length}</b> ratings.</h5>
                 <ProfessorCourses />
                 <ProfessorTags />
             </Card> 
         </div>
-        /*<div style={courseBlock}>
-                <h4>Courses: </h4>
-                {professor.course.map((course) => {
-                    return (
-                        <p style={courseList}>{course.abbr} {course.num}</p>
-                    );
-                })}
-            </div>
-            <div style={tagBlock}>
-                <h4>Tags: </h4>
-                {tags.map((tag) => {
-                    return (
-                        <p style={tagList}><span style={aTag}>{tag}</span></p>
-                    );
-                })}
-            </div>
-        </div>*/
 	);
 };
 

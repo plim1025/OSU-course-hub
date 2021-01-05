@@ -77,17 +77,15 @@ interface Course {
     id: number,
     department: string,
     number: number,
-    difficulty: number[],
-    averageDifficulty: number,
-    quality: number[],
-    averageQuality: number
 }
 interface Comment {
     id: number,
     text: string,
     ONID: string,
     campus: string,
-    tags: string[]
+    tags: string[],
+    quality: number,
+    difficulty: number
 }
 
 const CourseProfessors = () => {
@@ -144,6 +142,23 @@ const CourseTags = () => {
     );
 }
 
+const GetDifficultyQuality = (difficulty, quality) => {
+    const {loading, error, data} = useQuery(COURSE_COMMENTS, {
+        variables: {courseID: 1},
+    });
+    if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }
+    const comments = data.courseComments;
+    comments.forEach((comment) => {
+        quality.push(comment.quality)
+        difficulty.push(comment.difficulty)
+    });
+    console.log(quality)
+    console.log(difficulty)
+}
 interface Props {
     course: Course,
     onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
@@ -152,6 +167,13 @@ interface Props {
 const CourseInfo: React.FC<Props> = (props) => {
     const {course} = props;
     console.log("Course: ", course);
+    var difficulty: number[] = []
+    var quality: number[] = []
+    GetDifficultyQuality(difficulty, quality)
+    const averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
+    console.log(averageQuality)
+    const averageDifficulty = (difficulty.reduce((a, b) => a + b, 0) / difficulty.length)
+    console.log(averageDifficulty)
 	return (
         <div>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}
@@ -161,14 +183,14 @@ const CourseInfo: React.FC<Props> = (props) => {
                     <Button style={rateBtn}>Rate</Button>
                 </h1>
                 <h3>Quality: 
-                    <span style={variable}>{course.averageQuality}</span>
+                    <span style={variable}>{averageQuality}</span>
                     <span style={constant}>/5</span>
                 </h3>
                 <h3>Difficulty: 
-                    <span style={variable}>{course.averageDifficulty}</span>
+                    <span style={variable}>{averageDifficulty}</span>
                     <span style={constant}>/5</span>
                 </h3>
-                <h5>Based on <b>{course.quality.length}</b> ratings.</h5>
+                <h5>Based on <b>{quality.length}</b> ratings.</h5>
                 <CourseProfessors />
                 <CourseTags />
             </Card> 

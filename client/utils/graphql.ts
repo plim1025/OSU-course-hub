@@ -7,29 +7,21 @@ export const PROFESSORS = gql`
 			firstName
 			lastName
 			college
-			difficulty
-			averageDifficulty
-			quality
-            averageQuality
 		}
 	}
 `;
 
-export const PROFESSOR = gql `
-    query Professor($professorID: Float!) {
-        professor(professorID: $professorID) {
-            professor {
-                id
-                firstName
-                lastName
-                college
-                difficulty
-                averageDifficulty
-                quality
-                averageQuality
-            }
-        }
-    }
+export const PROFESSOR = gql`
+	query getProfessorByID($id: Float!) {
+		professor(professorID: $id) {
+			professor {
+				id
+				firstName
+				lastName
+				college
+			}
+		}
+	}
 `;
 
 export const PROFESSOR_COURSES = gql `
@@ -91,9 +83,7 @@ export const ADD_COURSE_TO_PROFESSOR = gql `
                 lastName
                 college
                 difficulty
-                averageDifficulty
                 quality
-                averageQuality
             }
         }
     }
@@ -106,10 +96,6 @@ export const COURSES = gql `
             id
             department
             number
-            quality
-            averageQuality
-            difficulty
-            averageDifficulty
         }
     }
 `;
@@ -121,10 +107,6 @@ export const COURSE = gql `
                 id
                 department
                 number
-                quality
-                averageQuality
-                difficulty
-                averageDifficulty
             }
         }
     }
@@ -137,10 +119,6 @@ export const COURSE_PROFESSORS = gql `
             firstName
             lastName
             college
-            difficulty
-            averageDifficulty
-            quality
-            averageQuality
         }
     }
 `;
@@ -164,9 +142,7 @@ export const RATE_QUALITY_COURSE = gql `
                 department
                 number
                 quality
-                averageQuality
                 difficulty
-                averageDifficulty
             }
         }
     }
@@ -180,9 +156,7 @@ export const RATE_DIFFICULTY_COURSE = gql `
                 department
                 number
                 quality
-                averageQuality
                 difficulty
-                averageDifficulty
             }
         }
     }
@@ -248,22 +222,26 @@ export const CREATE_STUDENT = gql `
 `;
 
 //Comment queries and mutations
-export const COMMENTS = gql `
-    query Comments {
-        comments {
-            id
-            text
-            ONID
-            courseID
-            professorID
-            gradeReceived
-            campus
-            recommend
-            baccCore
-            tags
-            createdAt     
-        }
-    }
+export const COMMENTS = gql`
+	query Comments {
+		comments {
+			id
+			text
+			ONID
+			courseID
+			professorID
+			campus
+			recommend
+			baccCore
+			gradeReceived
+			tags
+			createdAt
+			likes
+			dislikes
+			quality
+			difficulty
+		}
+	}
 `;
 
 export const COURSE_COMMENTS = gql `
@@ -279,6 +257,8 @@ export const COURSE_COMMENTS = gql `
             gradeReceived
             tags
             createdAt
+            quality
+            difficulty
         }
     }
 `;
@@ -296,6 +276,8 @@ export const PROFESSOR_COMMENTS = gql `
             gradeReceived
             tags
             createdAt
+            quality
+            difficulty
         }
     }
 `;
@@ -313,6 +295,8 @@ export const STUDENT_COMMENTS = gql `
             gradeReceived
             tags
             createdAt
+            quality
+            difficulty
         }
     }
 `;
@@ -335,9 +319,33 @@ export const CREATE_COMMENT = gql `
                 gradeReceived
                 tags
                 createdAt
+                quality
+                difficulty
             }
         }
     }
+`;
+
+export const LIKE = gql`
+	mutation upvote($id: Float!) {
+		upvote(id: $id) {
+			comment {
+				id
+				likes
+			}
+		}
+	}
+`;
+
+export const DISLIKE = gql`
+	mutation downvote($id: Float!) {
+		downvote(id: $id) {
+			comment {
+				id
+				dislikes
+			}
+		}
+	}
 `;
 
 export const DELETE_COMMENT = gql `

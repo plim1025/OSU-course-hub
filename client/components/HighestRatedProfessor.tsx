@@ -4,6 +4,13 @@ import {useQuery} from '@apollo/client';
 import {PROFESSORS, PROFESSOR_COMMENTS} from '../utils/graphql';
 import {Card} from 'react-bootstrap';
 import Link from 'next/link'
+import { isAbsolute } from 'path';
+
+const block = {
+    position: 'absolute',
+    bottom: -200,
+    left: 100
+}
 
 const container = {
     marginLeft: 50,
@@ -15,7 +22,7 @@ const container = {
     width: 500,
     padding: 10,
     paddingRight: 0,
-    backgroundColor: '#f2f2f2'
+    backgroundColor: '#f2f2f2',
 }
 
 const variable = {
@@ -49,8 +56,12 @@ const HighestRatedProfessor: React.FC = () => {
     const sortedProfessors = professors.slice().sort((a,b) => b.averageQuality - a.averageQuality);
     const topProfessors = sortedProfessors.slice(sortedProfessors.length - 3);
     console.log(topProfessors);
+    const averageQuality = (professor.quality.reduce((a, b) => a + b, 0) / professor.quality.length)
+    console.log(averageQuality)
+    const averageDifficulty = (professor.difficulty.reduce((a, b) => a + b, 0) / professor.difficulty.length)
+    console.log(averageDifficulty)
     return (
-        <div>
+        <div style={block}>
             {topProfessors.map((professor) => {
                 return (
                     <Card style={container} bg="light" border="dark">
@@ -61,11 +72,11 @@ const HighestRatedProfessor: React.FC = () => {
                         </Card.Title>
                         <Card.Text style={department}>{professor.college}</Card.Text>
                         <Card.Text style={item}>Quality: 
-                            <span style={variable}>{professor.averageQuality}</span>
+                            <span style={variable}>{averageQuality}</span>
                             <span style={constant}>/5</span>
                         </Card.Text>
                         <Card.Text style={item}>Difficulty: 
-                            <span style={variable}>{professor.averageDifficulty}</span>
+                            <span style={variable}>{averageDifficulty}</span>
                             <span style={constant}>/5</span>
                         </Card.Text>
                     </Card>

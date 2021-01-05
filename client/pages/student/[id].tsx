@@ -1,34 +1,12 @@
-import ProfessorInfo from '../../components/ProfessorInfo';
+import StudentInfo from '../../components/StudentInfo';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
 import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header';
 import TestingAPI from '../../components/TestingAPI';
 import { ApolloClient, getApolloContext, useQuery } from '@apollo/client';
-import {PROFESSORS, PROFESSOR, PROFESSOR_COMMENTS} from 'utils/graphql';
+import {STUDENTS, STUDENT} from 'utils/graphql';
 import { useRouter } from 'next/router'
-import Comment from '../../components/Comment';
-import { Container } from 'react-bootstrap';
-
-const ProfessorComments = () => {
-    const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: 1}
-    });
-	if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }
-    const comments = data.professorComments;
-    console.log(comments);
-	return (
-		<Container style={{ height: '1000px' }}>
-			{comments.map((comment, i: number) => {
-				return <Comment key={i} props={comment} />;
-			})}
-		</Container>
-	);
-}
 
 export default function Professor() {
 	const router = useRouter();
@@ -39,30 +17,30 @@ export default function Professor() {
 		}
 	}, [router]);
 	console.log(queryId);*/
-	const {id} = router.query;
-	console.log(id);
-    /*const {data} = useQuery(PROFESSOR, {
-        variables: {professorID: id},
+	const {ONID} = router.query;
+	console.log(ONID);
+    /*const {data} = useQuery(COURSE, {
+        variables: {courseID: id},
     });
 	console.log(data);
-	const professor = null;
+	const course = null;
 	if(data){
-		professor = data.professor.professor;
-		console.log(professor);
+		course = data.course.course;
+		console.log(course);
 	}*/
-	const { loading, error, data } = useQuery(PROFESSORS);
+	const { loading, error, data } = useQuery(STUDENTS);
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
 	}	
 	console.log(data);
-	var professor = null;
+	var student = null;
 	if(data){
-		const professors = data.professors.filter(professor => professor.id == id);
-		professor = professors[0];
+		const students = data.students.filter(student => student.ONID == ONID);
+		student = students[0];
 	}
-	if(professor){
+	if(student){
 		return (
 			<>
 				<Head>
@@ -70,8 +48,8 @@ export default function Professor() {
 					<link rel='icon' href='/favicon.png' />
 				</Head>
 				<Header searchbarToggled={false} />
-				<ProfessorInfo professor={professor}/>
-				<ProfessorComments />
+				<StudentInfo student={student}/>
+				{/*<TestingAPI professors={data.professors}/>*/}     
 			</>
 		);
 	}

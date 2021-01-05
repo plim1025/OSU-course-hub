@@ -84,60 +84,6 @@ export class ProfessorResolver {
     }
 
     @Mutation(() => ProfessorResponse)
-    async rateQualityProfessor(
-        @Arg('professorID') id: number,
-        @Arg('rating') rating: number
-    ): Promise<ProfessorResponse> {
-        if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Invalid quality rating for professor: ${rating}`,
-                },
-            };
-        }
-        const professor = await Professor.findOne({ id });
-        if (!professor) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Could not find professor with given ID: ${id}`,
-                },
-            };
-        }
-        professor.quality.push(rating);
-        await professor.save();
-        return { professor };
-    }
-
-    @Mutation(() => ProfessorResponse)
-    async rateDifficultyProfessor(
-        @Arg('professorID') id: number,
-        @Arg('rating') rating: number
-    ): Promise<ProfessorResponse> {
-        if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Invalid difficulty rating for professor: ${rating}`,
-                },
-            };
-        }
-        const professor = await Professor.findOne({ id });
-        if (!professor) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Could not find professor with given ID: ${id}`,
-                },
-            };
-        }
-        professor.difficulty.push(rating);
-        await professor.save();
-        return { professor };
-    }
-
-    @Mutation(() => ProfessorResponse)
     async addCourseToProfessor(
         @Arg('professorID') professorID: number,
         @Arg('courseID') courseID: number,

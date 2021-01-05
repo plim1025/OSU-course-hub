@@ -77,60 +77,6 @@ export class CourseResolver {
     }
 
     @Mutation(() => CourseResponse)
-    async rateQualityCourse(
-        @Arg('courseID') id: number,
-        @Arg('rating') rating: number
-    ): Promise<CourseResponse> {
-        if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
-            return {
-                error: {
-                    path: 'src/resolvers/course.ts',
-                    message: `Invalid quality rating for course: ${rating}`,
-                },
-            };
-        }
-        const course = await Course.findOne({ id });
-        if (!course) {
-            return {
-                error: {
-                    path: 'src/resolvers/course.ts',
-                    message: `Could not find course with given ID: ${id}`,
-                },
-            };
-        }
-        course.quality.push(rating);
-        await course.save();
-        return { course };
-    }
-
-    @Mutation(() => CourseResponse)
-    async rateDifficultyCourse(
-        @Arg('courseID') id: number,
-        @Arg('rating') rating: number
-    ): Promise<CourseResponse> {
-        if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
-            return {
-                error: {
-                    path: 'src/resolvers/course.ts',
-                    message: `Invalid difficulty rating for course ${id}`,
-                },
-            };
-        }
-        const course = await Course.findOne({ id });
-        if (!course) {
-            return {
-                error: {
-                    path: 'src/resolvers/course.ts',
-                    message: `Could not find course with given ID: ${id}`,
-                },
-            };
-        }
-        course.difficulty.push(rating);
-        await course.save();
-        return { course };
-    }
-
-    @Mutation(() => CourseResponse)
     async addProfessorToCourse(
         @Arg('professorID') professorID: number,
         @Arg('courseID') courseID: number,

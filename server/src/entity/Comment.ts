@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
     BaseEntity,
     Column,
@@ -21,6 +21,14 @@ export class Comment extends BaseEntity {
     @Field()
     @Column()
     text: string;
+
+    @Field(() => Int)
+    @Column()
+    difficulty: number;
+
+    @Field(() => Int)
+    @Column()
+    quality: number;
 
     @Field({ nullable: true })
     @Column({ nullable: true })
@@ -66,4 +74,12 @@ export class Comment extends BaseEntity {
     @Field()
     @CreateDateColumn()
     createdAt: Date;
+
+    @Field()
+    @Column()
+    likes: number;
+
+    @Field()
+    @Column()
+    dislikes: number;
 }

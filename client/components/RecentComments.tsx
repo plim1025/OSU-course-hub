@@ -5,6 +5,11 @@ import {COMMENTS, COURSES, PROFESSORS} from '../utils/graphql';
 import { isInlineFragment } from '@apollo/client/utilities';
 import {Card, CardColumns} from 'react-bootstrap';
 
+const block = {
+    position: 'absolute',
+    bottom: -250,
+    right: 100
+}
 const commentBlock = {
     marginLeft: 100,
     marginRight: 50,
@@ -88,7 +93,7 @@ const RecentComments: React.FC = () => {
     var time, formattedDate;
     console.log(comments);
     return (
-        <div>
+        <div style={block}>
             {recentComments.map((comment) => {
                 time = Date.parse(comment.createdAt);
                 formattedDate = new Date(time);
