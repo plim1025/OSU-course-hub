@@ -49,6 +49,8 @@ const Comment: React.FC<Props> = props => {
 		}
 	}
 
+	console.log(fetchedData)
+
 	// Issue: Connect to login, user can only choose like or dislike and clicking like/dislike 2nd time should cancel it.
 	// 		  Add quality and difficulty (done)
 	//        Style the Components (done)

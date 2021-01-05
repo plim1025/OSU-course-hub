@@ -8,6 +8,10 @@ import { ApolloClient, getApolloContext, useQuery } from '@apollo/client';
 import {STUDENTS, STUDENT} from 'utils/graphql';
 import { useRouter } from 'next/router'
 
+interface Student {
+    ONID: number
+}
+
 export default function Professor() {
 	const router = useRouter();
 	/*const [queryId, setQueryId] = useState(null)
@@ -17,8 +21,8 @@ export default function Professor() {
 		}
 	}, [router]);
 	console.log(queryId);*/
-	const {ONID} = router.query;
-	console.log(ONID);
+	const {id} = router.query;
+	console.log(id);
     /*const {data} = useQuery(COURSE, {
         variables: {courseID: id},
     });
@@ -37,9 +41,10 @@ export default function Professor() {
 	console.log(data);
 	var student = null;
 	if(data){
-		const students = data.students.filter(student => student.ONID == ONID);
+		const students = data.students.filter(student => student.ONID == id);
 		student = students[0];
-	}
+    }
+    console.log(student)
 	if(student){
 		return (
 			<>

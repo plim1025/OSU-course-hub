@@ -6,7 +6,7 @@ import { isInlineFragment } from '@apollo/client/utilities';
 import {Card, CardColumns} from 'react-bootstrap';
 
 const block = {
-    position: 'absolute',
+    position: 'absolute' as 'absolute',
     bottom: -250,
     right: 100
 }
@@ -31,7 +31,7 @@ const item = {
     marginRight: 10
 }
 
-const GetProfessor = ({id}) => {
+const GetProfessor = (id: number) => {
     const { loading, error, data } = useQuery(PROFESSORS);
 	if (error) {
 		return <div>Error</div>;
@@ -49,7 +49,7 @@ const GetProfessor = ({id}) => {
     )
 }
 
-const GetCourse = ({id}) => {
+const GetCourse = (id: number) => {
     const { loading, error, data } = useQuery(COURSES);
 	if (error) {
 		return <div>Error</div>;
@@ -69,7 +69,7 @@ const GetCourse = ({id}) => {
 const CourseOrProfessor = ({comment}) => {
     if(comment.courseID === null){
         return (
-            <GetProfessor id={comment.professorID}/>
+            <GetProfessor id={parseInt(comment.professorID)}/>
         )
     }
     else {

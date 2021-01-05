@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import { Button } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {PROFESSOR_COURSES, PROFESSOR_COMMENTS} from '../utils/graphql';
-import {Card} from 'react-bootstrap';
+import {Card, Container} from 'react-bootstrap';
 
 //CSS
 const info = {
@@ -96,9 +96,9 @@ interface Props {
     onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
-const ProfessorCourses = () => {
+const ProfessorCourses = ({id}) => {
     const {loading, error, data} = useQuery(PROFESSOR_COURSES, {
-        variables: {professorID: 1},
+        variables: {professorID: parseInt(id)},
     });
     if (error) {
 		return <div>Error</div>;
@@ -118,10 +118,10 @@ const ProfessorCourses = () => {
     );
 }
 
-const ProfessorTags = () => {
+const ProfessorTags = ({id}) => {
     //make the professorID dynamic
     const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: 1},
+        variables: {professorID: parseInt(id)},
     });
     if (error) {
 		return <div>Error</div>;
@@ -150,22 +150,25 @@ const ProfessorTags = () => {
     );
 }
 
-const GetDifficultyQuality = (difficulty, quality) => {
-    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: 1},
-    });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
+const GetDifficultyQuality = (difficulty: number[], quality: number[], id: number) => {
+    if(id){
+        const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
+            variables: {professorID: parseInt(id)},
+        });
+        if (error) {
+            return <div>Error</div>;
+        } else if (loading) {
+            return <div>Loading...</div>;
+        }
+        const comments = data.professorComments;
+        comments.forEach((comment: Comment) => {
+            quality.push(comment.quality)
+            difficulty.push(comment.difficulty)
+        });
+        console.log(quality)
+        console.log(difficulty)
     }
-    const comments = data.professorComments;
-    comments.forEach((comment) => {
-        quality.push(comment.quality)
-        difficulty.push(comment.difficulty)
-    });
-    console.log(quality)
-    console.log(difficulty)
+    return
 }
 
 const ProfessorInfo: React.FC<Props> = (props) => {
@@ -173,15 +176,25 @@ const ProfessorInfo: React.FC<Props> = (props) => {
     console.log("Professor: ", professor);
     var difficulty: number[] = []
     var quality: number[] = []
-    GetDifficultyQuality(difficulty, quality)
-    const averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
-    console.log(averageQuality)
-    const averageDifficulty = (difficulty.reduce((a, b) => a + b, 0) / difficulty.length)
-    console.log(averageDifficulty)
+    GetDifficultyQuality(difficulty, quality, professor.id)
+    var averageQuality
+    var averageDifficulty
+    if(quality.length > 0){
+        averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
+    }
+    else {
+        averageQuality = 0
+    }
+    if(difficulty.length > 0){
+        averageDifficulty = (difficulty.reduce((a, b) => a + b, 0) / difficulty.length)
+    }
+    else {
+        averageDifficulty = 0
+    }
 	return (
-        <div>
+        <Container>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}
-            <Card key={professor.id} style={info} bg="light" border="dark">
+            <Card key={professor.id} className='shadow mb-5 p-4 w-75'>
                 <h1 style={professorName}>
                     {professor.firstName} {professor.lastName}
                     <Button style={rateBtn}>Rate</Button>
@@ -196,10 +209,10 @@ const ProfessorInfo: React.FC<Props> = (props) => {
                     <span style={constant}>/5</span>
                 </h3>
                 <h5>Based on <b>{quality.length}</b> ratings.</h5>
-                <ProfessorCourses />
-                <ProfessorTags />
+                <ProfessorCourses id={professor.id}/>
+                <ProfessorTags id={professor.id}/>
             </Card> 
-        </div>
+        </Container>
 	);
 };
 

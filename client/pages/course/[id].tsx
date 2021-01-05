@@ -10,9 +10,33 @@ import Comment from '../../components/Comment';
 import { useRouter } from 'next/router'
 import { Container } from 'react-bootstrap';
 
-const CourseComments = () => {
+interface CommentI {
+    ONID: number;
+    baccCore: boolean;
+    campus: string;
+    courseID: number;
+    createdAt: Date;
+    dislikes: number;
+    gradeReceived: string;
+    id: string;
+    likes: number;
+    professorID: number;
+    recommend: boolean;
+    tags: string[];
+    text: string;
+    quality: number;
+    difficulty: number;
+}
+
+interface Course {
+    id: number,
+    department: string,
+    number: number,
+}
+
+const CourseComments = ({id}) => {
     const { loading, error, data } = useQuery(COURSE_COMMENTS, {
-        variables: {courseID: 1}
+        variables: {courseID: parseInt(id)}
     });
 	if (error) {
 		return <div>Error</div>;
@@ -23,7 +47,7 @@ const CourseComments = () => {
     console.log(comments);
 	return (
 		<Container style={{ height: '1000px' }}>
-			{comments.map((comment, i: number) => {
+			{comments.map((comment: CommentI, i: number) => {
 				return <Comment key={i} props={comment} />;
 			})}
 		</Container>
@@ -59,7 +83,7 @@ export default function Course() {
 	console.log(data);
 	var course = null;
 	if(data){
-		const courses = data.courses.filter(course => course.id == id);
+		const courses = data.courses.filter((course) => course.id == id);
 		course = courses[0];
 	}
 	if(course){
@@ -71,7 +95,7 @@ export default function Course() {
 				</Head>
 				<Header searchbarToggled={false} />
 				<CourseInfo course={course}/>
-                <CourseComments />
+                <CourseComments id={course.id}/>
 			</>
 		);
 	}

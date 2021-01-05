@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import { Button } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {COURSE_PROFESSORS, COURSE_COMMENTS} from '../utils/graphql';
-import {Card} from 'react-bootstrap';
+import {Card, Container} from 'react-bootstrap';
 
 //CSS
 const info = {
@@ -88,9 +88,9 @@ interface Comment {
     difficulty: number
 }
 
-const CourseProfessors = () => {
+const CourseProfessors = ({id}) => {
     const {loading, error, data} = useQuery(COURSE_PROFESSORS, {
-        variables: {courseID: 1},
+        variables: {courseID: parseInt(id)},
     });
     if (error) {
 		return <div>Error</div>;
@@ -110,10 +110,10 @@ const CourseProfessors = () => {
     );
 }
 
-const CourseTags = () => {
+const CourseTags = ({id}) => {
     //make the professorID dynamic
     const {loading, error, data} = useQuery(COURSE_COMMENTS, {
-        variables: {courseID: 1},
+        variables: {courseID: parseInt(id)},
     });
     if (error) {
 		return <div>Error</div>;
@@ -142,22 +142,25 @@ const CourseTags = () => {
     );
 }
 
-const GetDifficultyQuality = (difficulty, quality) => {
-    const {loading, error, data} = useQuery(COURSE_COMMENTS, {
-        variables: {courseID: 1},
-    });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
+const GetDifficultyQuality = (difficulty: number[], quality: number[], id: number) => {
+    if(id){
+        const {loading, error, data} = useQuery(COURSE_COMMENTS, {
+            variables: {courseID: parseInt(id)},
+        });
+        if (error) {
+            return <div>Error</div>;
+        } else if (loading) {
+            return <div>Loading...</div>;
+        }
+        const comments = data.courseComments;
+        comments.forEach((comment: Comment) => {
+            quality.push(comment.quality)
+            difficulty.push(comment.difficulty)
+        });
+        console.log(quality)
+        console.log(difficulty)
     }
-    const comments = data.courseComments;
-    comments.forEach((comment) => {
-        quality.push(comment.quality)
-        difficulty.push(comment.difficulty)
-    });
-    console.log(quality)
-    console.log(difficulty)
+    return
 }
 interface Props {
     course: Course,
@@ -169,15 +172,25 @@ const CourseInfo: React.FC<Props> = (props) => {
     console.log("Course: ", course);
     var difficulty: number[] = []
     var quality: number[] = []
-    GetDifficultyQuality(difficulty, quality)
-    const averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
-    console.log(averageQuality)
-    const averageDifficulty = (difficulty.reduce((a, b) => a + b, 0) / difficulty.length)
-    console.log(averageDifficulty)
+    GetDifficultyQuality(difficulty, quality, course.id)
+    var averageQuality
+    var averageDifficulty
+    if(quality.length > 0){
+        averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
+    }
+    else {
+        averageQuality = 0
+    }
+    if(difficulty.length > 0){
+        averageDifficulty = (difficulty.reduce((a, b) => a + b, 0) / difficulty.length)
+    }
+    else {
+        averageDifficulty = 0
+    }
 	return (
-        <div>
+        <Container>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}
-            <Card key={course.id} style={info} bg="light" border="dark">
+            <Card key={course.id} className='shadow mb-5 p-4 w-75'>
                 <h1 style={courseName}>
                     {course.department} {course.number}
                     <Button style={rateBtn}>Rate</Button>
@@ -191,10 +204,10 @@ const CourseInfo: React.FC<Props> = (props) => {
                     <span style={constant}>/5</span>
                 </h3>
                 <h5>Based on <b>{quality.length}</b> ratings.</h5>
-                <CourseProfessors />
-                <CourseTags />
+                <CourseProfessors id={course.id} />
+                <CourseTags id={course.id} />
             </Card> 
-        </div>
+        </Container>
 	);
 };
 

@@ -10,6 +10,24 @@ import { useRouter } from 'next/router'
 import Comment from '../../components/Comment';
 import { Container } from 'react-bootstrap';
 
+interface CommentI {
+    ONID: number;
+    baccCore: boolean;
+    campus: string;
+    courseID: number;
+    createdAt: Date;
+    dislikes: number;
+    gradeReceived: string;
+    id: string;
+    likes: number;
+    professorID: number;
+    recommend: boolean;
+    tags: string[];
+    text: string;
+    quality: number;
+    difficulty: number;
+}
+
 const ProfessorComments = () => {
     const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
         variables: {professorID: 1}
@@ -23,7 +41,7 @@ const ProfessorComments = () => {
     console.log(comments);
 	return (
 		<Container style={{ height: '1000px' }}>
-			{comments.map((comment, i: number) => {
+			{comments.map((comment: CommentI, i: number) => {
 				return <Comment key={i} props={comment} />;
 			})}
 		</Container>
