@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/client';
+import { useRouter } from 'next/dist/client/router';
 import React, { CSSProperties, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import Select, { GroupType, InputActionTypes } from 'react-select';
+import Select, { InputActionTypes } from 'react-select';
 import { COURSES, PROFESSORS } from 'utils/graphql';
 import { CourseData, ProfessorData } from 'utils/types';
 import Button from './Button';
@@ -40,6 +41,7 @@ const select = {
 };
 
 const Searchbar: React.FC<Props> = props => {
+	const router = useRouter();
 	const [menu, openMenu] = useState(false);
 	const [inputValue, setInputValue] = useState('');
 	const {
@@ -61,6 +63,7 @@ const Searchbar: React.FC<Props> = props => {
 
 	const handleChange = (newValue: any) => {
 		openMenu(false);
+		router.push(`${newValue.type}/${newValue.id}`);
 	};
 
 	if (loadingProfessors || loadingCourses) {
@@ -86,6 +89,7 @@ const Searchbar: React.FC<Props> = props => {
 						? [
 								...professorData.professors.map(professor => ({
 									id: professor.id,
+									type: 'professor',
 									value: `${professor.firstName} ${professor.lastName} ${professor.college}`,
 									label:
 										`${professor.firstName} ${professor.lastName}`
@@ -96,6 +100,7 @@ const Searchbar: React.FC<Props> = props => {
 								})),
 								...courseData.courses.map(course => ({
 									id: course.id,
+									type: 'course',
 									value: `${course.department} ${course.number}`,
 									label: `${course.department} ${course.number}`,
 								})),
