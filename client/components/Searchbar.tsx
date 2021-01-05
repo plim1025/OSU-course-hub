@@ -1,6 +1,9 @@
+import { useQuery } from '@apollo/client';
 import React, { CSSProperties, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
+import { COURSES, PROFESSORS } from 'utils/graphql';
+import { CourseData, ProfessorData } from 'utils/types';
 import Button from './Button';
 
 interface Props {
@@ -36,47 +39,68 @@ const select = {
 	}),
 };
 
-const mockData = [
-	{ value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
-	{ value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
-	{ value: 'purple', label: 'Purple', color: '#5243AA' },
-	{ value: 'red', label: 'Red', color: '#FF5630', isFixed: true },
-	{ value: 'orange', label: 'Orange', color: '#FF8B00' },
-	{ value: 'yellow', label: 'Yellow', color: '#FFC400' },
-	{ value: 'green', label: 'Green', color: '#36B37E' },
-	{ value: 'forest', label: 'Forest', color: '#00875A' },
-	{ value: 'slate', label: 'Slate', color: '#253858' },
-	{ value: 'silver', label: 'Silver', color: '#666666' },
-];
-
-const loadOptions = (inputValue: any, callback: any) => {
-	setTimeout(() => {
-		callback(
-			mockData.filter(data => data.label.toLowerCase().includes(inputValue.toLowerCase()))
-		);
-	}, 100);
-};
-
 const Searchbar: React.FC<Props> = props => {
-	const [, setInputValue] = useState('');
+	const [menu, openMenu] = useState(false);
+	const [inputValue, setInputValue] = useState('');
+	const {
+		loading: loadingProfessors,
+		error: professorError,
+		data: professorData,
+	} = useQuery<ProfessorData>(PROFESSORS);
+	const { loading: loadingCourses, error: coursesError, data: courseData } = useQuery<CourseData>(
+		COURSES
+	);
 
-	const handleInputChange = (newValue: string) => {
-		const newInputValue = newValue.replace(/\W/g, '');
-		setInputValue(newInputValue);
-		return newInputValue;
+	const handleInputChange = (newValue: string, { action }) => {
+		if (action === 'input-change') {
+			openMenu(true);
+		}
+		setInputValue(newValue);
+		return newValue;
 	};
 
+	const handleChange = () => {
+		openMenu(false);
+	};
+
+	if (loadingProfessors || loadingCourses) {
+		return <div>Loading...</div>;
+	} else if (professorError || coursesError) {
+		return <div>Error</div>;
+	}
 	return (
 		<Form style={{ ...props.style, ...(props.size === 'lg' ? largeWrapper : smallWrapper) }}>
-			<AsyncSelect
+			<Select
+				inputValue={inputValue}
 				inputId='searchbar-select'
 				styles={select}
 				cacheOptions
-				loadOptions={loadOptions}
 				placeholder={props.size === 'lg' ? 'Search classes and professors...' : 'Search...'}
 				onInputChange={handleInputChange}
-				noOptionsMessage={() => null}
+				onChange={handleChange}
+				onBlur={() => openMenu(false)}
 				components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+				menuIsOpen={menu}
+				options={
+					professorData && courseData
+						? [
+								...professorData.professors.map(
+									professor =>
+										`${professor.firstName} ${professor.lastName}`
+											.toLowerCase()
+											.split(' ')
+											.map(s => s.charAt(0).toUpperCase() + s.substring(1))
+											.join(' ') + ` - College of ${professor.college}`
+								),
+								...courseData.courses.map(
+									course => `${course.department} ${course.number}`
+								),
+						  ].map(name => ({
+								value: name,
+								label: name,
+						  }))
+						: []
+				}
 			/>
 			{props.showButton ? <Button variant='primary' text='Submit' style={searchBtn} /> : null}
 		</Form>
