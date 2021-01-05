@@ -56,7 +56,7 @@ const Searchbar: React.FC<Props> = props => {
 	//		  Change to Card (done)
 
 	return (
-		<Card className='shadow mb-5 p-4 w-75' /*style={{ width: '1000px' }}*/>
+		<Card className='shadow mt-5 mb-4 p-4 w-75' /*style={{ width: '1000px' }}*/>
 			<Row className='pl-3 pr-4'>
 				{fetchedData.course && (
 					<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
