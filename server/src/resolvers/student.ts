@@ -1,4 +1,3 @@
-import { IsNumberString, Length } from 'class-validator';
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Student } from '../entity/Student';
 import { Comment } from '../entity/Comment';
@@ -7,8 +6,6 @@ import { Error } from '../util';
 @InputType()
 class StudentInput {
     @Field()
-    @IsNumberString({ no_symbols: true }, { message: 'ONID must only contain numbers' })
-    @Length(9, 9, { message: 'ONID must be of length 9' })
     ONID: string;
 }
 
