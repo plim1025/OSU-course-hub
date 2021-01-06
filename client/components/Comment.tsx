@@ -49,14 +49,13 @@ const Comment: React.FC<Props> = props => {
 		}
 	}
 
-	console.log(fetchedData)
-
 	// Issue: Connect to login, user can only choose like or dislike and clicking like/dislike 2nd time should cancel it.
 	// 		  Add quality and difficulty (done)
 	//        Style the Components (done)
 	//		  Display N/A for the field (done)
 	//		  Change to Card (done)
 
+	console.log(fetchedData)
 	return (
 		<Card className='shadow mb-5 p-4 w-75' /*style={{ width: '1000px' }}*/>
 			<Row className='pl-3 pr-4'>

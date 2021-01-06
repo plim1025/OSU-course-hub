@@ -28,9 +28,9 @@ interface CommentI {
     difficulty: number;
 }
 
-const ProfessorComments = () => {
+const ProfessorComments = ({id}) => {
     const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: 1}
+        variables: {professorID: parseInt(id)}
     });
 	if (error) {
 		return <div>Error</div>;
@@ -89,7 +89,7 @@ export default function Professor() {
 				</Head>
 				<Header searchbarToggled={false} />
 				<ProfessorInfo professor={professor}/>
-				<ProfessorComments />
+				<ProfessorComments id={professor.id} />
 			</>
 		);
 	}

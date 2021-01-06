@@ -30,10 +30,10 @@ interface Props {
     onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
-const StudentComments = () => {
+const StudentComments = ({id}) => {
     //make the studentID dynamic
     const {loading, error, data} = useQuery(STUDENT_COMMENTS, {
-        variables: {ONID: "387347385"},
+        variables: {ONID: id},
     });
     if (error) {
 		return <div>Error</div>;
@@ -56,8 +56,8 @@ const StudentInfo: React.FC<Props> = (props) => {
 	return (
         <div>
             <Container>
-                <h1>ONID: {student.ONID}</h1>
-                <StudentComments />
+                <h3>ONID: {student.ONID}</h3>
+                <StudentComments id={student.ONID} />
             </Container> 
         </div>
 	);
