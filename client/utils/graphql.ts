@@ -81,6 +81,18 @@ export const COURSES = gql`
 	}
 `;
 
+export const COURSE = gql`
+	query Course($courseID: Float!) {
+		course(courseID: $courseID) {
+			course {
+				id
+				department
+				number
+			}
+		}
+	}
+`;
+
 export const CREATE_COURSE = gql`
 	mutation CourseInfo($department: String!, $number: String!) {
 		createCourse(input: { department: $department, number: $number }) {
@@ -160,6 +172,8 @@ export const STUDENT = gql`
 		student(ONID: $ONID) {
 			student {
 				ONID
+				likedComments
+				dislikedComments
 			}
 		}
 	}
@@ -316,3 +330,38 @@ export const DELETE_COMMENT = gql`
         }
     }
 `;*/
+
+// Likes and Dislikes
+export const LIKECOMMENT = gql`
+	mutation likeComment($ONID: String!, $commentID: Float!) {
+		upvote(ONID: { ONID: $ONID }, commentID: $commentID) {
+			student {
+				ONID
+				likedComments
+				dislikedComments
+			}
+			comment {
+				id
+				likes
+				dislikes
+			}
+		}
+	}
+`;
+
+export const DISLIKECOMMENT = gql`
+	mutation dislikeComment($ONID: String!, $commentID: Float!) {
+		downvote(ONID: { ONID: $ONID }, commentID: $commentID) {
+			student {
+				ONID
+				likedComments
+				dislikedComments
+			}
+			comment {
+				id
+				likes
+				dislikes
+			}
+		}
+	}
+`;

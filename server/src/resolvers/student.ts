@@ -18,6 +18,18 @@ class StudentResponse {
     student?: Student;
 }
 
+@ObjectType()
+class LikeResponse {
+    @Field(() => Error, { nullable: true })
+    error?: Error;
+
+    @Field(() => Student, { nullable: true })
+    student?: Student;
+
+    @Field(() => Comment, { nullable: true })
+    comment?: Comment;
+}
+
 @Resolver()
 export class StudentResolver {
     @Query(() => [Student])
@@ -44,11 +56,11 @@ export class StudentResolver {
         return Student.create({ ONID, likedComments: [], dislikedComments: [] }).save();
     }
 
-    @Mutation(() => StudentResponse)
+    @Mutation(() => LikeResponse)
     async upvote(
         @Arg('ONID') { ONID }: StudentInput,
         @Arg('commentID') commentID: number
-    ): Promise<StudentResponse> {
+    ): Promise<LikeResponse> {
         const student = await Student.findOne({ ONID });
         const comment = await Comment.findOne({ id: commentID });
         if (student) {
@@ -70,7 +82,7 @@ export class StudentResolver {
 
                 await comment.save();
                 await student.save();
-                return { student };
+                return { student, comment };
             } else {
                 return {
                     error: {
@@ -88,11 +100,11 @@ export class StudentResolver {
         };
     }
 
-    @Mutation(() => StudentResponse)
+    @Mutation(() => LikeResponse)
     async downvote(
         @Arg('ONID') { ONID }: StudentInput,
         @Arg('commentID') commentID: number
-    ): Promise<StudentResponse> {
+    ): Promise<LikeResponse> {
         const student = await Student.findOne({ ONID });
         const comment = await Comment.findOne({ id: commentID });
         if (student) {
@@ -114,7 +126,7 @@ export class StudentResolver {
 
                 await comment.save();
                 await student.save();
-                return { student };
+                return { comment, student };
             } else {
                 return {
                     error: {

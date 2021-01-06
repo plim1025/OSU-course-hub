@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Row } from 'react-bootstrap';
-import { COURSE, PROFESSOR } from 'utils/graphql';
+import { COURSE, PROFESSOR, STUDENT, LIKECOMMENT, DISLIKECOMMENT } from 'utils/graphql';
 
 interface Props {
 	props: {
@@ -24,14 +24,21 @@ interface Props {
 }
 
 const Searchbar: React.FC<Props> = props => {
+	const studentID = window.sessionStorage.getItem('request-onid');
+	let student = useQuery(STUDENT, { variables: { ONID: studentID } });
 	const data = props.props;
+
+	const [likeOrDislike, setLikeOrDislike] = useState(0);
+	const [addLike, { likedStudent }] = useMutation(LIKECOMMENT);
+	const [addDislike, { dislikedStudent }] = useMutation(DISLIKECOMMENT);
+
 	const date = new Date(data.createdAt);
 
 	// Fetch professor name or course name
 	let fetchedData;
 	if (data.courseID) {
 		fetchedData = useQuery(COURSE, {
-			variables: { id: data.courseID },
+			variables: { courseID: data.courseID },
 		});
 		if (fetchedData.data) {
 			fetchedData = fetchedData.data.course;
@@ -40,21 +47,29 @@ const Searchbar: React.FC<Props> = props => {
 
 	if (data.professorID) {
 		fetchedData = useQuery(PROFESSOR, {
-			variables: { id: data.professorID },
+			variables: { professorID: data.professorID },
 		});
 		if (fetchedData.data) {
 			fetchedData = fetchedData.data.professor;
 		}
 	}
 
-	// Issue: Connect to login, user can only choose like or dislike and clicking like/dislike 2nd time should cancel it.
-	// 		  Add quality and difficulty (done)
-	//        Style the Components (done)
-	//		  Display N/A for the field (done)
-	//		  Change to Card (done)
+	useEffect(() => {
+		if (student && student.data) {
+			if (student.data.student.student.likedComments.indexOf(parseInt(data.id)) !== -1) {
+				setLikeOrDislike(1);
+			} else if (
+				student.data.student.student.dislikedComments.indexOf(parseInt(data.id)) !== -1
+			) {
+				setLikeOrDislike(-1);
+			} else {
+				setLikeOrDislike(0);
+			}
+		}
+	}, [student]);
 
 	return (
-		<Card className='shadow mt-5 mb-4 p-4 w-75' /*style={{ width: '1000px' }}*/>
+		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>
 				{fetchedData.course && (
 					<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
@@ -97,30 +112,32 @@ const Searchbar: React.FC<Props> = props => {
 			<Card.Text>
 				Likes: {data.likes} Dislikes: {data.dislikes}
 			</Card.Text>
-			<Row className='pl-3'>
-				<Button
-					className='mr-3'
-					variant='outline-primary'
-					onClick={() => {
-						const id = parseFloat(data.id);
-						console.log(id);
-						console.log(window.sessionStorage.getItem('request-onid'));
-					}}
-				>
-					Like
-				</Button>
-				<Button
-					className='mr-3'
-					variant='outline-primary'
-					onClick={() => {
-						const id = parseFloat(data.id);
-						console.log(id);
-						console.log(window.sessionStorage.getItem('request-onid'));
-					}}
-				>
-					Dislike
-				</Button>
-			</Row>
+			{studentID && (
+				<Row className='pl-3'>
+					<Button
+						className='mr-3'
+						variant={likeOrDislike === 1 ? 'primary' : 'outline-primary'}
+						onClick={() => {
+							const id = parseFloat(data.id);
+							addLike({ variables: { ONID: studentID, commentID: id } });
+							setLikeOrDislike(likeOrDislike === 1 ? 0 : 1);
+						}}
+					>
+						Like
+					</Button>
+					<Button
+						className='mr-3'
+						variant={likeOrDislike === -1 ? 'primary' : 'outline-primary'}
+						onClick={() => {
+							const id = parseFloat(data.id);
+							addDislike({ variables: { ONID: studentID, commentID: id } });
+							setLikeOrDislike(likeOrDislike === -1 ? 0 : -1);
+						}}
+					>
+						Dislike
+					</Button>
+				</Row>
+			)}
 		</Card>
 	);
 };

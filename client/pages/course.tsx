@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import React from 'react';
 import Comment from '../components/Comment';
 import Header from '../components/Header';
-import { COMMENTS } from 'utils/graphql';
+import { COMMENTS, STUDENT } from 'utils/graphql';
 import { Container } from 'react-bootstrap';
 
 export default function course() {
