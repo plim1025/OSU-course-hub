@@ -32,7 +32,7 @@ export class Comment extends BaseEntity {
 
     @Field({ nullable: true })
     @Column({ nullable: true })
-    ONID?: string;
+    ONID: string;
 
     @ManyToOne(() => Student)
     student: Student;

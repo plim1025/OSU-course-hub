@@ -31,7 +31,7 @@ const item = {
     marginRight: 10
 }
 
-const GetProfessor = (id: number) => {
+const GetProfessor = ({id}) => {
     const { loading, error, data } = useQuery(PROFESSORS);
 	if (error) {
 		return <div>Error</div>;
@@ -49,7 +49,7 @@ const GetProfessor = (id: number) => {
     )
 }
 
-const GetCourse = (id: number) => {
+const GetCourse = ({id}) => {
     const { loading, error, data } = useQuery(COURSES);
 	if (error) {
 		return <div>Error</div>;
@@ -74,7 +74,7 @@ const CourseOrProfessor = ({comment}) => {
     }
     else {
         return (
-            <GetCourse id={comment.courseID}/>
+            <GetCourse id={parseInt(comment.courseID)}/>
         )
     }
 };

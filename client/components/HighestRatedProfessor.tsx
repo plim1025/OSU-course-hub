@@ -56,9 +56,57 @@ interface Professor {
     college: string
 }
 
-const GetDifficultyQuality = (difficulty: number[], quality: number[]) => {
+const GetProfessorComments = (professor: Professor, professorQuality) => {
+    console.log(professor.id)
     const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: 1},
+        variables: {professorID: parseInt(professor.id)},
+    });
+    if (error) {
+        return <div>Error</div>;
+    } else if (loading) {
+        return <div>Loading...</div>;
+    }
+    var quality: number[] = []
+    console.log(data)
+    data.professorComments.forEach((comment: Comment) => {
+        quality.push(comment.quality);
+    })
+    var averageQuality
+    /*if(quality.length > 0)
+        averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
+    else
+        averageQuality = 0*/
+    if(data.professorComments.length > 0){
+        for(var i = 0; i < data.professorComments.length; i++){
+            averageQuality += data.professorComments[i].quality
+        }
+    }
+    else {
+        averageQuality = 0
+    }
+    console.log(averageQuality)
+    professorQuality = {
+        professor: professor,
+        averageQuality: averageQuality
+    }
+    return
+}
+
+const GetHighestRatedProfessors = (professors: Professor[]) => {
+    var professorsRatings = []
+    var professorQuality
+    professors.forEach((professor) => {
+        GetProfessorComments(professor, professorQuality)
+        console.log(professorQuality)
+        professorsRatings.push(professorQuality)
+    })
+
+    return professorsRatings
+}
+
+const GetDifficultyQuality = (difficulty: number[], quality: number[], id: number) => {
+    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
+        variables: {professorID: parseInt(id)},
     });
     if (error) {
 		return <div>Error</div>;
@@ -83,20 +131,31 @@ const HighestRatedProfessor: React.FC = () => {
 		return <div>Loading...</div>;
     }
     const professors = data.professors;
-    console.log(professors);
-    //const sortedProfessors = professors.slice().sort((a: Professor, b: Professor) => b.averageQuality - a.averageQuality);
-    const topProfessors = professors.slice(professors.length - 3);
-    console.log(topProfessors);
+    var topProfessors = GetHighestRatedProfessors(professors)
+    const sortedProfessors = topProfessors.slice().sort((a, b) => b.averageQuality - a.averageQuality);
+    var topProfessors = professors.slice(professors.length - 3);
+    console.log(topProfessors)
     return (
         <div style={block}>
-            {topProfessors.map((professor: Professor) => {
+            {topProfessors.map((professor) => {
                 var difficulty: number[] = []
                 var quality: number[] = []
-                GetDifficultyQuality(difficulty, quality)
-                const averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
+                GetDifficultyQuality(difficulty, quality, professor.id)
+                var averageQuality
+                var averageDifficulty
+                if(quality.length > 0){
+                    averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
+                }
+                else {
+                    averageQuality = 0
+                }
+                if(difficulty.length > 0){
+                    averageDifficulty = (difficulty.reduce((a, b) => a + b, 0) / difficulty.length)
+                }
+                else {
+                    averageDifficulty = 0
+                }
                 console.log(averageQuality)
-                const averageDifficulty = (difficulty.reduce((a, b) => a + b, 0) / difficulty.length)
-                console.log(averageDifficulty)
                 return (
                     <Card style={container} bg="light" border="dark">
                         <Card.Title>                    

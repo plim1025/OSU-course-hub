@@ -187,6 +187,7 @@ const CourseInfo: React.FC<Props> = (props) => {
     else {
         averageDifficulty = 0
     }
+    console.log(parseInt(averageQuality))
 	return (
         <Container>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}

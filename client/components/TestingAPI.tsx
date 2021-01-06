@@ -2,10 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import {useQuery, useMutation, gql} from '@apollo/client';
-import {CREATE_PROFESSOR, PROFESSOR, RATE_QUALITY_PROFESSOR, 
-    RATE_DIFFICULTY_PROFESSOR, PROFESSOR_COURSES, ADD_COURSE_TO_PROFESSOR,
-    COURSES, COURSE, CREATE_COURSE, RATE_QUALITY_COURSE,
-    RATE_DIFFICULTY_COURSE, COURSE_TEXTBOOKS, ADD_TEXTBOOK_TO_COURSE, STUDENTS,
+import {CREATE_PROFESSOR, PROFESSOR, PROFESSOR_COURSES, ADD_COURSE_TO_PROFESSOR,
+    COURSES, COURSE, CREATE_COURSE, COURSE_TEXTBOOKS, ADD_TEXTBOOK_TO_COURSE, STUDENTS,
     STUDENT, CREATE_STUDENT, COURSE_COMMENTS, PROFESSOR_COMMENTS,
     STUDENT_COMMENTS, CREATE_COMMENT, DELETE_COMMENT} from '../utils/graphql';
 
@@ -90,18 +88,6 @@ interface Props {
 const TestingAPI: React.FC<Props> = (props) => {
     const {professors} = props;
     const [createProfessor] = useMutation(CREATE_PROFESSOR);
-    const [rateQualityProfessor] = useMutation(RATE_QUALITY_PROFESSOR, {
-        variables: {
-            professorID: 1,
-            rating: 5
-        }
-    });
-    const [rateDifficultyProfessor] = useMutation(RATE_DIFFICULTY_PROFESSOR, {
-        variables: {
-            professorID: 1,
-            rating: 2
-        }
-    });
     const [addCourseToProfessor] = useMutation(ADD_COURSE_TO_PROFESSOR, {
         variables: {
             professorID: 1,
@@ -111,18 +97,6 @@ const TestingAPI: React.FC<Props> = (props) => {
         }
     });
     const [createCourse] = useMutation(CREATE_COURSE);
-    const [rateQualityCourse] = useMutation(RATE_QUALITY_COURSE, {
-        variables: {
-            courseID: 1,
-            rating: 4
-        }
-    });
-    const [rateDifficultyCourse] = useMutation(RATE_DIFFICULTY_COURSE, {
-        variables: {
-            courseID: 1,
-            rating: 3
-        }
-    });
     const [addTextbookToCourse] = useMutation(ADD_TEXTBOOK_TO_COURSE, {
         variables: {
             ISBN: "893269546", title: "Cool", author: "Test", edition: 4, 
@@ -240,22 +214,6 @@ const TestingAPI: React.FC<Props> = (props) => {
             <form
             onSubmit={e => {
                 e.preventDefault();
-                rateQualityProfessor();
-            }}
-            >
-                <button type="submit">Rate Professor by Quality</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                rateDifficultyProfessor();
-            }}
-            >
-                <button type="submit">Rate Professor by Difficulty</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
                 addCourseToProfessor();
             }}
             >
@@ -268,22 +226,6 @@ const TestingAPI: React.FC<Props> = (props) => {
             }}
             >
                 <button type="submit">Create Course</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                rateQualityCourse();
-            }}
-            >
-                <button type="submit">Rate Course by Quality</button>
-            </form>
-            <form
-            onSubmit={e => {
-                e.preventDefault();
-                rateDifficultyCourse();
-            }}
-            >
-                <button type="submit">Rate Course by Difficulty</button>
             </form>
             <form
             onSubmit={e => {
