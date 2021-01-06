@@ -12,6 +12,7 @@ const Home: React.FC = () => {
 	} else if (loading) {
 		return <div>Loading...</div>;
 	}
+
 	return (
 		<>
 			<Head>

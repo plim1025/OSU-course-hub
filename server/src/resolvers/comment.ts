@@ -199,38 +199,4 @@ export class CommentResolver {
         await Comment.delete({ id });
         return true;
     }
-
-    @Mutation(() => CommentResponse)
-    async upvote(@Arg('id') id: number): Promise<CommentResponse> {
-        const comment = await Comment.findOne({ id });
-
-        if (comment) {
-            comment.likes += 1;
-            await comment.save();
-            return { comment };
-        }
-        return {
-            error: {
-                path: 'src/resolvers/comment.ts',
-                message: `Could not find comment with given ID: ${id}`,
-            },
-        };
-    }
-
-    @Mutation(() => CommentResponse)
-    async downvote(@Arg('id') id: number): Promise<CommentResponse> {
-        const comment = await Comment.findOne({ id });
-
-        if (comment) {
-            comment.dislikes += 1;
-            await comment.save();
-            return { comment };
-        }
-        return {
-            error: {
-                path: 'src/resolvers/comment.ts',
-                message: `Could not find comment with given ID: ${id}`,
-            },
-        };
-    }
 }
