@@ -1,25 +1,18 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState} from 'react';
 import {useQuery} from '@apollo/client';
-import {PROFESSORS, PROFESSOR_COMMENTS} from '../utils/graphql';
+import {PROFESSORS, PROFESSOR_COMMENTS, COMMENTS} from '../utils/graphql';
 import {Card} from 'react-bootstrap';
 import Link from 'next/link'
-import { isAbsolute } from 'path';
 
-const block = {
-    position: 'absolute' as 'absolute',
-    bottom: -200,
-    left: 100
-}
-
-const container = {
+const professorBlock = {
     marginLeft: 50,
     marginTop: 10,
     borderSize: 2,
     borderColor: '#eb8934',
     borderRadius: 15,
     borderStyle: 'solid',
-    width: 500,
+    minWidth: 300,
     padding: 10,
     paddingRight: 0,
     backgroundColor: '#f2f2f2',
@@ -56,93 +49,16 @@ interface Professor {
     college: string
 }
 
-const GetProfessorComments = (professor: Professor, professorQuality) => {
-    console.log(professor.id)
-    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: parseInt(professor.id)},
-    });
-    if (error) {
-        return <div>Error</div>;
-    } else if (loading) {
-        return <div>Loading...</div>;
-    }
-    var quality: number[] = []
-    console.log(data)
-    data.professorComments.forEach((comment: Comment) => {
-        quality.push(comment.quality);
-    })
-    var averageQuality
-    /*if(quality.length > 0)
-        averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
-    else
-        averageQuality = 0*/
-    if(data.professorComments.length > 0){
-        for(var i = 0; i < data.professorComments.length; i++){
-            averageQuality += data.professorComments[i].quality
-        }
-    }
-    else {
-        averageQuality = 0
-    }
-    console.log(averageQuality)
-    professorQuality = {
-        professor: professor,
-        averageQuality: averageQuality
-    }
-    return
-}
-
-const GetHighestRatedProfessors = (professors: Professor[]) => {
-    var professorsRatings = []
-    var professorQuality
-    professors.forEach((professor) => {
-        GetProfessorComments(professor, professorQuality)
-        console.log(professorQuality)
-        professorsRatings.push(professorQuality)
-    })
-
-    return professorsRatings
-}
-
-const GetDifficultyQuality = (difficulty: number[], quality: number[], id: number) => {
-    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: parseInt(id)},
-    });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }
-    const comments = data.professorComments;
-    comments.forEach((comment: Comment) => {
-        quality.push(comment.quality)
-        difficulty.push(comment.difficulty)
-    });
-    console.log(quality)
-    console.log(difficulty)
-    return
-}
-
-const HighestRatedProfessor: React.FC = () => {
-    const { loading, error, data } = useQuery(PROFESSORS);
-	if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }
-    const professors = data.professors;
-    var topProfessors = GetHighestRatedProfessors(professors)
-    const sortedProfessors = topProfessors.slice().sort((a, b) => b.averageQuality - a.averageQuality);
-    var topProfessors = professors.slice(professors.length - 3);
-    console.log(topProfessors)
+const Info = (professorRatings) => {
+    console.log(professorRatings)
     return (
-        <div style={block}>
-            {topProfessors.map((professor) => {
-                var difficulty: number[] = []
-                var quality: number[] = []
+        <div>
+            {professorRatings.professorRatings.map((object) => {
+                let professor = object.professor
+                let difficulty: number[] = []
+                let quality: number[] = []
                 GetDifficultyQuality(difficulty, quality, professor.id)
-                var averageQuality
-                var averageDifficulty
+                let averageQuality, averageDifficulty
                 if(quality.length > 0){
                     averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
                 }
@@ -155,9 +71,8 @@ const HighestRatedProfessor: React.FC = () => {
                 else {
                     averageDifficulty = 0
                 }
-                console.log(averageQuality)
                 return (
-                    <Card style={container} bg="light" border="dark">
+                    <Card style={professorBlock} bg="light" border="dark">
                         <Card.Title>                    
                             <Link href={`/professor/${professor.id}`}>
                                 <b>{professor.firstName} {professor.lastName}</b>
@@ -176,6 +91,73 @@ const HighestRatedProfessor: React.FC = () => {
                 );
             })}
         </div>
+    )
+}
+
+const RenderTopProfessors = ({professors}: Professor[]) => {
+    const { loading, error, data } = useQuery(COMMENTS);
+	if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }
+    const comments = data.comments.filter((comment) => comment.professorID != null)
+    let professorRatings = []
+    for(let i = 0; i < professors.length; i++){
+        let ratings = []
+        for(let j = 0; j < comments.length; j++){
+            if(comments[j].professorID == professors[i].id){
+                ratings.push(comments[j].quality)
+            }
+        }
+        let averageQuality
+        if(ratings.length > 0){
+            averageQuality = (ratings.reduce((a, b) => a + b, 0) / ratings.length)
+        }
+        else {
+            averageQuality = 0
+        }
+        let currProfessor = {
+            professor: professors[i],
+            rating: averageQuality
+        }
+        professorRatings.push(currProfessor)
+    }
+    let sortedProfessors = professorRatings.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
+    console.log(comments)
+    console.log(sortedProfessors)
+
+    return (
+        <Info professorRatings={sortedProfessors}/>
+    )
+}
+
+const GetDifficultyQuality = (difficulty: number[], quality: number[], id: number) => {
+    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
+        variables: {professorID: parseInt(id)},
+    });
+    if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }
+    const comments = data.professorComments;
+    comments.forEach((comment: Comment) => {
+        quality.push(comment.quality)
+        difficulty.push(comment.difficulty)
+    });
+    return
+}
+
+const HighestRatedProfessor: React.FC = () => {
+    const { loading, error, data } = useQuery(PROFESSORS);
+	if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }
+    return (
+        <RenderTopProfessors professors={data.professors}/>
     );
 }
 

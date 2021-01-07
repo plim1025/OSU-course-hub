@@ -14,43 +14,11 @@ export const PROFESSORS = gql`
 export const PROFESSOR = gql`
 	query Professor($professorID: Float!) {
 		professor(professorID: $professorID) {
-			id
-			firstName
-			lastName
-			college
-		}
-	}
-`;
-
-export const COURSE = gql`
-	query getCourseByID($id: Float!) {
-		course(courseID: $id) {
-			course {
+			professor {
 				id
-				department
-				number
-			}
-		}
-	}
-`;
-
-export const LIKE = gql`
-	mutation upvote($id: Float!) {
-		upvote(id: $id) {
-			comment {
-				id
-				likes
-			}
-		}
-	}
-`;
-
-export const DISLIKE = gql`
-	mutation downvote($id: Float!) {
-		downvote(id: $id) {
-			comment {
-				id
-				dislikes
+				firstName
+				lastName
+				college
 			}
 		}
 	}
@@ -113,11 +81,23 @@ export const COURSES = gql`
 	}
 `;
 
+export const COURSE = gql`
+	query Course($courseID: Float!) {
+		course(courseID: $courseID) {
+			course {
+				id
+				department
+				number
+			}
+		}
+	}
+`;
+
 export const COURSE_PROFESSORS = gql`
 	query CourseProfessors($courseID: Float!) {
 		courseProfessors(courseID: $courseID) {
-            id
-            firstName
+			id
+			firstName
             lastName
             college
 		}
@@ -203,6 +183,8 @@ export const STUDENT = gql`
 		student(ONID: $ONID) {
 			student {
 				ONID
+				likedComments
+				dislikedComments
 			}
 		}
 	}
@@ -365,3 +347,38 @@ export const DELETE_COMMENT = gql`
         }
     }
 `;*/
+
+// Likes and Dislikes
+export const LIKECOMMENT = gql`
+	mutation likeComment($ONID: String!, $commentID: Float!) {
+		upvote(ONID: { ONID: $ONID }, commentID: $commentID) {
+			student {
+				ONID
+				likedComments
+				dislikedComments
+			}
+			comment {
+				id
+				likes
+				dislikes
+			}
+		}
+	}
+`;
+
+export const DISLIKECOMMENT = gql`
+	mutation dislikeComment($ONID: String!, $commentID: Float!) {
+		downvote(ONID: { ONID: $ONID }, commentID: $commentID) {
+			student {
+				ONID
+				likedComments
+				dislikedComments
+			}
+			comment {
+				id
+				likes
+				dislikes
+			}
+		}
+	}
+`;

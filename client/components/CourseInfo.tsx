@@ -6,15 +6,6 @@ import {COURSE_PROFESSORS, COURSE_COMMENTS} from '../utils/graphql';
 import {Card, Container} from 'react-bootstrap';
 
 //CSS
-const info = {
-    margin: 'auto',
-    marginTop: 50,
-    padding: 10,
-    width: '70%',
-    paddingTop: '50px',
-    //textAlign: 'center',
-}
-
 const courseName = {
     fontWeight: 600,
     marginBottom: 0,
@@ -111,7 +102,6 @@ const CourseProfessors = ({id}) => {
 }
 
 const CourseTags = ({id}) => {
-    //make the professorID dynamic
     const {loading, error, data} = useQuery(COURSE_COMMENTS, {
         variables: {courseID: parseInt(id)},
     });
@@ -121,7 +111,7 @@ const CourseTags = ({id}) => {
 		return <div>Loading...</div>;
     }
     const comments = data.courseComments;
-    var tags: string[] = [];
+    let tags: string[] = [];
     comments.forEach(comment => comment.tags.forEach(tag => tags.push(tag)));
     
     function onlyUnique(value: any, index: any, self: any) {
@@ -157,8 +147,6 @@ const GetDifficultyQuality = (difficulty: number[], quality: number[], id: numbe
             quality.push(comment.quality)
             difficulty.push(comment.difficulty)
         });
-        console.log(quality)
-        console.log(difficulty)
     }
     return
 }
@@ -170,11 +158,10 @@ interface Props {
 const CourseInfo: React.FC<Props> = (props) => {
     const {course} = props;
     console.log("Course: ", course);
-    var difficulty: number[] = []
-    var quality: number[] = []
+    let difficulty: number[] = []
+    let quality: number[] = []
     GetDifficultyQuality(difficulty, quality, course.id)
-    var averageQuality
-    var averageDifficulty
+    let averageQuality, averageDifficulty
     if(quality.length > 0){
         averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
     }
@@ -187,7 +174,7 @@ const CourseInfo: React.FC<Props> = (props) => {
     else {
         averageDifficulty = 0
     }
-    console.log(parseInt(averageQuality))
+    console.log(averageQuality)
 	return (
         <Container>
             {/*<Button onClick={props.onClick}>Create Course</Button>*/}

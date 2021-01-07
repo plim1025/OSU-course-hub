@@ -1,9 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState} from 'react';
-import { Button, Container } from 'react-bootstrap';
+import { Button, Container, Card } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {STUDENT_COMMENTS} from '../utils/graphql';
-import {Card} from 'react-bootstrap';
 import Comment from './Comment';
 interface CommentI {
     ONID: number;
@@ -30,17 +29,7 @@ interface Props {
     onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
-const StudentComments = ({id}) => {
-    //make the studentID dynamic
-    const {loading, error, data} = useQuery(STUDENT_COMMENTS, {
-        variables: {ONID: id},
-    });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }
-    const comments = data.studentComments;
+const StudentComments = ({comments}) => {
     return (
         <Container style={{ height: '1000px' }}>
             {comments.map((comment: CommentI, i: number) => {
@@ -53,11 +42,23 @@ const StudentComments = ({id}) => {
 const StudentInfo: React.FC<Props> = (props) => {
     const {student} = props;
     console.log("Student: ", student);
+    const {loading, error, data} = useQuery(STUDENT_COMMENTS, {
+        variables: {ONID: student.ONID},
+    });
+    if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }
+    const comments = data.studentComments;
 	return (
         <div>
             <Container>
-                <h3>ONID: {student.ONID}</h3>
-                <StudentComments id={student.ONID} />
+                <Card className='mt-5 mb-4 p-4 w-75'>
+                    <h3>ONID: {student.ONID}</h3>
+                    <h5>Number of comments: {comments.length}</h5>
+                </Card>
+                <StudentComments comments={comments} />
             </Container> 
         </div>
 	);

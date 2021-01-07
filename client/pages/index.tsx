@@ -8,12 +8,17 @@ import RecentComments from '../components/RecentComments';
 import HighestRatedProfessor from '../components/HighestRatedProfessor';
 
 const container = {
+	marginTop: 100,
 	display: 'flex',
 	flexDirection: 'row',
 	flexWrap: 'nowrap',
 	flexFlow: 'center',
 	alignContent: 'flex-start',
-	//margin: 'auto',
+	justifyContent: 'center'
+}
+
+const item = {
+	maxWidth: 1000,
 }
 
 const Home: React.FC = () => {
@@ -23,6 +28,7 @@ const Home: React.FC = () => {
 	} else if (loading) {
 		return <div>Loading...</div>;
 	}
+
 	return (
 		<>
 			<Head>
@@ -32,8 +38,8 @@ const Home: React.FC = () => {
 			<Header searchbarToggled={false} />
 			<Searchbar showButton={true} size='lg' />
 			<div style={container}>
-				<HighestRatedProfessor />
-				<RecentComments />
+				<HighestRatedProfessor style={item} />
+				<RecentComments style={item} />
 			</div>
 		</>
 	);

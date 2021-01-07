@@ -3,8 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
 import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header';
-import TestingAPI from '../../components/TestingAPI';
-import { ApolloClient, getApolloContext, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {PROFESSORS, PROFESSOR, PROFESSOR_COMMENTS} from 'utils/graphql';
 import { useRouter } from 'next/router'
 import Comment from '../../components/Comment';
@@ -101,15 +100,3 @@ export default function Professor() {
 		)
 	}
 }
-
-/*export async function getStaticPaths() {
-	const { data } = await apolloClient.query({
-		query: PROFESSORS,
-	});
-	const paths = data.professors.map((professor) => `professor/${professor.id}`);
-	console.log(paths);
-    return {
-      paths,
-      fallback: false
-    }
-}*/

@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/client';
 import React from 'react';
 import Comment from '../components/Comment';
-import { COMMENTS } from 'utils/graphql';
+import Header from '../components/Header';
+import { COMMENTS, STUDENT } from 'utils/graphql';
 import { Container } from 'react-bootstrap';
 
 export default function course() {
@@ -14,10 +15,13 @@ export default function course() {
 	}
 
 	return (
-		<Container style={{ height: '1000px' }}>
-			{data.comments.map((comment, i: number) => {
-				return <Comment key={i} props={comment} />;
-			})}
-		</Container>
+		<>
+			<Header searchbarToggled={false} />
+			<Container style={{ height: '1000px' }}>
+				{data.comments.map((comment, i: number) => {
+					return <Comment key={i} props={comment} />;
+				})}
+			</Container>
+		</>
 	);
 }

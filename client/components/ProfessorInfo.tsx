@@ -6,15 +6,6 @@ import {PROFESSOR_COURSES, PROFESSOR_COMMENTS} from '../utils/graphql';
 import {Card, Container} from 'react-bootstrap';
 
 //CSS
-const info = {
-    margin: 'auto',
-    marginTop: 50,
-    padding: 10,
-    width: '70%',
-    paddingTop: '50px',
-    //textAlign: 'center',
-}
-
 const professorName = {
     fontWeight: 600,
     marginBottom: 0,
@@ -129,7 +120,7 @@ const ProfessorTags = ({id}) => {
 		return <div>Loading...</div>;
     }
     const comments = data.professorComments;
-    var tags: string[] = [];
+    let tags: string[] = [];
     comments.forEach(comment => comment.tags.forEach(tag => tags.push(tag)));
     
     function onlyUnique(value: any, index: any, self: any) {
@@ -174,11 +165,10 @@ const GetDifficultyQuality = (difficulty: number[], quality: number[], id: numbe
 const ProfessorInfo: React.FC<Props> = (props) => {
     const {professor} = props;
     console.log("Professor: ", professor);
-    var difficulty: number[] = []
-    var quality: number[] = []
+    let difficulty: number[] = []
+    let quality: number[] = []
     GetDifficultyQuality(difficulty, quality, professor.id)
-    var averageQuality
-    var averageDifficulty
+    let averageQuality, averageDifficulty
     if(quality.length > 0){
         averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
     }
@@ -193,7 +183,6 @@ const ProfessorInfo: React.FC<Props> = (props) => {
     }
 	return (
         <Container>
-            {/*<Button onClick={props.onClick}>Create Course</Button>*/}
             <Card key={professor.id} className='shadow mb-5 p-4 w-75'>
                 <h1 style={professorName}>
                     {professor.firstName} {professor.lastName}

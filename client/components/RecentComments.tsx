@@ -1,16 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState} from 'react';
 import {useQuery, useMutation} from '@apollo/client';
-import {COMMENTS, COURSES, PROFESSORS} from '../utils/graphql';
-import { isInlineFragment } from '@apollo/client/utilities';
-import {Card, CardColumns} from 'react-bootstrap';
+import {COMMENTS, COURSE, PROFESSOR} from '../utils/graphql';
+import {Card} from 'react-bootstrap';
 
-const block = {
-    position: 'absolute' as 'absolute',
-    bottom: -250,
-    right: 100
-}
-const commentBlock = {
+const commentBox = {
     marginLeft: 100,
     marginRight: 50,
     marginTop: 10,
@@ -18,7 +12,7 @@ const commentBlock = {
     //borderColor: '#eb8934',
     borderRadius: 15,
     borderStyle: 'solid',
-    width: 500,
+    minWidth: 300,
     padding: 10,
     paddingRight: 0,
 }
@@ -31,50 +25,47 @@ const item = {
     marginRight: 10
 }
 
-const GetProfessor = ({id}) => {
-    const { loading, error, data } = useQuery(PROFESSORS);
+const ProfessorTitle = ({id}) => {
+    const { loading, error, data } = useQuery(PROFESSOR, {variables: {professorID: parseInt(id)}});
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
     }
-    console.log(id);
-    console.log(data.professors);
-    const professor = data.professors.filter((professor) => professor.id == id);
-    console.log(professor);
+    const professor = data.professor.professor
+    console.log(professor)
     return (
         <div>
-            <h5><b>{professor[0].firstName} {professor[0].lastName}</b></h5>
+            <h5><b>{professor.firstName} {professor.lastName}</b></h5>
         </div>
     )
 }
 
-const GetCourse = ({id}) => {
-    const { loading, error, data } = useQuery(COURSES);
+const CourseTitle = ({id}) => {
+    const { loading, error, data } = useQuery(COURSE, {variables: {courseID: parseInt(id)}});
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
     }
-    console.log(data.courses);
-    const course = data.courses.filter((course) => course.id == id);
-    console.log(course);
+    const course = data.course.course
+    console.log(course)
     return (
         <div>
-            <h5><b>{course[0].department} {course[0].number}</b></h5>
+            <h5><b>{course.department} {course.number}</b></h5>
         </div>
     )
 }
 
-const CourseOrProfessor = ({comment}) => {
+const Title = ({comment}) => {
     if(comment.courseID === null){
         return (
-            <GetProfessor id={parseInt(comment.professorID)}/>
+            <ProfessorTitle id={comment.professorID}/>
         )
     }
     else {
         return (
-            <GetCourse id={parseInt(comment.courseID)}/>
+            <CourseTitle id={comment.courseID}/>
         )
     }
 };
@@ -86,21 +77,19 @@ const RecentComments: React.FC = () => {
 	} else if (loading) {
 		return <div>Loading...</div>;
     }
-    const comments = data.comments;
-    const recentComments = comments.slice(Math.max(comments.length - 4, 1));
+    const recentComments = data.comments.slice(Math.max(data.comments.length - 4, 1));
     console.log(recentComments);
     recentComments.reverse();
-    var time, formattedDate;
-    console.log(comments);
+    let time, formattedDate;
     return (
-        <div style={block}>
+        <div>
             {recentComments.map((comment) => {
                 time = Date.parse(comment.createdAt);
                 formattedDate = new Date(time);
                 return (
-                    <Card style={commentBlock} bg="light" border="dark">
+                    <Card style={commentBox} bg="light" border="dark">
                         <div style={details}>
-                            <CourseOrProfessor comment={comment}/>
+                            <Title comment={comment}/>
                             <span style={item}>Created on: <b>{formattedDate.toDateString()}</b></span>
                         </div>
                         <br />

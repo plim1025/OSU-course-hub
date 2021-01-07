@@ -3,8 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
 import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header';
-import TestingAPI from '../../components/TestingAPI';
-import { ApolloClient, getApolloContext, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {COURSES, COURSE, COURSE_COMMENTS} from 'utils/graphql';
 import Comment from '../../components/Comment';
 import { useRouter } from 'next/router'
