@@ -5,7 +5,6 @@ import { Form } from 'react-bootstrap';
 import Select, { InputActionTypes } from 'react-select';
 import { COURSES, PROFESSORS } from 'utils/graphql';
 import { CourseData, ProfessorData } from 'utils/types';
-import Button from './Button';
 
 interface Props {
 	showButton: boolean;
@@ -25,15 +24,15 @@ const smallWrapper = {
 	width: 400,
 };
 
-const searchBtn = {
-	marginTop: 12,
-} as React.CSSProperties;
-
 const select = {
 	control: (provided: any) => ({
 		...provided,
 		cursor: 'text',
 		minHeight: 48,
+	}),
+	option: (provided: any) => ({
+		...provided,
+		cursor: 'pointer',
 	}),
 };
 
@@ -105,7 +104,6 @@ const Searchbar: React.FC<Props> = props => {
 						: []
 				}
 			/>
-			{props.showButton ? <Button variant='primary' text='Submit' style={searchBtn} /> : null}
 		</Form>
 	);
 };
