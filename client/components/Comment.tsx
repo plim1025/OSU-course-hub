@@ -56,10 +56,10 @@ const Searchbar: React.FC<Props> = props => {
 
 	useEffect(() => {
 		if (student && student.data) {
-			if (student.data.student.student.likedComments.indexOf(parseInt(data.id)) !== -1) {
+			if (student?.data.student.student.likedComments.indexOf(parseInt(data.id)) !== -1) {
 				setLikeOrDislike(1);
 			} else if (
-				student.data.student.student.dislikedComments.indexOf(parseInt(data.id)) !== -1
+				student?.data.student.student.dislikedComments.indexOf(parseInt(data.id)) !== -1
 			) {
 				setLikeOrDislike(-1);
 			} else {
