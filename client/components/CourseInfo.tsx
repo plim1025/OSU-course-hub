@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {COURSE_PROFESSORS, COURSE_COMMENTS} from '../utils/graphql';
 import {Card, Container} from 'react-bootstrap';
+import Link from 'next/link';
 
 //CSS
 const courseName = {
@@ -18,6 +19,9 @@ const professorBlock = {
 const professorList = {
     marginRight: 10,
     display: 'inline',
+    ":hover": {
+        cursor: "pointer",
+    }
 }
 
 const tagBlock = {
@@ -94,7 +98,9 @@ const CourseProfessors = ({id}) => {
             <h4>Professors: </h4>
             {professors.map((professor: Professor) => {
                 return (
-                    <p style={professorList}><b>{professor.firstName} {professor.lastName}</b></p>
+                    <Link href={`/professor/${professor.id}`}>
+                        <p style={professorList}><b>{professor.firstName} {professor.lastName}</b></p>
+                    </Link>
                 );
             })}
         </div>
@@ -176,9 +182,8 @@ const CourseInfo: React.FC<Props> = (props) => {
     }
     console.log(averageQuality)
 	return (
-        <Container>
-            {/*<Button onClick={props.onClick}>Create Course</Button>*/}
-            <Card key={course.id} className='shadow mb-5 p-4 w-75'>
+        <Container className="mt-3">
+            <Card key={course.id} className='mb-5 p-4 w-75'>
                 <h1 style={courseName}>
                     {course.department} {course.number}
                     <Button style={rateBtn}>Rate</Button>

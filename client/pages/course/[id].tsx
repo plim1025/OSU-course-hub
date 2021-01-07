@@ -8,6 +8,7 @@ import {COURSES, COURSE, COURSE_COMMENTS} from 'utils/graphql';
 import Comment from '../../components/Comment';
 import { useRouter } from 'next/router'
 import { Container } from 'react-bootstrap';
+import Searchbar from '../../components/Searchbar'
 
 interface CommentI {
     ONID: number;
@@ -45,7 +46,8 @@ const CourseComments = ({id}) => {
     const comments = data.courseComments;
     console.log(comments);
 	return (
-		<Container style={{ height: '1000px' }}>
+		<Container>
+            <h3>Comments:</h3>
 			{comments.map((comment: CommentI, i: number) => {
 				return <Comment key={i} props={comment} />;
 			})}
@@ -92,7 +94,7 @@ export default function Course() {
 					<title>OSU Course Hub</title>
 					<link rel='icon' href='/favicon.png' />
 				</Head>
-				<Header searchbarToggled={false} />
+				<Header searchbarToggled={true} />
 				<CourseInfo course={course}/>
                 <CourseComments id={course.id}/>
 			</>

@@ -6,6 +6,7 @@ import Header from '../../components/Header';
 import { useQuery } from '@apollo/client';
 import {STUDENTS, STUDENT} from 'utils/graphql';
 import { useRouter } from 'next/router'
+import Searchbar from '../../components/Searchbar'
 
 interface Student {
     ONID: number
@@ -51,7 +52,7 @@ export default function Professor() {
 					<title>OSU Course Hub</title>
 					<link rel='icon' href='/favicon.png' />
 				</Head>
-				<Header searchbarToggled={false} />
+				<Header searchbarToggled={true} />
 				<StudentInfo student={student}/>
 			</>
 		);

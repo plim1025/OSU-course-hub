@@ -5,7 +5,7 @@ import {COMMENTS, COURSE, PROFESSOR} from '../utils/graphql';
 import {Card} from 'react-bootstrap';
 
 const commentBox = {
-    marginLeft: 100,
+    marginLeft: 50,
     marginRight: 50,
     marginTop: 10,
     borderSize: 2,
@@ -13,6 +13,7 @@ const commentBox = {
     borderRadius: 15,
     borderStyle: 'solid',
     minWidth: 300,
+    maxWidth: 600,
     padding: 10,
     paddingRight: 0,
 }
@@ -77,17 +78,20 @@ const RecentComments: React.FC = () => {
 	} else if (loading) {
 		return <div>Loading...</div>;
     }
-    const recentComments = data.comments.slice(Math.max(data.comments.length - 4, 1));
+    const recentComments = data.comments.slice(0, Math.min(4, data.comments.length));
     console.log(recentComments);
     recentComments.reverse();
     let time, formattedDate;
     return (
-        <div>
+        <div style={{"width": "50%", "padding": "10px", "display": "flex",
+        "flex-direction": "column", "align-items": "center"}} className="border">
+            <h4 style={{"text-align": "center", "padding": "10px"}}>Recent Comments:</h4>
             {recentComments.map((comment) => {
                 time = Date.parse(comment.createdAt);
                 formattedDate = new Date(time);
                 return (
-                    <Card style={commentBox} bg="light" border="dark">
+                    <Card style={commentBox} style={{"width": "80%", "padding": "10px", 
+                    "margin-top": "10px"}} bg="light" border="dark">
                         <div style={details}>
                             <Title comment={comment}/>
                             <span style={item}>Created on: <b>{formattedDate.toDateString()}</b></span>

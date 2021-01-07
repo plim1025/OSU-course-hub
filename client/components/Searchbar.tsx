@@ -59,7 +59,7 @@ const Searchbar: React.FC<Props> = props => {
 
 	const handleChange = (newValue: any) => {
 		openMenu(false);
-		router.push(`${newValue.type}/${newValue.id}`);
+		router.push(`../${newValue.type}/${newValue.id}`);
 	};
 
 	if (loadingProfessors || loadingCourses) {

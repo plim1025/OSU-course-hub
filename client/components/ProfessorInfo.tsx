@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {PROFESSOR_COURSES, PROFESSOR_COMMENTS} from '../utils/graphql';
 import {Card, Container} from 'react-bootstrap';
+import Link from 'next/link'
 
 //CSS
 const professorName = {
@@ -102,7 +103,9 @@ const ProfessorCourses = ({id}) => {
             <h4>Courses: </h4>
             {courses.map((course: Course) => {
                 return (
-                    <p style={courseList} key={course.id}><b>{course.department} {course.number}</b></p>
+                    <Link href={`/course/${course.id}`}>
+                        <p style={courseList} key={course.id}><b>{course.department} {course.number}</b></p>
+                    </Link>
                 );
             })}
         </div>
@@ -110,7 +113,6 @@ const ProfessorCourses = ({id}) => {
 }
 
 const ProfessorTags = ({id}) => {
-    //make the professorID dynamic
     const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
         variables: {professorID: parseInt(id)},
     });
@@ -156,8 +158,6 @@ const GetDifficultyQuality = (difficulty: number[], quality: number[], id: numbe
             quality.push(comment.quality)
             difficulty.push(comment.difficulty)
         });
-        console.log(quality)
-        console.log(difficulty)
     }
     return
 }
@@ -182,8 +182,8 @@ const ProfessorInfo: React.FC<Props> = (props) => {
         averageDifficulty = 0
     }
 	return (
-        <Container>
-            <Card key={professor.id} className='shadow mb-5 p-4 w-75'>
+        <Container className="mt-3">
+            <Card key={professor.id} className='mb-5 p-4 w-75'>
                 <h1 style={professorName}>
                     {professor.firstName} {professor.lastName}
                     <Button style={rateBtn}>Rate</Button>
