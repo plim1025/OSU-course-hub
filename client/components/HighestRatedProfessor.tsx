@@ -76,24 +76,28 @@ const Info = (professorRatings) => {
                     averageDifficulty = 0
                 }
                 return (
-                    <Card style={professorBlock} style={{"width": "80%", "padding": "10px", 
-                    "margin-top": "10px"}} bg="light" border="dark">
-                        {index + 1}
-                        <Card.Title>                    
-                            <Link href={`/professor/${professor.id}`}>
-                                <b>{professor.firstName} {professor.lastName}</b>
-                            </Link>
-                        </Card.Title>
-                        <Card.Text style={department}>{professor.college}</Card.Text>
-                        <Card.Text style={item}>Quality: 
-                            <span style={variable}>{averageQuality}</span>
-                            <span style={constant}>/5</span>
-                        </Card.Text>
-                        <Card.Text style={item}>Difficulty: 
-                            <span style={variable}>{averageDifficulty}</span>
-                            <span style={constant}>/5</span>
-                        </Card.Text>
-                    </Card>
+                    <div style={{"display": "flex", "justify-content": "center", "width": "80%", "margin-right": "30px"}}>
+                        <div style={{"margin": "auto", "font-size": "30px"}}>
+                            <b>{index + 1}</b>
+                        </div>
+                        <Card style={professorBlock} style={{"width": "90%", "padding": "10px", 
+                        "margin-top": "10px"}} bg="light" border="dark">
+                            <Card.Title>                    
+                                <Link href={`/professor/${professor.id}`}>
+                                    <b>{professor.firstName} {professor.lastName}</b>
+                                </Link>
+                            </Card.Title>
+                            <Card.Text style={department}>{professor.college}</Card.Text>
+                            <Card.Text style={item}>Quality: 
+                                <span style={variable}>{averageQuality}</span>
+                                <span style={constant}>/5</span>
+                            </Card.Text>
+                            <Card.Text style={item}>Difficulty: 
+                                <span style={variable}>{averageDifficulty}</span>
+                                <span style={constant}>/5</span>
+                            </Card.Text>
+                        </Card>
+                    </div>
                 );
             })}
         </div>

@@ -67,7 +67,7 @@ const Comment: React.FC<Props> = props => {
 			}
 		}
 	}, [student]);
-
+	console.log(data)
 	return (
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>

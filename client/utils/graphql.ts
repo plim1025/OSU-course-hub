@@ -173,7 +173,9 @@ export const ADD_TEXTBOOK_TO_COURSE = gql`
 export const STUDENTS = gql`
 	query students {
 		students {
-			ONID
+            ONID
+            likedComments
+            dislikedComments
 		}
 	}
 `;
@@ -236,6 +238,8 @@ export const COURSE_COMMENTS = gql`
             createdAt
             quality
             difficulty
+            likes
+            dislikes
 		}
 	}
 `;
@@ -255,6 +259,8 @@ export const PROFESSOR_COMMENTS = gql`
             createdAt
             quality
             difficulty
+            likes
+            dislikes
 		}
 	}
 `;
@@ -274,6 +280,8 @@ export const STUDENT_COMMENTS = gql`
             createdAt
             quality
             difficulty
+            likes
+            dislikes
 		}
 	}
 `;
