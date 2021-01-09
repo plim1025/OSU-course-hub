@@ -290,6 +290,8 @@ export const CREATE_COMMENT = gql`
 	mutation createComment(
 		$text: String!
 		$ONID: String!
+		$quality: Int!
+		$difficulty: Int!
 		$professorID: Float
 		$courseID: Float
 		$campus: String
@@ -302,6 +304,8 @@ export const CREATE_COMMENT = gql`
 			input: {
 				text: $text
 				ONID: $ONID
+				quality: $quality
+				difficulty: $difficulty
 				professorID: $professorID
 				courseID: $courseID
 				campus: $campus
@@ -314,14 +318,17 @@ export const CREATE_COMMENT = gql`
 			comment {
 				id
 				text
-				gradeReceived
+				ONID
 				courseID
 				professorID
+				campus
 				recommend
 				baccCore
 				gradeReceived
 				tags
 				createdAt
+				likes
+				dislikes
 			}
 		}
 	}
