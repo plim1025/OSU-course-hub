@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Auth } from './Auth';
-import Button from './Button';
+import { Button } from 'react-bootstrap';
 import Searchbar from './Searchbar';
 
 interface Props {
@@ -75,11 +75,15 @@ const Header: React.FC<Props> = props => {
 				</Navbar.Collapse>
 			) : (
 				<Button
-					style={{ marginLeft: !props.searchbarToggled ? 'auto' : '' }}
+					style={{
+						marginLeft: !props.searchbarToggled ? 'auto' : '',
+						background: '#d73f09',
+					}}
 					variant='primary'
-					text='Login'
 					onClick={Auth}
-				/>
+				>
+					Login
+				</Button>
 			)}
 		</Navbar>
 	);
