@@ -4,20 +4,6 @@ import {useQuery, useMutation} from '@apollo/client';
 import {COMMENTS, COURSE, PROFESSOR} from '../utils/graphql';
 import {Card} from 'react-bootstrap';
 
-const commentBox = {
-    marginLeft: 50,
-    marginRight: 50,
-    marginTop: 10,
-    borderSize: 2,
-    //borderColor: '#eb8934',
-    borderRadius: 15,
-    borderStyle: 'solid',
-    minWidth: 300,
-    maxWidth: 600,
-    padding: 10,
-    paddingRight: 0,
-}
-
 const details = {
     display: 'inline',
 }
@@ -26,7 +12,22 @@ const item = {
     marginRight: 10
 }
 
-const ProfessorTitle = ({id}) => {
+interface Comment {
+    professorID: number,
+    courseID: number,
+    text: string,
+    createdAt: string
+}
+
+interface SpecificTitleProps {
+    id: number
+}
+
+interface TitleProps {
+    comment: Comment
+}
+
+const ProfessorTitle = ({id}: SpecificTitleProps) => {
     const { loading, error, data } = useQuery(PROFESSOR, {variables: {professorID: parseInt(id)}});
 	if (error) {
 		return <div>Error</div>;
@@ -42,7 +43,7 @@ const ProfessorTitle = ({id}) => {
     )
 }
 
-const CourseTitle = ({id}) => {
+const CourseTitle = ({id}: SpecificTitleProps) => {
     const { loading, error, data } = useQuery(COURSE, {variables: {courseID: parseInt(id)}});
 	if (error) {
 		return <div>Error</div>;
@@ -58,7 +59,7 @@ const CourseTitle = ({id}) => {
     )
 }
 
-const Title = ({comment}) => {
+const Title = ({comment}: TitleProps) => {
     if(comment.courseID === null){
         return (
             <ProfessorTitle id={comment.professorID}/>
@@ -84,14 +85,14 @@ const RecentComments: React.FC = () => {
     let time, formattedDate;
     return (
         <div style={{"width": "50%", "padding": "10px", "display": "flex",
-        "flex-direction": "column", "align-items": "center"}} className="border">
-            <h4 style={{"text-align": "center", "padding": "10px"}}>Recent Comments:</h4>
-            {recentComments.map((comment) => {
+        "flexDirection": "column", "alignItems": "center", "maxWidth": "1000px"}} className="border">
+            <h4 style={{"textAlign": "center", "padding": "10px"}}>Recent Comments:</h4>
+            {recentComments.map((comment: Comment) => {
                 time = Date.parse(comment.createdAt);
                 formattedDate = new Date(time);
                 return (
-                    <Card style={commentBox} style={{"width": "80%", "padding": "10px", 
-                    "margin-top": "10px"}} bg="light" border="dark">
+                    <Card style={{"width": "80%", "padding": "10px", 
+                    "marginTop": "10px"}} bg="light" border="dark">
                         <div style={details}>
                             <Title comment={comment}/>
                             <span style={item}>Created on: <b>{formattedDate.toDateString()}</b></span>

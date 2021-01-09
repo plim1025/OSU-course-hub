@@ -8,7 +8,7 @@ import {PROFESSORS, PROFESSOR, PROFESSOR_COMMENTS} from 'utils/graphql';
 import { useRouter } from 'next/router'
 import Comment from '../../components/Comment';
 import { Container } from 'react-bootstrap';
-import Searchbar from '../../components/Searchbar'
+import Error from '../../components/404';
 
 interface CommentI {
     ONID: number;
@@ -51,24 +51,8 @@ const ProfessorComments = ({id}) => {
 
 export default function Professor() {
 	const router = useRouter();
-	/*const [queryId, setQueryId] = useState(null)
-	useEffect(() => {
-		if(router && router.query) {
-		setQueryId(router.query.id)
-		}
-	}, [router]);
-	console.log(queryId);*/
 	const {id} = router.query;
 	console.log(id);
-    /*const {data} = useQuery(PROFESSOR, {
-        variables: {professorID: id},
-    });
-	console.log(data);
-	const professor = null;
-	if(data){
-		professor = data.professor.professor;
-		console.log(professor);
-	}*/
 	const { loading, error, data } = useQuery(PROFESSORS);
 	if (error) {
 		return <div>Error</div>;
@@ -78,7 +62,7 @@ export default function Professor() {
 	console.log(data);
 	var professor = null;
 	if(data){
-		const professors = data.professors.filter(professor => professor.id == id);
+		const professors = data.professors.filter((professor) => professor.id == id);
 		professor = professors[0];
 	}
 	if(professor){
@@ -96,9 +80,7 @@ export default function Professor() {
 	}
 	else {
 		return (
-			<div>
-				<h3>404 Error: Page does not exist</h3>
-			</div>
+			<Error props="professor"/>
 		)
 	}
 }

@@ -96,13 +96,19 @@ const CourseProfessors = ({id}) => {
     return (
         <div style={professorBlock}>
             <h4>Professors: </h4>
-            {professors.map((professor: Professor) => {
-                return (
-                    <Link href={`/professor/${professor.id}`}>
-                        <p style={professorList}><b>{professor.firstName} {professor.lastName}</b></p>
-                    </Link>
-                );
-            })}
+            { 
+                (professors.length > 0) ? (
+                    professors.map((professor: Professor) => {
+                        return (
+                            <Link href={`/professor/${professor.id}`}>
+                                <p style={professorList}><b>{professor.firstName} {professor.lastName}</b></p>
+                            </Link>
+                        );
+                    })
+                ) : (
+                    <b>N/A</b>
+                )
+            }
         </div>
     );
 }
@@ -129,11 +135,17 @@ const CourseTags = ({id}) => {
     return (
         <div style={tagBlock}>
             <h4>Tags: </h4>
-            {tags.map((tag) => {
-                return (
-                    <p style={tagList}><span style={aTag}>{tag}</span></p>
-                );
-            })}
+            {
+                (tags.length > 0) ? (
+                    tags.map((tag) => {
+                        return (
+                            <p style={tagList}><span style={aTag}>{tag}</span></p>
+                        );
+                    })
+                ) : (
+                    <b>N/A</b>
+                )
+            }
         </div>
     );
 }

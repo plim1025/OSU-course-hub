@@ -5,33 +5,17 @@ import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header';
 import { useQuery } from '@apollo/client';
 import {STUDENTS, STUDENT} from 'utils/graphql';
-import { useRouter } from 'next/router'
-import Searchbar from '../../components/Searchbar'
+import { useRouter } from 'next/router';
+import Error from '../../components/404';
 
 interface Student {
-    ONID: number
+    ONID: string
 }
 
 export default function Professor() {
 	const router = useRouter();
-	/*const [queryId, setQueryId] = useState(null)
-	useEffect(() => {
-		if(router && router.query) {
-		setQueryId(router.query.id)
-		}
-	}, [router]);
-	console.log(queryId);*/
 	const {id} = router.query;
 	console.log(id);
-    /*const {data} = useQuery(COURSE, {
-        variables: {courseID: id},
-    });
-	console.log(data);
-	const course = null;
-	if(data){
-		course = data.course.course;
-		console.log(course);
-	}*/
 	const { loading, error, data } = useQuery(STUDENTS);
 	if (error) {
 		return <div>Error</div>;
@@ -41,7 +25,7 @@ export default function Professor() {
 	console.log(data);
 	var student = null;
 	if(data){
-		const students = data.students.filter(student => student.ONID == id);
+		const students = data.students.filter((student: Student) => student.ONID == id);
 		student = students[0];
     }
     console.log(student)
@@ -59,9 +43,7 @@ export default function Professor() {
 	}
 	else {
 		return (
-			<div>
-				<h3>404 Error: Page does not exist</h3>
-			</div>
+			<Error props="student"/>
 		)
 	}
 }

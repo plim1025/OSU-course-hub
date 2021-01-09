@@ -83,6 +83,7 @@ interface Comment {
     quality: number,
     difficulty: number
 }
+
 interface Props {
     professor: Professor,
     onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
@@ -101,13 +102,19 @@ const ProfessorCourses = ({id}) => {
     return (
         <div style={courseBlock}>
             <h4>Courses: </h4>
-            {courses.map((course: Course) => {
-                return (
-                    <Link href={`/course/${course.id}`}>
-                        <p style={courseList} key={course.id}><b>{course.department} {course.number}</b></p>
-                    </Link>
-                );
-            })}
+            {
+                (courses.length > 0) ? (
+                    courses.map((course: Course) => {
+                        return (
+                            <Link href={`/course/${course.id}`}>
+                                <p style={courseList} key={course.id}><b>{course.department} {course.number}</b></p>
+                            </Link>
+                        );
+                    })
+                ) : (
+                    <b>N/A</b>
+                )
+            }
         </div>
     );
 }
@@ -123,7 +130,7 @@ const ProfessorTags = ({id}) => {
     }
     const comments = data.professorComments;
     let tags: string[] = [];
-    comments.forEach(comment => comment.tags.forEach(tag => tags.push(tag)));
+    comments.forEach((comment: Comment) => comment.tags.forEach(tag => tags.push(tag)));
     
     function onlyUnique(value: any, index: any, self: any) {
         return self.indexOf(value) === index;
@@ -134,16 +141,22 @@ const ProfessorTags = ({id}) => {
     return (
         <div style={tagBlock}>
             <h4>Tags: </h4>
-            {tags.map((tag) => {
-                return (
-                    <p style={tagList} key={tag}><span style={aTag}>{tag}</span></p>
-                );
-            })}
+            {
+                (tags.length > 0) ? (
+                    tags.map((tag) => {
+                        return (
+                            <p style={tagList} key={tag}><span style={aTag}>{tag}</span></p>
+                        );
+                    })
+                ) : (
+                    <b>N/A</b>
+                )
+            }
         </div>
     );
 }
 
-const GetDifficultyQuality = (difficulty: number[], quality: number[], id: number) => {
+const GetDifficultyQuality = (difficulty: number[], quality: number[], id: string) => {
     if(id){
         const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
             variables: {professorID: parseInt(id)},
@@ -197,7 +210,7 @@ const ProfessorInfo: React.FC<Props> = (props) => {
                     <span style={variable}>{averageDifficulty}</span>
                     <span style={constant}>/5</span>
                 </h3>
-                <h5>Based on <b>{quality.length}</b> ratings.</h5>
+                <h5>Based on <b>{quality.length}</b> rating{(quality.length == 1) ? null : 's'}.</h5>
                 <ProfessorCourses id={professor.id}/>
                 <ProfessorTags id={professor.id}/>
             </Card> 

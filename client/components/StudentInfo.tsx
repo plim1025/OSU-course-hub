@@ -4,7 +4,7 @@ import { Button, Container, Card } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {STUDENT_COMMENTS} from '../utils/graphql';
 import Comment from './Comment';
-interface CommentI {
+interface IComment {
     ONID: number;
     baccCore: boolean;
     campus: string;
@@ -21,18 +21,25 @@ interface CommentI {
     quality: number;
     difficulty: number;
 }
+
+interface StudentCommentsProps {
+    comments: IComment[]
+}
+
 interface Student {
-    ONID: string
+    ONID: string,
+    likedComments: number[],
+    dislikedComments: number[]
 }
 interface Props {
     student: Student,
     onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
-const StudentComments = ({comments}) => {
+const StudentComments = ({comments}: StudentCommentsProps) => {
     return (
         <Container>
-            {comments.map((comment: CommentI, i: number) => {
+            {comments.map((comment: IComment, i: number) => {
                 return <Comment key={i} props={comment} />;
             })}
 	    </Container>

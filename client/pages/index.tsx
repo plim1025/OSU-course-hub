@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import Head from 'next/head';
-import React from 'react';
+import React, {CSSProperties} from 'react';
 import { PROFESSORS } from 'utils/graphql';
 import Header from '../components/Header';
 import Searchbar from '../components/Searchbar';
@@ -15,20 +15,9 @@ const container = {
 	flexFlow: 'center',
 	alignContent: 'flex-start',
 	justifyContent: 'center'
-}
-
-const item = {
-	maxWidth: 1000,
-}
+} as React.CSSProperties
 
 const Home: React.FC = () => {
-	const { loading, error, data } = useQuery(PROFESSORS);
-	if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-	}
-
 	return (
 		<>
 			<Head>
@@ -38,8 +27,8 @@ const Home: React.FC = () => {
 			<Header searchbarToggled={false} />
 			<Searchbar showButton={true} size='lg' />
 			<div style={container}>
-				<HighestRatedProfessor style={item} />
-				<RecentComments style={item} />
+				<HighestRatedProfessor />
+				<RecentComments />
 			</div>
 		</>
 	);

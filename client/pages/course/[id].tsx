@@ -8,8 +8,7 @@ import {COURSES, COURSE, COURSE_COMMENTS} from 'utils/graphql';
 import Comment from '../../components/Comment';
 import { useRouter } from 'next/router'
 import { Container } from 'react-bootstrap';
-import Searchbar from '../../components/Searchbar'
-
+import Error from '../../components/404';
 interface CommentI {
     ONID: number;
     baccCore: boolean;
@@ -57,24 +56,8 @@ const CourseComments = ({id}) => {
 
 export default function Course() {
 	const router = useRouter();
-	/*const [queryId, setQueryId] = useState(null)
-	useEffect(() => {
-		if(router && router.query) {
-		setQueryId(router.query.id)
-		}
-	}, [router]);
-	console.log(queryId);*/
 	const {id} = router.query;
 	console.log(id);
-    /*const {data} = useQuery(COURSE, {
-        variables: {courseID: id},
-    });
-	console.log(data);
-	const course = null;
-	if(data){
-		course = data.course.course;
-		console.log(course);
-	}*/
 	const { loading, error, data } = useQuery(COURSES);
 	if (error) {
 		return <div>Error</div>;
@@ -102,9 +85,7 @@ export default function Course() {
 	}
 	else {
 		return (
-			<div>
-				<h3>404 Error: Page does not exist</h3>
-			</div>
+			<Error props="course"/>
 		)
 	}
 }

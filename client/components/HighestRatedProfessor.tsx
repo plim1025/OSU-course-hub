@@ -5,21 +5,6 @@ import {PROFESSORS, PROFESSOR_COMMENTS, COMMENTS} from '../utils/graphql';
 import {Card} from 'react-bootstrap';
 import Link from 'next/link'
 
-const professorBlock = {
-    marginLeft: 50,
-    marginRight: 50,
-    marginTop: 10,
-    borderSize: 2,
-    borderColor: '#eb8934',
-    borderRadius: 15,
-    borderStyle: 'solid',
-    minWidth: 300,
-    maxWidth: 600,
-    padding: 10,
-    paddingRight: 0,
-    backgroundColor: '#f2f2f2',
-}
-
 const variable = {
     marginLeft: 5,
     fontWeight: 700,
@@ -40,6 +25,7 @@ const item = {
 }
 
 interface Comment {
+    professorID: number,
     quality: number,
     difficulty: number
 }
@@ -51,24 +37,38 @@ interface Professor {
     college: string
 }
 
-const Info = (professorRatings) => {
-    console.log(professorRatings)
+interface ProfessorRating {
+    professor: Professor,
+    rating: number
+}
+
+const GetDifficulty = (difficulty: number[], id: number) => {
+    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
+        variables: {professorID: parseInt(id)},
+    });
+    if (error) {
+		return <div>Error</div>;
+	} else if (loading) {
+		return <div>Loading...</div>;
+    }
+    const comments = data.professorComments;
+    comments.forEach((comment: Comment) => {
+        difficulty.push(comment.difficulty)
+    });
+    return
+}
+
+const Info = (topProfessors: ProfessorRating) => {
+    console.log(topProfessors)
     return (
         <div style={{"width": "50%", "padding": "10px", "display": "flex",
-         "flex-direction": "column", "align-items": "center"}} className="border">
-            <h4 style={{"text-align": "center", "padding": "10px"}}>Highest Rated Professors:</h4>
-            {professorRatings.professorRatings.map((object, index) => {
+         "flexDirection": "column", "alignItems": "center", "maxWidth": "1000px"}} className="border">
+            <h4 style={{"textAlign": "center", "padding": "10px"}}>Highest Rated Professors:</h4>
+            {topProfessors.topProfessors.map((object: ProfessorRating, index: number) => {
                 let professor = object.professor
                 let difficulty: number[] = []
-                let quality: number[] = []
-                GetDifficultyQuality(difficulty, quality, professor.id)
-                let averageQuality, averageDifficulty
-                if(quality.length > 0){
-                    averageQuality = (quality.reduce((a, b) => a + b, 0) / quality.length)
-                }
-                else {
-                    averageQuality = 0
-                }
+                GetDifficulty(difficulty, professor.id)
+                let averageDifficulty
                 if(difficulty.length > 0){
                     averageDifficulty = (difficulty.reduce((a, b) => a + b, 0) / difficulty.length)
                 }
@@ -76,12 +76,12 @@ const Info = (professorRatings) => {
                     averageDifficulty = 0
                 }
                 return (
-                    <div style={{"display": "flex", "justify-content": "center", "width": "80%", "margin-right": "30px"}}>
-                        <div style={{"margin": "auto", "font-size": "30px"}}>
+                    <div style={{"display": "flex", "justifyContent": "center", "width": "80%", "marginRight": "30px"}}>
+                        <div style={{"margin": "auto", "fontSize": "30px"}}>
                             <b>{index + 1}</b>
                         </div>
-                        <Card style={professorBlock} style={{"width": "90%", "padding": "10px", 
-                        "margin-top": "10px"}} bg="light" border="dark">
+                        <Card style={{"width": "90%", "padding": "10px", 
+                        "marginTop": "10px"}} bg="light" border="dark">
                             <Card.Title>                    
                                 <Link href={`/professor/${professor.id}`}>
                                     <b>{professor.firstName} {professor.lastName}</b>
@@ -89,7 +89,7 @@ const Info = (professorRatings) => {
                             </Card.Title>
                             <Card.Text style={department}>{professor.college}</Card.Text>
                             <Card.Text style={item}>Quality: 
-                                <span style={variable}>{averageQuality}</span>
+                                <span style={variable}>{object.rating}</span>
                                 <span style={constant}>/5</span>
                             </Card.Text>
                             <Card.Text style={item}>Difficulty: 
@@ -104,14 +104,14 @@ const Info = (professorRatings) => {
     )
 }
 
-const RenderTopProfessors = ({professors}: Professor[]) => {
+const RenderTopProfessors = ({professors}) => {
     const { loading, error, data } = useQuery(COMMENTS);
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
     }
-    const comments = data.comments.filter((comment) => comment.professorID != null)
+    const comments = data.comments.filter((comment: Comment) => comment.professorID != null)
     let professorRatings = []
     for(let i = 0; i < professors.length; i++){
         let ratings = []
@@ -133,30 +133,11 @@ const RenderTopProfessors = ({professors}: Professor[]) => {
         }
         professorRatings.push(currProfessor)
     }
-    let sortedProfessors = professorRatings.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
+    let topProfessors = professorRatings.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
     console.log(comments)
-    console.log(sortedProfessors)
-
     return (
-        <Info professorRatings={sortedProfessors}/>
+        <Info topProfessors={topProfessors}/>
     )
-}
-
-const GetDifficultyQuality = (difficulty: number[], quality: number[], id: number) => {
-    const {loading, error, data} = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: parseInt(id)},
-    });
-    if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
-    }
-    const comments = data.professorComments;
-    comments.forEach((comment: Comment) => {
-        quality.push(comment.quality)
-        difficulty.push(comment.difficulty)
-    });
-    return
 }
 
 const HighestRatedProfessor: React.FC = () => {
