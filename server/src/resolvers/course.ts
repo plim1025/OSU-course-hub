@@ -47,7 +47,7 @@ export class CourseResolver {
     }
 
     @Query(() => [Professor])
-    async professorCourses(@Arg('courseID') id: number): Promise<Professor[]> {
+    async courseProfessors(@Arg('courseID') id: number): Promise<Professor[]> {
         const professors = await CourseProfessor.find({ courseID: id });
         const professorIDs = professors.map(professor => professor.professorID);
         return Professor.findByIds(professorIDs);

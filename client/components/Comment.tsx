@@ -23,7 +23,7 @@ interface Props {
 	};
 }
 
-const Searchbar: React.FC<Props> = props => {
+const Comment: React.FC<Props> = props => {
 	const studentID = window.sessionStorage.getItem('request-onid');
 	let student = useQuery(STUDENT, { variables: { ONID: studentID } });
 	const data = props.props;
@@ -67,7 +67,7 @@ const Searchbar: React.FC<Props> = props => {
 			}
 		}
 	}, [student]);
-
+	console.log(data)
 	return (
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>
@@ -86,7 +86,7 @@ const Searchbar: React.FC<Props> = props => {
 				</Card.Text>
 			</Row>
 			<Card.Text className='mt-2 text-left' style={{ whiteSpace: 'pre-wrap' }}>
-				<strong>Campus:</strong> {data.campus}
+				<strong>Campus:</strong> {data.campus ? data.campus : 'N/A'}
 				{'  '}
 				<strong>Recommend:</strong> {data.recommend ? 'Yes' : 'No'}
 				{'  '}
@@ -142,4 +142,4 @@ const Searchbar: React.FC<Props> = props => {
 	);
 };
 
-export default Searchbar;
+export default Comment;

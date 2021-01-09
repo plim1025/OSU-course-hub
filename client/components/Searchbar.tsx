@@ -17,10 +17,7 @@ const largeWrapper = {
 	width: 'calc(100% - 80px)',
 	margin: 'auto',
 	background: '#fff',
-	position: 'fixed',
-	left: '50%',
-	top: '50%',
-	transform: 'translate(-50%, -50%)',
+	marginTop: 100
 } as React.CSSProperties;
 
 const smallWrapper = {
@@ -62,7 +59,7 @@ const Searchbar: React.FC<Props> = props => {
 
 	const handleChange = (newValue: any) => {
 		openMenu(false);
-		router.push(`${newValue.type}/${newValue.id}`);
+		router.push(`../${newValue.type}/${newValue.id}`);
 	};
 
 	if (loadingProfessors || loadingCourses) {
