@@ -2,17 +2,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState} from 'react';
 import {useQuery, useMutation} from '@apollo/client';
 import {COMMENTS, COURSE, PROFESSOR} from '../utils/graphql';
-import {Card} from 'react-bootstrap';
-
-const details = {
-    display: 'inline',
-}
-
-const item = {
-    marginRight: 10
-}
+import {Card, Row} from 'react-bootstrap';
 
 interface Comment {
+    id: number,
     professorID: number,
     courseID: number,
     text: string,
@@ -92,11 +85,13 @@ const RecentComments: React.FC = () => {
                 formattedDate = new Date(time);
                 return (
                     <Card style={{"width": "80%", "padding": "10px", 
-                    "marginTop": "10px"}} bg="light" border="dark">
-                        <div style={details}>
+                    "marginTop": "10px"}} bg="light" border="dark" key={comment.id}>
+                        <Row className='pl-3 pr-4'>
                             <Title comment={comment}/>
-                            <span style={item}>Created on: <b>{formattedDate.toDateString()}</b></span>
-                        </div>
+                            <Card.Text className='text-right ml-auto'>
+                                Created on: <b>{formattedDate.toDateString()}</b>
+                            </Card.Text>
+                        </Row>
                         <br />
                         <Card.Text>{comment.text}</Card.Text>
                     </Card>

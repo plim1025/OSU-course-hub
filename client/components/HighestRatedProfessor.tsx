@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState} from 'react';
 import {useQuery} from '@apollo/client';
 import {PROFESSORS, PROFESSOR_COMMENTS, COMMENTS} from '../utils/graphql';
-import {Card} from 'react-bootstrap';
+import {Card, Row} from 'react-bootstrap';
 import Link from 'next/link'
 
 const variable = {
@@ -76,18 +76,21 @@ const Info = (topProfessors: ProfessorRating) => {
                     averageDifficulty = 0
                 }
                 return (
-                    <div style={{"display": "flex", "justifyContent": "center", "width": "80%", "marginRight": "30px"}}>
+                    <div style={{"display": "flex", "justifyContent": "center", 
+                    "width": "80%", "marginRight": "30px"}} key={professor.id}>
                         <div style={{"margin": "auto", "fontSize": "30px"}}>
                             <b>{index + 1}</b>
                         </div>
                         <Card style={{"width": "90%", "padding": "10px", 
                         "marginTop": "10px"}} bg="light" border="dark">
-                            <Card.Title>                    
-                                <Link href={`/professor/${professor.id}`}>
-                                    <b>{professor.firstName} {professor.lastName}</b>
-                                </Link>
-                            </Card.Title>
-                            <Card.Text style={department}>{professor.college}</Card.Text>
+                                <Row className='pl-3 pr-4'>
+                                    <Card.Title>
+                                        <Link href={`/professor/${professor.id}`}>
+                                            <b>{professor.firstName} {professor.lastName}</b>
+                                        </Link>
+                                    </Card.Title>
+                                    <Card.Text style={department} className='text-right ml-auto'>{professor.college}</Card.Text>
+                                </Row>                    
                             <Card.Text style={item}>Quality: 
                                 <span style={variable}>{object.rating}</span>
                                 <span style={constant}>/5</span>
