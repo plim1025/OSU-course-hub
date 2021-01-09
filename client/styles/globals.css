@@ -31,8 +31,5 @@ a {
 .modal-content {
 	width: 140%;
 	padding: 20px 30px;
-}
-
-.modal-dialog {
-	margin: 50px 20%;
+	transform: translate(-100px, 0);
 }

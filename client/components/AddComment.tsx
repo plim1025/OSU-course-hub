@@ -2,18 +2,21 @@ import { fromPromise } from '@apollo/client';
 import React, { useState } from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { Grades, Campuses, Tags } from '../utils/util';
+import { CREATE_COMMENT } from '../utils/graphql';
+import { useMutation } from '@apollo/client';
 
 const AddComment: React.FC = () => {
 	const [values, setValues] = useState({
-		comment: '',
+		text: '',
 		campus: 'Corvallis',
 		quality: 5,
 		difficulty: 5,
-		recommend: 'N/A',
-		baccCore: 'N/A',
-		grade: 'N/A',
+		recommend: true,
+		baccCore: true,
+		gradeReceived: 'N/A',
 		tags: [],
 	});
+	const [createComment, { comments }] = useMutation(CREATE_COMMENT);
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
@@ -21,12 +24,34 @@ const AddComment: React.FC = () => {
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log(values);
-		// setShow(false);
+		const studentID = window.sessionStorage.getItem('request-onid');
+		createComment({ variables: { ...values, ONID: studentID, courseID: 1 } });
+		setShow(false);
+	};
+
+	const handleRating = (e: React.FormEvent) => {
+		setValues({ ...values, [e.target.name]: parseFloat(e.target.value) });
 	};
 
 	const handleChange = (e: React.FormEvent) => {
-		setValues({ ...values, [e.target.name]: e.target.value });
+		if (e.target.name == 'recommend' || e.target.name == 'baccCore') {
+			const option = e.target.value == 'Yes' ? true : false;
+			setValues({ ...values, [e.target.name]: option });
+		} else {
+			setValues({ ...values, [e.target.name]: e.target.value });
+		}
+	};
+
+	const handleTags = (e: React.FormEvent) => {
+		const idx = values.tags.indexOf(e.target.name);
+
+		if (idx === -1) {
+			setValues({ ...values, tags: [...values.tags, e.target.name] });
+		} else {
+			const newTags = values.tags;
+			newTags.splice(idx);
+			setValues({ ...values, tags: newTags });
+		}
 	};
 
 	return (
@@ -35,17 +60,21 @@ const AddComment: React.FC = () => {
 				New Comment
 			</Button>
 
-			<Modal show={show} onHide={handleClose} className='w-100'>
+			<Modal show={show} onHide={handleClose}>
 				<Form onSubmit={handleSubmit}>
 					<Modal.Header closeButton>
 						<Modal.Title>Add Comment</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						<Form.Group controlId='comment'>
+						<Form.Group controlId='text'>
 							<Form.Label>Comment</Form.Label>
-							<Form.Control as='textarea' rows={5} />
+							<Form.Control
+								as='textarea'
+								rows={5}
+								name='text'
+								onChange={handleChange}
+							/>
 						</Form.Group>
-
 						<Form.Group controlId='campus'>
 							<Form.Label>Campus</Form.Label>
 							<Form.Control as='select' name='campus' onChange={handleChange}>
@@ -59,12 +88,15 @@ const AddComment: React.FC = () => {
 								<option value='Other'>Other</option>
 							</Form.Control>
 						</Form.Group>
-
 						<Row>
 							<Col>
 								<Form.Group controlId='quality'>
 									<Form.Label>Quality</Form.Label>
-									<Form.Control as='select'>
+									<Form.Control
+										as='select'
+										name='quality'
+										onChange={handleRating}
+									>
 										{rating.map((rating, idx) => {
 											return (
 												<option value={rating} key={idx}>
@@ -79,7 +111,11 @@ const AddComment: React.FC = () => {
 							<Col>
 								<Form.Group controlId='difficulty'>
 									<Form.Label>Difficulty</Form.Label>
-									<Form.Control as='select'>
+									<Form.Control
+										as='select'
+										name='difficulty'
+										onChange={handleRating}
+									>
 										{rating.map((rating, idx) => {
 											return (
 												<option value={rating} key={idx}>
@@ -91,28 +127,23 @@ const AddComment: React.FC = () => {
 								</Form.Group>
 							</Col>
 						</Row>
-
 						<Form.Group controlId='recommend'>
 							<Form.Label>Recommend</Form.Label>
-							<Form.Control as='select'>
-								<option value='N/A'>N/A</option>
+							<Form.Control as='select' name='recommend' onChange={handleChange}>
 								<option value='Yes'>Yes</option>
 								<option value='No'>No</option>
 							</Form.Control>
 						</Form.Group>
-
 						<Form.Group controlId='baccCore'>
 							<Form.Label>Took it as Bacc Core?</Form.Label>
-							<Form.Control as='select'>
-								<option value='N/A'>N/A</option>
+							<Form.Control as='select' name='baccCore' onChange={handleChange}>
 								<option value='Yes'>Yes</option>
 								<option value='No'>No</option>
 							</Form.Control>
 						</Form.Group>
-
-						<Form.Group controlId='grade'>
+						<Form.Group controlId='gradeReceived'>
 							<Form.Label>Grade</Form.Label>
-							<Form.Control as='select'>
+							<Form.Control as='select' name='gradeReceived' onChange={handleChange}>
 								<option>N/A</option>
 								{Grades.map((grade, idx) => {
 									return (
@@ -123,21 +154,20 @@ const AddComment: React.FC = () => {
 								})}
 							</Form.Control>
 						</Form.Group>
-
-						<Form.Group controlId='tags'>
-							<Form.Label>Tags: </Form.Label> <br />
-							{Tags.map((tag, idx) => {
-								return (
-									<Form.Check
-										className='mr-3'
-										inline
-										label={tag}
-										type='checkbox'
-										key={idx}
-									/>
-								);
-							})}
-						</Form.Group>
+						<Form.Label>Tags: </Form.Label> <br />
+						{Tags.map((tag, idx) => {
+							return (
+								<Form.Check
+									className='mr-3'
+									inline
+									label={tag}
+									type='checkbox'
+									key={idx}
+									name={tag}
+									onChange={handleTags}
+								/>
+							);
+						})}
 					</Modal.Body>
 					<Modal.Footer>
 						<Button variant='primary' type='submit'>
