@@ -27,3 +27,12 @@ a {
 	top: 50%;
 	transform: translate(-50%, -50%);
 }
+
+.modal-content {
+	width: 140%;
+	padding: 20px 30px;
+}
+
+.modal-dialog {
+	margin: 50px 20%;
+}

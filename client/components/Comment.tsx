@@ -25,7 +25,10 @@ interface Props {
 
 const Searchbar: React.FC<Props> = props => {
 	const studentID = window.sessionStorage.getItem('request-onid');
-	let student = useQuery(STUDENT, { variables: { ONID: studentID } });
+	let student = {};
+	if (studentID) {
+		student = useQuery(STUDENT, { variables: { ONID: studentID } });
+	}
 	const data = props.props;
 
 	const [likeOrDislike, setLikeOrDislike] = useState(0);
