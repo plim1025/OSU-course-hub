@@ -93,6 +93,17 @@ export const COURSE = gql`
 	}
 `;
 
+export const COURSE_PROFESSORS = gql`
+	query CourseProfessors($courseID: Float!) {
+		courseProfessors(courseID: $courseID) {
+			id
+			firstName
+            lastName
+            college
+		}
+	}
+`;
+
 export const CREATE_COURSE = gql`
 	mutation CourseInfo($department: String!, $number: String!) {
 		createCourse(input: { department: $department, number: $number }) {
@@ -162,7 +173,9 @@ export const ADD_TEXTBOOK_TO_COURSE = gql`
 export const STUDENTS = gql`
 	query students {
 		students {
-			ONID
+            ONID
+            likedComments
+            dislikedComments
 		}
 	}
 `;
@@ -222,7 +235,11 @@ export const COURSE_COMMENTS = gql`
 			baccCore
 			gradeReceived
 			tags
-			createdAt
+            createdAt
+            quality
+            difficulty
+            likes
+            dislikes
 		}
 	}
 `;
@@ -239,7 +256,11 @@ export const PROFESSOR_COMMENTS = gql`
 			baccCore
 			gradeReceived
 			tags
-			createdAt
+            createdAt
+            quality
+            difficulty
+            likes
+            dislikes
 		}
 	}
 `;
@@ -256,7 +277,11 @@ export const STUDENT_COMMENTS = gql`
 			baccCore
 			gradeReceived
 			tags
-			createdAt
+            createdAt
+            quality
+            difficulty
+            likes
+            dislikes
 		}
 	}
 `;

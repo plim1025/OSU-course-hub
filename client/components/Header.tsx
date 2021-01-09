@@ -3,7 +3,6 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { Auth } from './Auth';
 import Button from './Button';
 import Searchbar from './Searchbar';
-
 interface Props {
 	searchbarToggled: boolean;
 }
@@ -61,14 +60,16 @@ const Header: React.FC<Props> = props => {
 			) : null}
 			{ONID ? (
 				<Navbar.Collapse>
-					<Navbar.Text
+					<Nav.Link
 						style={{
 							marginLeft: 'auto',
 							color: '#fff',
+
 						}}
+						href={`/student/${ONID}`}
 					>
 						{ONID}
-					</Navbar.Text>
+					</Nav.Link>
 					<Nav style={{ padding: '0 20px' }}>
 						<Nav.Link onClick={logout}>Logout</Nav.Link>
 					</Nav>
