@@ -7,7 +7,7 @@ import { useQuery } from '@apollo/client';
 import {COURSES, COURSE, COURSE_COMMENTS} from 'utils/graphql';
 import Comment from '../../components/Comment';
 import { useRouter } from 'next/router'
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import Error from '../../components/404';
 interface CommentI {
     ONID: number;
@@ -40,10 +40,9 @@ const CourseComments = ({id}) => {
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const comments = data.courseComments;
-    console.log(comments);
 	return (
 		<Container>
             <h3>Comments:</h3>
@@ -57,14 +56,12 @@ const CourseComments = ({id}) => {
 export default function Course() {
 	const router = useRouter();
 	const {id} = router.query;
-	console.log(id);
 	const { loading, error, data } = useQuery(COURSES);
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}	
-	console.log(data);
 	var course = null;
 	if(data){
 		const courses = data.courses.filter((course) => course.id == id);

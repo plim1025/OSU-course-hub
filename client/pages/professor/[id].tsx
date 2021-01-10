@@ -7,7 +7,7 @@ import { useQuery } from '@apollo/client';
 import {PROFESSORS, PROFESSOR, PROFESSOR_COMMENTS} from 'utils/graphql';
 import { useRouter } from 'next/router'
 import Comment from '../../components/Comment';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import Error from '../../components/404';
 
 interface CommentI {
@@ -35,7 +35,7 @@ const ProfessorComments = ({id}) => {
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const comments = data.professorComments;
     console.log(comments);
@@ -52,14 +52,12 @@ const ProfessorComments = ({id}) => {
 export default function Professor() {
 	const router = useRouter();
 	const {id} = router.query;
-	console.log(id);
 	const { loading, error, data } = useQuery(PROFESSORS);
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}	
-	console.log(data);
 	var professor = null;
 	if(data){
 		const professors = data.professors.filter((professor) => professor.id == id);

@@ -3,7 +3,7 @@ import React from 'react';
 import Comment from '../components/Comment';
 import Header from '../components/Header';
 import { COMMENTS, STUDENT } from 'utils/graphql';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 
 export default function course() {
 	const { loading, error, data } = useQuery(COMMENTS);
@@ -11,7 +11,7 @@ export default function course() {
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 
 	return (

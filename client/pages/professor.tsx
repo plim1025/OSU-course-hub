@@ -6,6 +6,7 @@ import ProfessorInfo from '../components/ProfessorInfo';
 import TestingAPI from '../components/TestingAPI';
 import { useQuery } from '@apollo/client';
 import {PROFESSORS} from 'utils/graphql';
+import {Spinner} from 'react-bootstrap';
 
 //For testing API
 const Info: React.FC = () => {
@@ -13,7 +14,7 @@ const Info: React.FC = () => {
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	console.log(data);
 	return (

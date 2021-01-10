@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import { Button } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {PROFESSOR_COURSES, PROFESSOR_COMMENTS} from '../utils/graphql';
-import {Card, Container} from 'react-bootstrap';
+import {Card, Container, Spinner} from 'react-bootstrap';
 import Link from 'next/link'
 
 //CSS
@@ -96,7 +96,7 @@ const ProfessorCourses = ({id}) => {
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const courses = data.professorCourses;
     return (
@@ -126,7 +126,7 @@ const ProfessorTags = ({id}) => {
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const comments = data.professorComments;
     let tags: string[] = [];
@@ -164,7 +164,7 @@ const GetDifficultyQuality = (difficulty: number[], quality: number[], id: strin
         if (error) {
             return <div>Error</div>;
         } else if (loading) {
-            return <div>Loading...</div>;
+            return <Spinner animation="border" size="sm" />;
         }
         const comments = data.professorComments;
         comments.forEach((comment: Comment) => {

@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState} from 'react';
 import {useQuery} from '@apollo/client';
 import {PROFESSORS, PROFESSOR_COMMENTS, COMMENTS} from '../utils/graphql';
-import {Card, Row} from 'react-bootstrap';
+import {Card, Row, Spinner} from 'react-bootstrap';
 import Link from 'next/link'
 
 const variable = {
@@ -49,7 +49,7 @@ const GetDifficulty = (difficulty: number[], id: number) => {
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const comments = data.professorComments;
     comments.forEach((comment: Comment) => {
@@ -112,7 +112,7 @@ const RenderTopProfessors = ({professors}) => {
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const comments = data.comments.filter((comment: Comment) => comment.professorID != null)
     let professorRatings = []
@@ -148,7 +148,7 @@ const HighestRatedProfessor: React.FC = () => {
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     return (
         <RenderTopProfessors professors={data.professors}/>

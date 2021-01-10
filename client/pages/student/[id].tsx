@@ -7,28 +7,28 @@ import { useQuery } from '@apollo/client';
 import {STUDENTS, STUDENT} from 'utils/graphql';
 import { useRouter } from 'next/router';
 import Error from '../../components/404';
+import {Spinner} from 'react-bootstrap';
 
 interface Student {
     ONID: string
 }
 
-export default function Professor() {
+export default function Student({students}) {
 	const router = useRouter();
 	const {id} = router.query;
-	console.log(id);
 	const { loading, error, data } = useQuery(STUDENTS);
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}	
-	console.log(data);
 	var student = null;
 	if(data){
 		const students = data.students.filter((student: Student) => student.ONID == id);
 		student = students[0];
     }
-    console.log(student)
+    //const theStudents = students.filter((student: Student) => student.ONID == id);
+    //let student = theStudents[0];
 	if(student){
 		return (
 			<>
@@ -47,3 +47,19 @@ export default function Professor() {
 		)
 	}
 }
+
+/*export function getStaticPaths(){
+    const { data } = useQuery(STUDENTS);
+    const paths = data.students.map((student) => `/student/${student.id}`);
+
+    return {paths, fallback: false}
+}
+
+export const getStaticProps = async () => {
+    const { data } = useQuery(STUDENTS);
+    return {
+        props: {
+            students: data.students
+        }
+    }
+}*/

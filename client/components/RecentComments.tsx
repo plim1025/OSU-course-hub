@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState} from 'react';
 import {useQuery, useMutation} from '@apollo/client';
 import {COMMENTS, COURSE, PROFESSOR} from '../utils/graphql';
-import {Card, Row} from 'react-bootstrap';
+import {Card, Row, Spinner} from 'react-bootstrap';
 
 interface Comment {
     id: number,
@@ -25,7 +25,7 @@ const ProfessorTitle = ({id}: SpecificTitleProps) => {
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const professor = data.professor.professor
     console.log(professor)
@@ -41,7 +41,7 @@ const CourseTitle = ({id}: SpecificTitleProps) => {
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const course = data.course.course
     console.log(course)
@@ -70,7 +70,7 @@ const RecentComments: React.FC = () => {
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const recentComments = data.comments.slice(0, Math.min(4, data.comments.length));
     console.log(recentComments);

@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState} from 'react';
-import { Button, Container, Card } from 'react-bootstrap';
+import { Button, Container, Card, Spinner } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {STUDENT_COMMENTS} from '../utils/graphql';
 import Comment from './Comment';
@@ -55,7 +55,7 @@ const StudentInfo: React.FC<Props> = (props) => {
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const comments = data.studentComments;
 	return (

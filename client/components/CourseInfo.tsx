@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import { Button } from 'react-bootstrap';
 import {useQuery, useMutation} from '@apollo/client';
 import {COURSE_PROFESSORS, COURSE_COMMENTS} from '../utils/graphql';
-import {Card, Container} from 'react-bootstrap';
+import {Card, Container, Spinner} from 'react-bootstrap';
 import Link from 'next/link';
 
 //CSS
@@ -90,7 +90,7 @@ const CourseProfessors = ({id}) => {
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const professors = data.courseProfessors;
     return (
@@ -100,7 +100,7 @@ const CourseProfessors = ({id}) => {
                 (professors.length > 0) ? (
                     professors.map((professor: Professor) => {
                         return (
-                            <Link href={`/professor/${professor.id}`}>
+                            <Link href={`/professor/${professor.id}`} key={professor.id}>
                                 <p style={professorList}><b>{professor.firstName} {professor.lastName}</b></p>
                             </Link>
                         );
@@ -120,7 +120,7 @@ const CourseTags = ({id}) => {
     if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
     }
     const comments = data.courseComments;
     let tags: string[] = [];
@@ -158,7 +158,7 @@ const GetDifficultyQuality = (difficulty: number[], quality: number[], id: numbe
         if (error) {
             return <div>Error</div>;
         } else if (loading) {
-            return <div>Loading...</div>;
+            return <Spinner animation="border" size="sm" />;
         }
         const comments = data.courseComments;
         comments.forEach((comment: Comment) => {
