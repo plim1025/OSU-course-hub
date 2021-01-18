@@ -13,10 +13,10 @@ interface Student {
     ONID: string
 }
 
-export default function Student({students}) {
+export default function Student(props) {
 	const router = useRouter();
 	const {id} = router.query;
-	const { loading, error, data } = useQuery(STUDENTS);
+	/*const { loading, error, data } = useQuery(STUDENTS);
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
@@ -26,9 +26,10 @@ export default function Student({students}) {
 	if(data){
 		const students = data.students.filter((student: Student) => student.ONID == id);
 		student = students[0];
-    }
-    //const theStudents = students.filter((student: Student) => student.ONID == id);
-    //let student = theStudents[0];
+	}*/
+	//const {data} = useQuery('STUDENTS', getStudents, {initialData: props.students})
+    const theStudents = props.filter((student: Student) => student.ONID == id);
+    let student = theStudents[0];
 	if(student){
 		return (
 			<>
@@ -56,10 +57,17 @@ export default function Student({students}) {
 }
 
 export const getStaticProps = async () => {
-    const { data } = useQuery(STUDENTS);
+	//const { data } = useQuery(STUDENTS);
+	const students = await getStudents();
     return {
-        props: {
-            students: data.students
-        }
+        props: {students}
+    }
+}*/
+
+/*export const getServerSideProps = async () => {
+	const { data } = useQuery(STUDENTS);
+	const students = data.students
+    return {
+        props: {students}
     }
 }*/
