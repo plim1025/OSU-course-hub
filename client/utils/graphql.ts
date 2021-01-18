@@ -98,8 +98,8 @@ export const COURSE_PROFESSORS = gql`
 		courseProfessors(courseID: $courseID) {
 			id
 			firstName
-            lastName
-            college
+			lastName
+			college
 		}
 	}
 `;
@@ -173,9 +173,9 @@ export const ADD_TEXTBOOK_TO_COURSE = gql`
 export const STUDENTS = gql`
 	query students {
 		students {
-            ONID
-            likedComments
-            dislikedComments
+			ONID
+			likedCommentIDs
+			dislikedCommentIDs
 		}
 	}
 `;
@@ -185,17 +185,19 @@ export const STUDENT = gql`
 		student(ONID: $ONID) {
 			student {
 				ONID
-				likedComments
-				dislikedComments
+				likedCommentIDs
+				dislikedCommentIDs
 			}
 		}
 	}
 `;
 
 export const CREATE_STUDENT = gql`
-	mutation StudentInfo($ONID: String!) {
-		createStudent(input: { ONID: $ONID }) {
-			ONID
+	mutation createStudent($ONID: String!) {
+		createStudent(ONID: $ONID) {
+			student {
+				ONID
+			}
 		}
 	}
 `;
@@ -235,11 +237,11 @@ export const COURSE_COMMENTS = gql`
 			baccCore
 			gradeReceived
 			tags
-            createdAt
-            quality
-            difficulty
-            likes
-            dislikes
+			createdAt
+			quality
+			difficulty
+			likes
+			dislikes
 		}
 	}
 `;
@@ -249,18 +251,19 @@ export const PROFESSOR_COMMENTS = gql`
 		professorComments(professorID: $professorID) {
 			id
 			text
-			gradeReceived
+			difficulty
+			quality
+			ONID
 			courseID
 			professorID
+			campus
 			recommend
 			baccCore
 			gradeReceived
 			tags
-            createdAt
-            quality
-            difficulty
-            likes
-            dislikes
+			createdAt
+			likes
+			dislikes
 		}
 	}
 `;
@@ -277,11 +280,11 @@ export const STUDENT_COMMENTS = gql`
 			baccCore
 			gradeReceived
 			tags
-            createdAt
-            quality
-            difficulty
-            likes
-            dislikes
+			createdAt
+			quality
+			difficulty
+			likes
+			dislikes
 		}
 	}
 `;
@@ -359,11 +362,11 @@ export const DELETE_COMMENT = gql`
 // Likes and Dislikes
 export const LIKECOMMENT = gql`
 	mutation likeComment($ONID: String!, $commentID: Float!) {
-		upvote(ONID: { ONID: $ONID }, commentID: $commentID) {
+		upvote(ONID: $ONID, commentID: $commentID) {
 			student {
 				ONID
-				likedComments
-				dislikedComments
+				likedCommentIDs
+				dislikedCommentIDs
 			}
 			comment {
 				id
@@ -376,11 +379,11 @@ export const LIKECOMMENT = gql`
 
 export const DISLIKECOMMENT = gql`
 	mutation dislikeComment($ONID: String!, $commentID: Float!) {
-		downvote(ONID: { ONID: $ONID }, commentID: $commentID) {
+		downvote(ONID: $ONID, commentID: $commentID) {
 			student {
 				ONID
-				likedComments
-				dislikedComments
+				likedCommentIDs
+				dislikedCommentIDs
 			}
 			comment {
 				id

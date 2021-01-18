@@ -17,7 +17,7 @@ const largeWrapper = {
 	width: 'calc(100% - 80px)',
 	margin: 'auto',
 	background: '#fff',
-	marginTop: 100
+	marginTop: 100,
 } as React.CSSProperties;
 
 const smallWrapper = {
@@ -42,12 +42,14 @@ const Searchbar: React.FC<Props> = props => {
 	const [inputValue, setInputValue] = useState('');
 	const {
 		loading: loadingProfessors,
-		error: professorError,
-		data: professorData,
+		error: professorsError,
+		data: professorsData,
 	} = useQuery<ProfessorData>(PROFESSORS);
-	const { loading: loadingCourses, error: coursesError, data: courseData } = useQuery<CourseData>(
-		COURSES
-	);
+	const {
+		loading: loadingCourses,
+		error: coursesError,
+		data: coursesData,
+	} = useQuery<CourseData>(COURSES);
 
 	const handleInputChange = (newValue: string, { action }: { action: InputActionTypes }) => {
 		if (action === 'input-change') {
@@ -64,7 +66,7 @@ const Searchbar: React.FC<Props> = props => {
 
 	if (loadingProfessors || loadingCourses) {
 		return <div>Loading...</div>;
-	} else if (professorError || coursesError) {
+	} else if (professorsError || coursesError) {
 		return <div>Error</div>;
 	}
 	return (
@@ -81,9 +83,9 @@ const Searchbar: React.FC<Props> = props => {
 				components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
 				menuIsOpen={menu}
 				options={
-					professorData && courseData
+					professorsData && coursesData
 						? [
-								...professorData.professors.map(professor => ({
+								...professorsData.professors.map(professor => ({
 									id: professor.id,
 									type: 'professor',
 									value: `${professor.firstName} ${professor.lastName} ${professor.college}`,
@@ -94,7 +96,7 @@ const Searchbar: React.FC<Props> = props => {
 											.map(s => s.charAt(0).toUpperCase() + s.substring(1))
 											.join(' ') + ` - College of ${professor.college}`,
 								})),
-								...courseData.courses.map(course => ({
+								...coursesData.courses.map(course => ({
 									id: course.id,
 									type: 'course',
 									value: `${course.department} ${course.number}`,

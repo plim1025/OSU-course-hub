@@ -1,86 +1,58 @@
-import ProfessorInfo from '../../components/ProfessorInfo';
+import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
-import React, {useState, useEffect} from 'react';
-import Header from '../../components/Header';
-import { useQuery } from '@apollo/client';
-import {PROFESSORS, PROFESSOR, PROFESSOR_COMMENTS} from 'utils/graphql';
-import { useRouter } from 'next/router'
-import Comment from '../../components/Comment';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { Container } from 'react-bootstrap';
+import { PROFESSOR, PROFESSOR_COMMENTS } from 'utils/graphql';
 import Error from '../../components/404';
+import Comment from '../../components/Comment';
+import Header from '../../components/Header';
+import ProfessorInfo from '../../components/ProfessorInfo';
 
-interface CommentI {
-    ONID: number;
-    baccCore: boolean;
-    campus: string;
-    courseID: number;
-    createdAt: Date;
-    dislikes: number;
-    gradeReceived: string;
-    id: string;
-    likes: number;
-    professorID: number;
-    recommend: boolean;
-    tags: string[];
-    text: string;
-    quality: number;
-    difficulty: number;
-}
-
-const ProfessorComments = ({id}) => {
-    const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: parseInt(id)}
-    });
+const ProfessorComments = ({ id }) => {
+	const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
+		variables: { professorID: parseInt(id) },
+	});
 	if (error) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
-    }
-    const comments = data.professorComments;
-    console.log(comments);
+	}
+	const comments = data.professorComments;
 	return (
 		<Container>
 			<h3>Comments:</h3>
-			{comments.map((comment: CommentI, i: number) => {
-				return <Comment key={i} props={comment} />;
-			})}
+			{comments.map(comment => (
+				<Comment key={comment.id} comment={comment} />
+			))}
 		</Container>
 	);
-}
+};
 
-export default function Professor() {
+const ProfessorPage = () => {
 	const router = useRouter();
-	const {id} = router.query;
-	console.log(id);
-	const { loading, error, data } = useQuery(PROFESSORS);
+	const { loading, error, data } = useQuery(PROFESSOR, {
+		variables: { professorID: parseInt(router.query.id as string) },
+		skip: !router?.query?.id,
+	});
+
 	if (error) {
-		return <div>Error</div>;
-	} else if (loading) {
+		return <Error props='professor' />;
+	} else if (loading || !data) {
 		return <div>Loading...</div>;
-	}	
-	console.log(data);
-	var professor = null;
-	if(data){
-		const professors = data.professors.filter((professor) => professor.id == id);
-		professor = professors[0];
 	}
-	if(professor){
-		return (
-			<>
-				<Head>
-					<title>OSU Course Hub</title>
-					<link rel='icon' href='/favicon.png' />
-				</Head>
-				<Header searchbarToggled={true} />
-				<ProfessorInfo professor={professor}/>
-				<ProfessorComments id={professor.id} />
-			</>
-		);
-	}
-	else {
-		return (
-			<Error props="professor"/>
-		)
-	}
-}
+	return (
+		<>
+			<Head>
+				<title>OSU Course Hub</title>
+				<link rel='icon' href='/favicon.png' />
+			</Head>
+			<Header searchbarToggled={true} />
+			<ProfessorInfo professor={data.professor.professor} />
+			<ProfessorComments id={data.professor.professor.id} />
+		</>
+	);
+};
+
+export default ProfessorPage;

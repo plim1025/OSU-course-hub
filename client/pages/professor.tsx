@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import ProfessorInfo from '../components/ProfessorInfo';
 import TestingAPI from '../components/TestingAPI';
 import { useQuery } from '@apollo/client';
-import {PROFESSORS} from 'utils/graphql';
+import { PROFESSORS } from 'utils/graphql';
 
 //For testing API
 const Info: React.FC = () => {
@@ -15,7 +15,6 @@ const Info: React.FC = () => {
 	} else if (loading) {
 		return <div>Loading...</div>;
 	}
-	console.log(data);
 	return (
 		<>
 			<Head>
@@ -23,7 +22,7 @@ const Info: React.FC = () => {
 				<link rel='icon' href='/favicon.png' />
 			</Head>
 			<Header searchbarToggled={false} />
-			<TestingAPI professors={data.professors}/>  
+			<TestingAPI professors={data.professors} />
 		</>
 	);
 };
