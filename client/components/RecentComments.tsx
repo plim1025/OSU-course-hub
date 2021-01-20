@@ -17,7 +17,7 @@ const ProfessorTitle = ({ id }: SpecificTitleProps) => {
 	const { loading, error, data } = useQuery(PROFESSOR, {
 		variables: { professorID: parseInt(id) },
 	});
-	if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
@@ -36,7 +36,7 @@ const ProfessorTitle = ({ id }: SpecificTitleProps) => {
 
 const CourseTitle = ({ id }: SpecificTitleProps) => {
 	const { loading, error, data } = useQuery(COURSE, { variables: { courseID: parseInt(id) } });
-	if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
@@ -63,7 +63,7 @@ const Title = ({ comment }: TitleProps) => {
 
 const RecentComments: React.FC = () => {
 	const { loading, error, data } = useQuery(COMMENTS);
-	if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;

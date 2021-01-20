@@ -1,14 +1,3 @@
-import { Field, ObjectType } from 'type-graphql';
-
-@ObjectType()
-export class Error {
-    @Field()
-    path: string;
-
-    @Field()
-    message: string;
-}
-
 export const Terms = ['Fall', 'Winter', 'Spring', 'Summer'];
 
 export const Campuses = ['Corvallis', 'Cascades', 'Ecampus', 'Hybrid'];

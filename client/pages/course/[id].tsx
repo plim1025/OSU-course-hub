@@ -7,23 +7,22 @@ import { Container } from 'react-bootstrap';
 import { COURSE, COURSE_COMMENTS } from 'utils/graphql';
 import Error from '../../components/404';
 import Comment from '../../components/Comment';
-import CourseInfo from '../../components/CourseInfo';
 import Header from '../../components/Header';
+import Info from '../../components/Info';
 
 const CourseComments = ({ id }) => {
 	const { loading, error, data } = useQuery(COURSE_COMMENTS, {
 		variables: { courseID: parseInt(id) },
 	});
-	if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
 	}
-	const comments = data.courseComments;
 	return (
 		<Container>
 			<h3>Comments:</h3>
-			{comments.map(comment => (
+			{data.comments.map(comment => (
 				<Comment key={comment.id} comment={comment} />
 			))}
 		</Container>
@@ -34,9 +33,10 @@ const CoursePage = () => {
 	const router = useRouter();
 	const { loading, error, data } = useQuery(COURSE, {
 		variables: { courseID: parseInt(router.query.id as string) },
+		skip: !router.query.id,
 	});
 
-	if (error) {
+	if (error || !data) {
 		return <Error props='course' />;
 	} else if (loading) {
 		return <div>Loading...</div>;
@@ -48,8 +48,8 @@ const CoursePage = () => {
 				<link rel='icon' href='/favicon.png' />
 			</Head>
 			<Header searchbarToggled={true} />
-			<CourseInfo course={data.course.course} />
-			<CourseComments id={data.course.course.id} />
+			<Info course={data.course} />
+			<CourseComments id={data.course.id} />
 		</>
 	);
 };

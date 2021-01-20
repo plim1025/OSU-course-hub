@@ -1,10 +1,11 @@
+import { UserInputError } from 'apollo-server-express';
 import { Max, MaxLength, Min } from 'class-validator';
-import { Arg, Field, InputType, Int, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Arg, Field, InputType, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { Comment } from '../entity/Comment';
 import { Course } from '../entity/Course';
 import { Professor } from '../entity/Professor';
 import { Student } from '../entity/Student';
-import { Campuses, Error, Grades, Tags } from '../util';
+import { Campuses, Grades, Tags } from '../util';
 
 @InputType()
 class CommentInput {
@@ -14,12 +15,12 @@ class CommentInput {
 
     @Field(() => Int)
     @Min(1)
-    @Max(10)
+    @Max(5)
     difficulty: number;
 
     @Field(() => Int)
     @Min(1)
-    @Max(10)
+    @Max(5)
     quality: number;
 
     @Field()
@@ -45,15 +46,6 @@ class CommentInput {
 
     @Field(() => [String])
     tags: string[];
-}
-
-@ObjectType()
-class CommentResponse {
-    @Field(() => Error, { nullable: true })
-    error?: Error;
-
-    @Field(() => Comment, { nullable: true })
-    comment?: Comment;
 }
 
 @Resolver()
@@ -88,7 +80,7 @@ export class CommentResolver {
             .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
     }
 
-    @Mutation(() => CommentResponse)
+    @Mutation(() => Comment)
     async createComment(
         @Arg('input')
         {
@@ -104,41 +96,22 @@ export class CommentResolver {
             gradeReceived,
             tags,
         }: CommentInput
-    ): Promise<CommentResponse> {
+    ): Promise<Comment> {
         const student = await Student.findOne({ ONID });
+        const validationErrors: any = {};
         if (!student) {
-            return {
-                error: {
-                    path: 'src/resolvers/comment.ts',
-                    message: `Could not find student with given ONID: ${ONID}`,
-                },
-            };
+            validationErrors.student = `Could not find student with given ONID: ${ONID}`;
         }
         if (campus && Campuses.indexOf(campus) === -1) {
-            return {
-                error: {
-                    path: 'src/resolvers/comment.ts',
-                    message: `Invalid campus: ${campus}`,
-                },
-            };
+            validationErrors.campus = `Invalid campus: ${campus}`;
         }
         if (gradeReceived && Grades.indexOf(gradeReceived) === -1) {
-            return {
-                error: {
-                    path: 'src/resolvers/comment.ts',
-                    message: `Invalid grade: ${gradeReceived}`,
-                },
-            };
+            validationErrors.gradeReceived = `Invalid grade: ${gradeReceived}`;
         }
         if (tags) {
             for (let i = 0; i < tags.length; i++) {
                 if (Tags.indexOf(tags[i]) === -1) {
-                    return {
-                        error: {
-                            path: 'src/resolvers/comment.ts',
-                            message: `Invalid tag: ${tags[i]}`,
-                        },
-                    };
+                    validationErrors.tag = `Invalid tag: ${tags[i]}`;
                 }
             }
         }
@@ -159,14 +132,9 @@ export class CommentResolver {
                     likes: 0,
                     dislikes: 0,
                 }).save();
-                return { comment };
+                return comment;
             }
-            return {
-                error: {
-                    path: 'src/resolvers/comment.ts',
-                    message: `Could not find professor with given ID: ${professorID}`,
-                },
-            };
+            validationErrors.professor = `Could not find professor with given ID: ${professorID}`;
         }
         const course = await Course.find({ id: courseID });
         if (course) {
@@ -184,19 +152,21 @@ export class CommentResolver {
                 likes: 0,
                 dislikes: 0,
             }).save();
-            return { comment };
+            return comment;
         }
-        return {
-            error: {
-                path: 'src/resolvers/comment.ts',
-                message: `Could not find course with given ID: ${courseID}`,
-            },
-        };
+        validationErrors.course = `Could not find course with given ID: ${courseID}`;
+        throw new UserInputError('Validation error(s)', validationErrors);
     }
 
     @Mutation(() => Boolean)
-    async deleteComment(@Arg('id') id: number): Promise<boolean> {
-        await Comment.delete({ id });
-        return true;
+    async deleteComment(@Arg('commentID') id: number): Promise<boolean> {
+        const comment = await Comment.find({ id });
+        if (comment) {
+            await Comment.delete({ id });
+            return true;
+        }
+        throw new UserInputError('Validation error(s)', {
+            validationErrors: { course: `Could not find comment with given ID: ${id}` },
+        });
     }
 }

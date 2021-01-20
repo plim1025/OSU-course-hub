@@ -8,22 +8,21 @@ import { PROFESSOR, PROFESSOR_COMMENTS } from 'utils/graphql';
 import Error from '../../components/404';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
-import ProfessorInfo from '../../components/ProfessorInfo';
+import Info from '../../components/Info';
 
 const ProfessorComments = ({ id }) => {
 	const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
 		variables: { professorID: parseInt(id) },
 	});
-	if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
 	}
-	const comments = data.professorComments;
 	return (
 		<Container>
 			<h3>Comments:</h3>
-			{comments.map(comment => (
+			{data.comments.map(comment => (
 				<Comment key={comment.id} comment={comment} />
 			))}
 		</Container>
@@ -34,12 +33,12 @@ const ProfessorPage = () => {
 	const router = useRouter();
 	const { loading, error, data } = useQuery(PROFESSOR, {
 		variables: { professorID: parseInt(router.query.id as string) },
-		skip: !router?.query?.id,
+		skip: !router.query.id,
 	});
 
-	if (error) {
+	if (error || !data) {
 		return <Error props='professor' />;
-	} else if (loading || !data) {
+	} else if (loading) {
 		return <div>Loading...</div>;
 	}
 	return (
@@ -49,8 +48,8 @@ const ProfessorPage = () => {
 				<link rel='icon' href='/favicon.png' />
 			</Head>
 			<Header searchbarToggled={true} />
-			<ProfessorInfo professor={data.professor.professor} />
-			<ProfessorComments id={data.professor.professor.id} />
+			<Info professor={data.professor} />
+			<ProfessorComments id={data.professor.id} />
 		</>
 	);
 };

@@ -1,43 +1,39 @@
-import StudentInfo from '../../components/StudentInfo';
+import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
-import React, { useState, useEffect } from 'react';
-import Header from '../../components/Header';
-import { useQuery } from '@apollo/client';
-import { STUDENTS, STUDENT } from 'utils/graphql';
 import { useRouter } from 'next/router';
+import React from 'react';
+import { STUDENT } from 'utils/graphql';
 import Error from '../../components/404';
+import Header from '../../components/Header';
+import StudentInfo from '../../components/StudentInfo';
 
 interface Student {
 	ONID: string;
 }
 
-export default function Professor() {
+const StudentPage = () => {
 	const router = useRouter();
-	const { id } = router.query;
-	const { loading, error, data } = useQuery(STUDENTS);
-	if (error) {
-		return <div>Error</div>;
+	const { loading, error, data } = useQuery(STUDENT, {
+		variables: { ONID: router.query.id },
+		skip: !router.query.id,
+	});
+
+	if (error || !data) {
+		return <Error props='student' />;
 	} else if (loading) {
 		return <div>Loading...</div>;
 	}
-	var student = null;
-	if (data) {
-		const students = data.students.filter((student: Student) => student.ONID == id);
-		student = students[0];
-	}
-	if (student) {
-		return (
-			<>
-				<Head>
-					<title>OSU Course Hub</title>
-					<link rel='icon' href='/favicon.png' />
-				</Head>
-				<Header searchbarToggled={true} />
-				<StudentInfo student={student} />
-			</>
-		);
-	} else {
-		return <Error props='student' />;
-	}
-}
+	return (
+		<>
+			<Head>
+				<title>OSU Course Hub</title>
+				<link rel='icon' href='/favicon.png' />
+			</Head>
+			<Header searchbarToggled={true} />
+			<StudentInfo student={data.student} />
+		</>
+	);
+};
+
+export default StudentPage;

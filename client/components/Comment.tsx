@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Row } from 'react-bootstrap';
-import { DISLIKECOMMENT, LIKECOMMENT, STUDENT } from 'utils/graphql';
+import { DISLIKE_COMMENT, LIKE_COMMENT, STUDENT } from 'utils/graphql';
 import { CommentType, StudentData } from '../utils/types';
 
 interface Props {
@@ -14,24 +14,16 @@ const Comment: React.FC<Props> = ({ comment }) => {
 		variables: { ONID: studentID },
 		skip: !studentID,
 	});
-	// const { loading, error, data } = useQuery(comment.courseID ? COURSE : PROFESSOR, {
-	// 	variables: {
-	// 		...(comment.courseID && { courseID: comment.courseID }),
-	// 		...(comment.professorID && { professorID: comment.professorID }),
-	// 	},
-	// });
 
 	const [likeOrDislike, setLikeOrDislike] = useState(0);
-	const [addLike] = useMutation(LIKECOMMENT);
-	const [addDislike] = useMutation(DISLIKECOMMENT);
+	const [addLike] = useMutation(LIKE_COMMENT);
+	const [addDislike] = useMutation(DISLIKE_COMMENT);
 
 	useEffect(() => {
 		if (data) {
-			if (data.student.student.likedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
+			if (data.student.likedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
 				setLikeOrDislike(1);
-			} else if (
-				data.student.student.dislikedCommentIDs.indexOf(parseInt(comment.id)) !== -1
-			) {
+			} else if (data.student.dislikedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
 				setLikeOrDislike(-1);
 			} else {
 				setLikeOrDislike(0);
@@ -90,7 +82,6 @@ const Comment: React.FC<Props> = ({ comment }) => {
 						className='mr-3'
 						variant={likeOrDislike === 1 ? 'primary' : 'outline-primary'}
 						onClick={() => {
-							console.log(studentID, parseInt(comment.id));
 							addLike({
 								variables: { ONID: studentID, commentID: parseInt(comment.id) },
 							});

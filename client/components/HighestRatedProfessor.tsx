@@ -34,7 +34,7 @@ const GetDifficulty = (difficulty: number[], id: string) => {
 	const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
 		variables: { professorID: parseInt(id) },
 	});
-	if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
@@ -120,7 +120,7 @@ const Info = (topProfessors: ProfessorRating) => {
 
 const RenderTopProfessors = ({ professors }) => {
 	const { loading, error, data } = useQuery(COMMENTS);
-	if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
@@ -155,7 +155,7 @@ const RenderTopProfessors = ({ professors }) => {
 
 const HighestRatedProfessor: React.FC = () => {
 	const { loading, error, data } = useQuery(PROFESSORS);
-	if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;

@@ -17,7 +17,7 @@ const StudentInfo: React.FC<Props> = props => {
 		variables: { ONID: student.ONID },
 	});
 
-	if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <div>Loading...</div>;
@@ -29,11 +29,12 @@ const StudentInfo: React.FC<Props> = props => {
 					<h3>ONID: {student.ONID}</h3>
 					<h5>Comments: {data ? data.comments.length : 0}</h5>
 					<h5>
-						Liked comments: {student.likedComments ? student.likedComments.length : 0}
+						Liked comments:{' '}
+						{student.likedCommentIDs ? student.likedCommentIDs.length : 0}
 					</h5>
 					<h5>
 						Disliked comments:{' '}
-						{student.dislikedComments ? student.dislikedComments.length : 0}
+						{student.dislikedCommentIDs ? student.dislikedCommentIDs.length : 0}
 					</h5>
 				</Card>
 				{data

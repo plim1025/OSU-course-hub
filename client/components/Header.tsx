@@ -50,11 +50,7 @@ const Header: React.FC<Props> = props => {
 	return (
 		<Navbar bg='dark' variant='dark' collapseOnSelect expand='md'>
 			<Navbar.Brand href='/' style={{ fontWeight: 700 }}>
-				<img
-					src={'/favicon.png'}
-					style={logo}
-					className='d-inline-block align-center'
-				></img>
+				<img src={'/favicon.png'} style={logo} className='d-inline-block align-center' />
 				OSU Course Hub
 			</Navbar.Brand>
 			{props.searchbarToggled ? (

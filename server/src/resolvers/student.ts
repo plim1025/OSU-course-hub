@@ -1,34 +1,7 @@
-import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
-import { Student } from '../entity/Student';
+import { UserInputError } from 'apollo-server-express';
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { Comment } from '../entity/Comment';
-import { Error } from '../util';
-
-@InputType()
-class StudentInput {
-    @Field()
-    ONID: string;
-}
-
-@ObjectType()
-class StudentResponse {
-    @Field(() => Error, { nullable: true })
-    error?: Error;
-
-    @Field(() => Student, { nullable: true })
-    student?: Student;
-}
-
-@ObjectType()
-class LikeResponse {
-    @Field(() => Error, { nullable: true })
-    error?: Error;
-
-    @Field(() => Student, { nullable: true })
-    student?: Student;
-
-    @Field(() => Comment, { nullable: true })
-    comment?: Comment;
-}
+import { Student } from '../entity/Student';
 
 @Resolver()
 export class StudentResolver {
@@ -37,116 +10,118 @@ export class StudentResolver {
         return Student.find({});
     }
 
-    @Query(() => StudentResponse)
-    async student(@Arg('ONID') ONID: string): Promise<StudentResponse> {
+    @Query(() => Student)
+    async student(@Arg('ONID') ONID: string): Promise<Student> {
         const student = await Student.findOne({ ONID });
         if (student) {
-            return { student };
+            return student;
         }
-        return {
-            error: {
-                path: 'src/resolvers/student.ts',
-                message: `Could not find student with given ONID: ${ONID}`,
-            },
-        };
+        throw new UserInputError('Validation error(s)', {
+            validationErrors: { course: `Could not find student with given ONID: ${ONID}` },
+        });
     }
 
     @Mutation(() => Student)
-    async createStudent(@Arg('input') { ONID }: StudentInput): Promise<Student> {
-        return Student.create({ ONID, likedComments: [], dislikedComments: [] }).save();
+    async createStudent(@Arg('ONID') ONID: string): Promise<Student> {
+        const duplicateStudent = await Student.findOne({ ONID });
+        if (duplicateStudent) {
+            throw new UserInputError('Validation error(s)', {
+                validationErrors: { course: `Student with ONID: ${ONID} already exists` },
+            });
+        }
+        const student = await Student.create({
+            ONID,
+            likedCommentIDs: [],
+            dislikedCommentIDs: [],
+        }).save();
+        return student;
     }
 
-    @Mutation(() => LikeResponse)
-    async upvote(
-        @Arg('ONID') { ONID }: StudentInput,
+    @Mutation(() => Student)
+    async likeComment(
+        @Arg('ONID') ONID: string,
         @Arg('commentID') commentID: number
-    ): Promise<LikeResponse> {
+    ): Promise<Student> {
         const student = await Student.findOne({ ONID });
         const comment = await Comment.findOne({ id: commentID });
         if (student) {
             if (comment) {
-                const idx1 = student.likedComments.indexOf(commentID);
+                const idx1 = student.likedCommentIDs.indexOf(commentID);
                 if (idx1 !== -1) {
-                    student.likedComments.splice(idx1);
+                    student.likedCommentIDs.splice(idx1);
                     comment.likes -= 1;
                 } else {
-                    student.likedComments.push(commentID);
+                    student.likedCommentIDs.push(commentID);
                     comment.likes += 1;
                 }
-
-                const idx2 = student.dislikedComments.indexOf(commentID);
+                const idx2 = student.dislikedCommentIDs.indexOf(commentID);
                 if (idx2 !== -1) {
-                    student.dislikedComments.splice(idx2);
+                    student.dislikedCommentIDs.splice(idx2);
                     comment.dislikes -= 1;
                 }
-
                 await comment.save();
                 await student.save();
-                return { student, comment };
-            } else {
-                return {
-                    error: {
-                        path: 'src/resolvers/student.ts',
-                        message: `Could not find comment with given commentID: ${commentID}`,
-                    },
-                };
+                return student;
             }
+            throw new UserInputError('Validation error(s)', {
+                validationErrors: {
+                    course: `Could not find comment with given commentID: ${commentID}`,
+                },
+            });
         }
-        return {
-            error: {
-                path: 'src/resolvers/student.ts',
-                message: `Could not find student with given ONID: ${ONID}`,
-            },
-        };
+        throw new UserInputError('Validation error(s)', {
+            validationErrors: { course: `Could not find student with given ONID: ${ONID}` },
+        });
     }
 
-    @Mutation(() => LikeResponse)
-    async downvote(
-        @Arg('ONID') { ONID }: StudentInput,
+    @Mutation(() => Student)
+    async dislikeComment(
+        @Arg('ONID') ONID: string,
         @Arg('commentID') commentID: number
-    ): Promise<LikeResponse> {
+    ): Promise<Student> {
         const student = await Student.findOne({ ONID });
         const comment = await Comment.findOne({ id: commentID });
         if (student) {
             if (comment) {
-                const idx1 = student.dislikedComments.indexOf(commentID);
+                const idx1 = student.dislikedCommentIDs.indexOf(commentID);
                 if (idx1 !== -1) {
-                    student.dislikedComments.splice(idx1);
+                    student.dislikedCommentIDs.splice(idx1);
                     comment.dislikes -= 1;
                 } else {
-                    student.dislikedComments.push(commentID);
+                    student.dislikedCommentIDs.push(commentID);
                     comment.dislikes += 1;
                 }
 
-                const idx2 = student.likedComments.indexOf(commentID);
+                const idx2 = student.likedCommentIDs.indexOf(commentID);
                 if (idx2 !== -1) {
-                    student.likedComments.splice(idx2);
+                    student.likedCommentIDs.splice(idx2);
                     comment.likes -= 1;
                 }
 
                 await comment.save();
                 await student.save();
-                return { comment, student };
-            } else {
-                return {
-                    error: {
-                        path: 'src/resolvers/student.ts',
-                        message: `Could not find comment with given commentID: ${commentID}`,
-                    },
-                };
+                return student;
             }
+            throw new UserInputError('Validation error(s)', {
+                validationErrors: {
+                    course: `Could not find comment with given commentID: ${commentID}`,
+                },
+            });
         }
-        return {
-            error: {
-                path: 'src/resolvers/student.ts',
-                message: `Could not find student with given ONID: ${ONID}`,
-            },
-        };
+        throw new UserInputError('Validation error(s)', {
+            validationErrors: { course: `Could not find student with given ONID: ${ONID}` },
+        });
     }
 
     @Mutation(() => Boolean)
     async deleteStudent(@Arg('ONID') ONID: string): Promise<boolean> {
-        await Student.delete({ ONID });
-        return true;
+        const student = await Student.findOne({ ONID });
+        if (student) {
+            await Student.delete({ ONID });
+            return true;
+        }
+        throw new UserInputError('Validation error(s)', {
+            validationErrors: { course: `Could not find student with given ONID: ${ONID}` },
+        });
     }
 }
