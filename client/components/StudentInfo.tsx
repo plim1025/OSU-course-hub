@@ -8,7 +8,6 @@ import Comment from './Comment';
 
 interface Props {
 	student: Student;
-	onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
 const StudentInfo: React.FC<Props> = props => {

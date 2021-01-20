@@ -3,18 +3,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { STUDENT } from 'utils/graphql';
+import { STUDENT } from '../../utils/graphql';
+import { StudentType } from '../../utils/types';
 import Error from '../../components/404';
 import Header from '../../components/Header';
 import StudentInfo from '../../components/StudentInfo';
 
-interface Student {
-	ONID: string;
-}
-
 const StudentPage = () => {
 	const router = useRouter();
-	const { loading, error, data } = useQuery(STUDENT, {
+	const { loading, error, data } = useQuery<StudentType>(STUDENT, {
 		variables: { ONID: router.query.id },
 		skip: !router.query.id,
 	});

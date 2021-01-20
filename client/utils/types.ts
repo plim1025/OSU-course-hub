@@ -1,3 +1,7 @@
+export interface CourseType {
+	course: Course;
+}
+
 export interface CourseData {
 	courses: Course[];
 }
@@ -7,6 +11,10 @@ export interface Course {
 	department: string;
 	number: number;
 	comments: CommentType[];
+}
+
+export interface ProfessorType {
+	professor: Professor;
 }
 
 export interface ProfessorData {
@@ -43,8 +51,12 @@ export interface CommentType {
 	dislikes: number;
 }
 
-export interface StudentData {
+export interface StudentType {
 	student: Student;
+}
+
+export interface StudentData {
+	students: Student[];
 }
 
 export interface Student {
