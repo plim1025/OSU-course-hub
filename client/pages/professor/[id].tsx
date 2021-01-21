@@ -1,6 +1,7 @@
-import ProfessorInfo from '../../components/ProfessorInfo';
+import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
+<<<<<<< HEAD
 import React, {useState, useEffect} from 'react';
 import Header from '../../components/Header';
 import { useQuery } from '@apollo/client';
@@ -8,49 +9,47 @@ import {PROFESSORS, PROFESSOR, PROFESSOR_COMMENTS} from 'utils/graphql';
 import { useRouter } from 'next/router'
 import Comment from '../../components/Comment';
 import { Container, Spinner } from 'react-bootstrap';
+=======
+import { useRouter } from 'next/router';
+import React from 'react';
+import { Container } from 'react-bootstrap';
+import { PROFESSOR, PROFESSOR_COMMENTS } from 'utils/graphql';
+import { CommentType, ProfessorType } from '../../utils/types';
+>>>>>>> 03772be3945398d75ef7cdc63b9d68818871ff2b
 import Error from '../../components/404';
+import Comment from '../../components/Comment';
+import Header from '../../components/Header';
+import Info from '../../components/Info';
 
-interface CommentI {
-    ONID: number;
-    baccCore: boolean;
-    campus: string;
-    courseID: number;
-    createdAt: Date;
-    dislikes: number;
-    gradeReceived: string;
-    id: string;
-    likes: number;
-    professorID: number;
-    recommend: boolean;
-    tags: string[];
-    text: string;
-    quality: number;
-    difficulty: number;
-}
-
-const ProfessorComments = ({id}) => {
-    const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
-        variables: {professorID: parseInt(id)}
-    });
-	if (error) {
+const ProfessorComments = ({ id }) => {
+	const { loading, error, data } = useQuery<CommentType>(PROFESSOR_COMMENTS, {
+		variables: { professorID: parseInt(id) },
+	});
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
+<<<<<<< HEAD
 		return <Spinner animation="border" size="sm" />;
     }
     const comments = data.professorComments;
     console.log(comments);
+=======
+		return <div>Loading...</div>;
+	}
+>>>>>>> 03772be3945398d75ef7cdc63b9d68818871ff2b
 	return (
 		<Container>
 			<h3>Comments:</h3>
-			{comments.map((comment: CommentI, i: number) => {
-				return <Comment key={i} props={comment} />;
-			})}
+			{data.comments.map(comment => (
+				<Comment key={comment.id} comment={comment} />
+			))}
 		</Container>
 	);
-}
+};
 
-export default function Professor() {
+const ProfessorPage = () => {
 	const router = useRouter();
+<<<<<<< HEAD
 	const {id} = router.query;
 	const { loading, error, data } = useQuery(PROFESSORS);
 	if (error) {
@@ -80,5 +79,29 @@ export default function Professor() {
 		return (
 			<Error props="professor"/>
 		)
+=======
+	const { loading, error, data } = useQuery<ProfessorType>(PROFESSOR, {
+		variables: { professorID: parseInt(router.query.id as string) },
+		skip: !router.query.id,
+	});
+
+	if (error || !data) {
+		return <Error props='professor' />;
+	} else if (loading) {
+		return <div>Loading...</div>;
+>>>>>>> 03772be3945398d75ef7cdc63b9d68818871ff2b
 	}
-}
+	return (
+		<>
+			<Head>
+				<title>OSU Course Hub</title>
+				<link rel='icon' href='/favicon.png' />
+			</Head>
+			<Header searchbarToggled={true} />
+			<Info professor={data.professor} />
+			<ProfessorComments id={data.professor.id} />
+		</>
+	);
+};
+
+export default ProfessorPage;

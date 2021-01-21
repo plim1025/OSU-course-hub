@@ -1,8 +1,10 @@
+import { useMutation } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Button, Nav, Navbar } from 'react-bootstrap';
+import { CREATE_STUDENT } from '../utils/graphql';
 import { Auth } from './Auth';
-import Button from './Button';
 import Searchbar from './Searchbar';
+
 interface Props {
 	searchbarToggled: boolean;
 }
@@ -23,6 +25,7 @@ const headerSearchBarStyle = {
 
 const Header: React.FC<Props> = props => {
 	const [ONID, setONID] = useState<string | null>();
+	const [createStudent] = useMutation(CREATE_STUDENT);
 
 	useEffect(() => {
 		if (window && window.sessionStorage && window.sessionStorage.getItem('request-onid')) {
@@ -31,10 +34,9 @@ const Header: React.FC<Props> = props => {
 			const jwt_token = new URL(window.location.href).searchParams.get('jwt');
 			if (jwt_token) {
 				const split_token = jwt_token.split('.');
-				window.sessionStorage.setItem(
-					'request-onid',
-					JSON.parse(atob(split_token[1])).onid
-				);
+				const newONID = JSON.parse(atob(split_token[1])).onid;
+				window.sessionStorage.setItem('request-onid', newONID);
+				createStudent({ variables: { ONID: newONID } });
 				window.location.href = window.location.href.split('?')[0] + '';
 			}
 		}
@@ -48,11 +50,7 @@ const Header: React.FC<Props> = props => {
 	return (
 		<Navbar bg='dark' variant='dark' collapseOnSelect expand='md'>
 			<Navbar.Brand href='/' style={{ fontWeight: 700 }}>
-				<img
-					src={'/favicon.png'}
-					style={logo}
-					className='d-inline-block align-center'
-				></img>
+				<img src={'/favicon.png'} style={logo} className='d-inline-block align-center' />
 				OSU Course Hub
 			</Navbar.Brand>
 			{props.searchbarToggled ? (
@@ -64,7 +62,6 @@ const Header: React.FC<Props> = props => {
 						style={{
 							marginLeft: 'auto',
 							color: '#fff',
-
 						}}
 						href={`/student/${ONID}`}
 					>
@@ -76,11 +73,15 @@ const Header: React.FC<Props> = props => {
 				</Navbar.Collapse>
 			) : (
 				<Button
-					style={{ marginLeft: !props.searchbarToggled ? 'auto' : '' }}
+					style={{
+						marginLeft: !props.searchbarToggled ? 'auto' : '',
+						background: '#d73f09',
+					}}
 					variant='primary'
-					text='Login'
 					onClick={Auth}
-				/>
+				>
+					Login
+				</Button>
 			)}
 		</Navbar>
 	);

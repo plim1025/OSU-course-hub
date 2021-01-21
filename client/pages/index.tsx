@@ -1,11 +1,9 @@
-import { useQuery } from '@apollo/client';
 import Head from 'next/head';
-import React, {CSSProperties} from 'react';
-import { PROFESSORS } from 'utils/graphql';
+import React from 'react';
 import Header from '../components/Header';
-import Searchbar from '../components/Searchbar';
+import HighestRatedProfessor from '../components/HighestRatedProfessors';
 import RecentComments from '../components/RecentComments';
-import HighestRatedProfessor from '../components/HighestRatedProfessor';
+import Searchbar from '../components/Searchbar';
 
 const container = {
 	marginTop: 100,
@@ -14,8 +12,8 @@ const container = {
 	flexWrap: 'nowrap',
 	flexFlow: 'center',
 	alignContent: 'flex-start',
-	justifyContent: 'center'
-} as React.CSSProperties
+	justifyContent: 'center',
+} as React.CSSProperties;
 
 const Home: React.FC = () => {
 	return (

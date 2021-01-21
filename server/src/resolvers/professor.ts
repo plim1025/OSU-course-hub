@@ -1,9 +1,11 @@
+import { UserInputError } from 'apollo-server-express';
 import { MaxLength, MinLength } from 'class-validator';
-import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Arg, Field, InputType, Mutation, Query, Resolver } from 'type-graphql';
 import { Course } from '../entity/Course';
 import { CourseProfessor } from '../entity/CourseProfessor';
 import { Professor } from '../entity/Professor';
-import { Colleges, Error, Terms } from '../util';
+import { Comment } from '../entity/Comment';
+import { Colleges, Terms } from '../util';
 
 @InputType()
 class ProfessorInput {
@@ -21,15 +23,6 @@ class ProfessorInput {
     college: string;
 }
 
-@ObjectType()
-class ProfessorResponse {
-    @Field(() => Error, { nullable: true })
-    error?: Error;
-
-    @Field(() => Professor, { nullable: true })
-    professor?: Professor;
-}
-
 @Resolver()
 export class ProfessorResolver {
     @Query(() => [Professor])
@@ -37,18 +30,15 @@ export class ProfessorResolver {
         return Professor.find({});
     }
 
-    @Query(() => ProfessorResponse)
-    async professor(@Arg('professorID') id: number): Promise<ProfessorResponse> {
+    @Query(() => Professor)
+    async professor(@Arg('professorID') id: number): Promise<Professor> {
         const professor = await Professor.findOne({ id });
         if (professor) {
-            return { professor };
+            return professor;
         }
-        return {
-            error: {
-                path: 'src/resolvers/professor.ts',
-                message: `Could not find professor with given ID: ${id}`,
-            },
-        };
+        throw new UserInputError('Validation error(s)', {
+            validationErrors: { course: `Could not find professor with given ID: ${id}` },
+        });
     }
 
     @Query(() => [Course])
@@ -58,80 +48,86 @@ export class ProfessorResolver {
         return Course.findByIds(courseIDs);
     }
 
-    @Mutation(() => ProfessorResponse)
+    @Query(() => [Professor])
+    async highestRatedProfessors(): Promise<Professor[]> {
+        const comments = await Comment.find({});
+        const professorQualities: any = new Map();
+        comments.forEach(({ professorID, quality }) => {
+            if (professorID) {
+                if (professorID in professorQualities) {
+                    professorQualities[professorID].push(quality);
+                } else {
+                    professorQualities[professorID] = [quality];
+                }
+            }
+        });
+        const professorQualitiesArr: [number, number][] = [];
+        Object.keys(professorQualities).forEach(id => {
+            const avgQuality =
+                professorQualities[id].reduce((a: number, b: number) => a + b) /
+                professorQualities[id].length;
+            professorQualitiesArr.push([parseInt(id), avgQuality]);
+        });
+        professorQualitiesArr.sort((a, b) => b[1] - a[1]);
+        const topFiveRatedProfessors: number[] = [];
+        for (let i = 0; i < Math.min(5, professorQualitiesArr.length); i++) {
+            topFiveRatedProfessors.push(professorQualitiesArr[i][0]);
+        }
+        const professors = await Professor.findByIds(topFiveRatedProfessors);
+        return professors;
+    }
+
+    @Mutation(() => Professor)
     async createProfessor(
         @Arg('input') { firstName, lastName, college }: ProfessorInput
-    ): Promise<ProfessorResponse> {
+    ): Promise<Professor> {
+        const validationErrors: any = {};
         if (Colleges.indexOf(college) === -1) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Invalid college: ${college}`,
-                },
-            };
+            validationErrors.college = `Invalid college: ${college}`;
         }
         const duplicateProfessor = await Professor.findOne({ firstName, lastName, college });
         if (duplicateProfessor) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Professor with first name: ${firstName} and last name: ${lastName} in college ${college} already exists`,
-                },
-            };
+            validationErrors.professor = `Professor with first name: ${firstName} and last name: ${lastName} in college ${college} already exists`;
+        }
+        if (Object.keys(validationErrors).length > 0) {
+            throw new UserInputError('Validation error(s)', {
+                validationErrors,
+            });
         }
         const professor = await Professor.create({ firstName, lastName, college }).save();
-        return { professor };
+        return professor;
     }
 
-    @Mutation(() => ProfessorResponse)
+    @Mutation(() => Professor)
     async addCourseToProfessor(
         @Arg('professorID') professorID: number,
         @Arg('courseID') courseID: number,
         @Arg('termTaught') termTaught: string,
         @Arg('yearTaught') yearTaught: number
-    ): Promise<ProfessorResponse> {
+    ): Promise<Professor> {
+        const validationErrors: any = {};
         if (Terms.indexOf(termTaught) === -1) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Invalid term: ${termTaught}`,
-                },
-            };
+            validationErrors.term = `Invalid term: ${termTaught}`;
         }
         if (yearTaught.toString().length !== 4) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Invalid year: ${yearTaught}`,
-                },
-            };
+            validationErrors.year = `Invalid year: ${yearTaught}`;
         }
         const course = await Course.findOne({ id: courseID });
         const professor = await Professor.findOne({ id: professorID });
         if (!course) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Could not find course with given ID: ${courseID}`,
-                },
-            };
+            validationErrors.course = `Could not find course with given ID: ${courseID}`;
         }
         if (!professor) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Could not find professor with given ID: ${professorID}`,
-                },
-            };
+            validationErrors.professor = `Could not find professor with given ID: ${professorID}`;
         }
         const duplicateCourseProfessor = await CourseProfessor.findOne({ courseID, professorID });
         if (duplicateCourseProfessor) {
-            return {
-                error: {
-                    path: 'src/resolvers/professor.ts',
-                    message: `Course with ID: ${courseID} taught by professor with ID: ${professorID} already exists`,
-                },
-            };
+            validationErrors.courseProfessor = `Course with ID: ${courseID} taught by professor with ID: ${professorID} already exists`;
+        }
+        if (Object.keys(validationErrors).length > 0 || !professor) {
+            throw new UserInputError('Validation error(s)', {
+                validationErrors,
+            });
         }
         await CourseProfessor.create({
             courseID,
@@ -139,6 +135,6 @@ export class ProfessorResolver {
             termTaught,
             yearTaught,
         }).save();
-        return { professor };
+        return professor;
     }
 }

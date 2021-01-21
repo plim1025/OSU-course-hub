@@ -1,75 +1,46 @@
+import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, {useState} from 'react';
-import { Button, Container, Card, Spinner } from 'react-bootstrap';
-import {useQuery, useMutation} from '@apollo/client';
-import {STUDENT_COMMENTS} from '../utils/graphql';
+import React from 'react';
+import { Card, Container, Spinner } from 'react-bootstrap';
+import { STUDENT_COMMENTS } from '../utils/graphql';
+import { CommentData, Student } from '../utils/types';
 import Comment from './Comment';
-interface IComment {
-    ONID: number;
-    baccCore: boolean;
-    campus: string;
-    courseID: number;
-    createdAt: Date;
-    dislikes: number;
-    gradeReceived: string;
-    id: string;
-    likes: number;
-    professorID: number;
-    recommend: boolean;
-    tags: string[];
-    text: string;
-    quality: number;
-    difficulty: number;
-}
 
-interface StudentCommentsProps {
-    comments: IComment[]
-}
-
-interface Student {
-    ONID: string,
-    likedComments: number[],
-    dislikedComments: number[]
-}
 interface Props {
-    student: Student,
-    onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+	student: Student;
 }
 
-const StudentComments = ({comments}: StudentCommentsProps) => {
-    return (
-        <Container>
-            {comments.map((comment: IComment, i: number) => {
-                return <Comment key={i} props={comment} />;
-            })}
-	    </Container>
-    )
-}
+const StudentInfo: React.FC<Props> = props => {
+	const { student } = props;
+	const { loading, error, data } = useQuery<CommentData>(STUDENT_COMMENTS, {
+		variables: { ONID: student.ONID },
+	});
 
-const StudentInfo: React.FC<Props> = (props) => {
-    const {student} = props;
-    console.log("Student: ", student);
-    const {loading, error, data} = useQuery(STUDENT_COMMENTS, {
-        variables: {ONID: student.ONID},
-    });
-    if (error) {
+	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
 		return <Spinner animation="border" size="sm" />;
     }
-    const comments = data.studentComments;
 	return (
-        <div>
-            <Container>
-                <Card className='mt-5 mb-4 p-4 w-75'>
-                    <h3>ONID: {student.ONID}</h3>
-                    <h5>Comments: {comments.length}</h5>
-                    <h5>Liked comments: {(student.likedComments) ? (student.likedComments.length) : (0)}</h5>
-                    <h5>Disliked comments: {(student.dislikedComments) ? (student.dislikedComments.length) : (0)}</h5>
-                </Card>
-                <StudentComments comments={comments} />
-            </Container> 
-        </div>
+		<div>
+			<Container>
+				<Card className='mt-5 mb-4 p-4 w-75'>
+					<h3>ONID: {student.ONID}</h3>
+					<h5>Comments: {data ? data.comments.length : 0}</h5>
+					<h5>
+						Liked comments:{' '}
+						{student.likedCommentIDs ? student.likedCommentIDs.length : 0}
+					</h5>
+					<h5>
+						Disliked comments:{' '}
+						{student.dislikedCommentIDs ? student.dislikedCommentIDs.length : 0}
+					</h5>
+				</Card>
+				{data
+					? data.comments.map(comment => <Comment key={comment.id} comment={comment} />)
+					: null}
+			</Container>
+		</div>
 	);
 };
 

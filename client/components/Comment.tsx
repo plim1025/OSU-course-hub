@@ -1,119 +1,80 @@
 import { useMutation, useQuery } from '@apollo/client';
-import React, { useState, useEffect } from 'react';
-import { Card, Button, Row } from 'react-bootstrap';
-import { COURSE, PROFESSOR, STUDENT, LIKECOMMENT, DISLIKECOMMENT } from 'utils/graphql';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, Row } from 'react-bootstrap';
+import { DISLIKE_COMMENT, LIKE_COMMENT, STUDENT } from 'utils/graphql';
+import { CommentType, StudentType } from '../utils/types';
 
 interface Props {
-	props: {
-		ONID: number;
-		baccCore: boolean;
-		campus: string;
-		courseID: number;
-		createdAt: Date;
-		dislikes: number;
-		gradeReceived: string;
-		id: string;
-		likes: number;
-		professorID: number;
-		recommend: boolean;
-		tags: string[];
-		text: string;
-		quality: number;
-		difficulty: number;
-	};
+	comment: CommentType;
 }
 
-const Comment: React.FC<Props> = props => {
+const Comment: React.FC<Props> = ({ comment }) => {
 	const studentID = window.sessionStorage.getItem('request-onid');
-	let student = {};
-	if (studentID) {
-		student = useQuery(STUDENT, { variables: { ONID: studentID } });
-	}
-	const data = props.props;
+	const { loading, error, data } = useQuery<StudentType>(STUDENT, {
+		variables: { ONID: studentID },
+		skip: !studentID,
+	});
 
 	const [likeOrDislike, setLikeOrDislike] = useState(0);
-	const [addLike, { likedStudent }] = useMutation(LIKECOMMENT);
-	const [addDislike, { dislikedStudent }] = useMutation(DISLIKECOMMENT);
-
-	const date = new Date(data.createdAt);
-
-	// Fetch professor name or course name
-	let fetchedData;
-	if (data.courseID) {
-		fetchedData = useQuery(COURSE, {
-			variables: { courseID: data.courseID },
-		});
-		if (fetchedData.data) {
-			fetchedData = fetchedData.data.course;
-		}
-	}
-
-	if (data.professorID) {
-		fetchedData = useQuery(PROFESSOR, {
-			variables: { professorID: data.professorID },
-		});
-		if (fetchedData.data) {
-			fetchedData = fetchedData.data.professor;
-		}
-	}
+	const [addLike] = useMutation(LIKE_COMMENT);
+	const [addDislike] = useMutation(DISLIKE_COMMENT);
 
 	useEffect(() => {
-		if (student && student.data) {
-			if (student?.data.student.student.likedComments.indexOf(parseInt(data.id)) !== -1) {
+		if (data) {
+			if (data.student.likedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
 				setLikeOrDislike(1);
-			} else if (
-				student?.data.student.student.dislikedComments.indexOf(parseInt(data.id)) !== -1
-			) {
+			} else if (data.student.dislikedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
 				setLikeOrDislike(-1);
 			} else {
 				setLikeOrDislike(0);
 			}
 		}
-	}, [student]);
-	console.log(data)
+	}, [data]);
+
+	if (loading) {
+		return <div>Loading...</div>;
+	} else if (error) {
+		return <div>Error in Comment component</div>;
+	}
 	return (
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>
-				{fetchedData.course && (
-					<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
-						{fetchedData.course.department} {fetchedData.course.number}
-					</Card.Title>
-				)}
-				{fetchedData.professor && (
-					<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
-						{fetchedData.professor.firstName} {fetchedData.professor.lastName}
-					</Card.Title>
-				)}
+				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
+					{/* {comment.anonymous ? '' : comment.ONID} */}
+					{comment.ONID}
+				</Card.Title>
 				<Card.Text className='text-right ml-auto text-muted'>
-					<strong>Created At</strong> {date.toDateString()}
+					<strong>Created At</strong> {new Date(comment.createdAt).toDateString()}
 				</Card.Text>
 			</Row>
 			<Card.Text className='mt-2 text-left' style={{ whiteSpace: 'pre-wrap' }}>
-				<strong>Campus:</strong> {data.campus ? data.campus : 'N/A'}
+				<strong>Campus: </strong>
+				{comment.campus ? comment.campus : 'N/A'}
 				{'  '}
-				<strong>Recommend:</strong> {data.recommend ? 'Yes' : 'No'}
+				<strong>Recommend: </strong>
+				{comment.recommend ? 'Yes' : 'No'}
 				{'  '}
-				<strong>Grade Received</strong>: {data.gradeReceived ? data.gradeReceived : 'N/A'}
+				<strong>Grade Received: </strong>
+				{comment.gradeReceived ? comment.gradeReceived : 'N/A'}
 				{'  '}
-				<strong>Bacc Core:</strong> {data.baccCore ? 'Yes' : 'No'}
+				<strong>Bacc Core: </strong>
+				{comment.baccCore ? 'Yes' : 'No'}
 			</Card.Text>
 			<Card.Text className='h4 pt-1 pb-2' style={{ whiteSpace: 'pre-wrap' }}>
-				Quality: {data.quality}
-				{'  '}Difficulty: {data.difficulty}
+				Quality: {comment.quality}
+				{'  '}Difficulty: {comment.difficulty}
 			</Card.Text>
 			<div className='mt-2'>
-				<span>Tags: </span>
-				{data.tags.map((tag: string, i) => {
-					return (
-						<span key={i} className='border rounded border-info ml-2 p-1'>
-							{tag}{' '}
-						</span>
-					);
-				})}
+				<span>Tags: {comment.tags.length == 0 ? 'No tags found' : null}</span>
+				{comment.tags.map(tag => (
+					<span key={tag} className='border rounded border-info ml-2 p-1'>
+						<span style={{ marginRight: 5 }}>{tag}</span>
+					</span>
+				))}
 			</div>
-			<Card.Text className='mt-3'>Text: {data.text}</Card.Text>
+			<Card.Text className='mt-3'>Text: {comment.text}</Card.Text>
 			<Card.Text>
-				Likes: {data.likes} Dislikes: {data.dislikes}
+				Likes: {comment.likes} Dislikes: {comment.dislikes}
 			</Card.Text>
 			{studentID && (
 				<Row className='pl-3'>
@@ -121,8 +82,9 @@ const Comment: React.FC<Props> = props => {
 						className='mr-3'
 						variant={likeOrDislike === 1 ? 'primary' : 'outline-primary'}
 						onClick={() => {
-							const id = parseFloat(data.id);
-							addLike({ variables: { ONID: studentID, commentID: id } });
+							addLike({
+								variables: { ONID: studentID, commentID: parseInt(comment.id) },
+							});
 							setLikeOrDislike(likeOrDislike === 1 ? 0 : 1);
 						}}
 					>
@@ -132,8 +94,9 @@ const Comment: React.FC<Props> = props => {
 						className='mr-3'
 						variant={likeOrDislike === -1 ? 'primary' : 'outline-primary'}
 						onClick={() => {
-							const id = parseFloat(data.id);
-							addDislike({ variables: { ONID: studentID, commentID: id } });
+							addDislike({
+								variables: { ONID: studentID, commentID: parseInt(comment.id) },
+							});
 							setLikeOrDislike(likeOrDislike === -1 ? 0 : -1);
 						}}
 					>

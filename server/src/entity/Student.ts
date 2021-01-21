@@ -11,11 +11,11 @@ export class Student extends BaseEntity {
 
     @Field(() => [Number])
     @Column({ type: 'int', array: true })
-    likedComments: number[];
+    likedCommentIDs: number[];
 
     @Field(() => [Number])
     @Column({ type: 'int', array: true })
-    dislikedComments: number[];
+    dislikedCommentIDs: number[];
 
     @OneToMany(() => Comment, comment => comment.student)
     comments: Comment[];

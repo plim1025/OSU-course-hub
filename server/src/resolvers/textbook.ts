@@ -1,19 +1,10 @@
+import { UserInputError } from 'apollo-server-express';
 import { Max, Min } from 'class-validator';
-import {
-    Arg,
-    Field,
-    ID,
-    InputType,
-    Int,
-    Mutation,
-    ObjectType,
-    Query,
-    Resolver,
-} from 'type-graphql';
+import { Arg, Field, ID, InputType, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { Course } from '../entity/Course';
 import { CourseTextbook } from '../entity/CourseTextbook';
 import { Textbook } from '../entity/Textbook';
-import { Error, Terms } from '../util';
+import { Terms } from '../util';
 
 @InputType()
 class TextbookInput {
@@ -44,64 +35,41 @@ class TextbookInput {
     priceUsedUSD?: number;
 }
 
-@ObjectType()
-class TextbookResponse {
-    @Field(() => Error, { nullable: true })
-    error?: Error;
-
-    @Field(() => Textbook, { nullable: true })
-    textbook?: Textbook;
-}
-
 @Resolver()
 export class TextbookResolver {
     @Query(() => [Textbook])
-    async getCourseTextbooks(@Arg('courseID') id: number): Promise<Textbook[]> {
+    async courseTextbooks(@Arg('courseID') id: number): Promise<Textbook[]> {
         const textbooks = await CourseTextbook.find({ courseID: id });
         const textbookISBNs = textbooks.map(textbook => textbook.ISBN);
         return Textbook.findByIds(textbookISBNs);
     }
 
-    @Mutation(() => TextbookResponse)
+    @Mutation(() => Textbook)
     async addTextbookToCourse(
         @Arg('input') input: TextbookInput,
         @Arg('courseID') courseID: number,
         @Arg('termUsed') termUsed: string,
         @Arg('yearUsed') yearUsed: number
-    ): Promise<TextbookResponse> {
+    ): Promise<Textbook> {
+        const validationErrors: any = {};
         if (Terms.indexOf(termUsed) === -1) {
-            return {
-                error: {
-                    path: 'src/resolvers/textbook.ts',
-                    message: `Invalid Term: ${termUsed}`,
-                },
-            };
+            validationErrors.term = `Invalid Term: ${termUsed}`;
         }
         if (yearUsed.toString().length !== 4) {
-            return {
-                error: {
-                    path: 'src/resolvers/textbook.ts',
-                    message: `Invalid Year: ${yearUsed}`,
-                },
-            };
+            validationErrors.year = `Invalid Year: ${yearUsed}`;
         }
         const duplicateTextbook = await CourseTextbook.findOne({ courseID, ISBN: input.ISBN });
         if (duplicateTextbook) {
-            return {
-                error: {
-                    path: 'src/resolvers/textbook.ts',
-                    message: `Textbook with ISBN: ${input.ISBN} for course with ID: ${courseID} already exists`,
-                },
-            };
+            validationErrors.textbook = `Textbook with ISBN: ${input.ISBN} for course with ID: ${courseID} already exists`;
         }
         const course = await Course.findOne({ id: courseID });
         if (!course) {
-            return {
-                error: {
-                    path: 'src/resolvers/textbook.ts',
-                    message: `Could not find course with given ID: ${courseID}`,
-                },
-            };
+            validationErrors.course = `Could not find course with given ID: ${courseID}`;
+        }
+        if (Object.keys(validationErrors).length > 0) {
+            throw new UserInputError('Validation error(s)', {
+                validationErrors,
+            });
         }
         let textbook = await Textbook.findOne({ ISBN: input.ISBN });
         if (!textbook) {
@@ -113,6 +81,6 @@ export class TextbookResolver {
             termUsed,
             yearUsed,
         }).save();
-        return { textbook };
+        return textbook;
     }
 }

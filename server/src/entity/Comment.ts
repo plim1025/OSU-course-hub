@@ -30,8 +30,8 @@ export class Comment extends BaseEntity {
     @Column()
     quality: number;
 
-    @Field({ nullable: true })
-    @Column({ nullable: true })
+    @Field()
+    @Column()
     ONID: string;
 
     @ManyToOne(() => Student)
