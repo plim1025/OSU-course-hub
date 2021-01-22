@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import React from 'react';
 import Header from '../components/Header';
-import HighestRatedProfessor from '../components/HighestRatedProfessor';
+import HighestRatedProfessor from '../components/HighestRatedProfessors';
 import RecentComments from '../components/RecentComments';
 import Searchbar from '../components/Searchbar';
 

@@ -5,13 +5,14 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { Container } from 'react-bootstrap';
 import { PROFESSOR, PROFESSOR_COMMENTS } from 'utils/graphql';
+import { CommentType, ProfessorType } from '../../utils/types';
 import Error from '../../components/404';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
 
 const ProfessorComments = ({ id }) => {
-	const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
+	const { loading, error, data } = useQuery<CommentType>(PROFESSOR_COMMENTS, {
 		variables: { professorID: parseInt(id) },
 	});
 	if (error || !data) {
@@ -31,7 +32,7 @@ const ProfessorComments = ({ id }) => {
 
 const ProfessorPage = () => {
 	const router = useRouter();
-	const { loading, error, data } = useQuery(PROFESSOR, {
+	const { loading, error, data } = useQuery<ProfessorType>(PROFESSOR, {
 		variables: { professorID: parseInt(router.query.id as string) },
 		skip: !router.query.id,
 	});

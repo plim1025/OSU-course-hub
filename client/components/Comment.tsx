@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Row } from 'react-bootstrap';
 import { DISLIKE_COMMENT, LIKE_COMMENT, STUDENT } from 'utils/graphql';
-import { CommentType, StudentData } from '../utils/types';
+import { CommentType, StudentType } from '../utils/types';
 
 interface Props {
 	comment: CommentType;
@@ -10,7 +10,7 @@ interface Props {
 
 const Comment: React.FC<Props> = ({ comment }) => {
 	const studentID = window.sessionStorage.getItem('request-onid');
-	const { loading, error, data } = useQuery<StudentData>(STUDENT, {
+	const { loading, error, data } = useQuery<StudentType>(STUDENT, {
 		variables: { ONID: studentID },
 		skip: !studentID,
 	});

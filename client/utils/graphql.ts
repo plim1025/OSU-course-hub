@@ -240,6 +240,17 @@ export const PROFESSOR_COURSES = gql`
 	}
 `;
 
+export const HIGHEST_RATED_PROFESSORS = gql`
+	query highestRatedProfessors {
+		professors: highestRatedProfessors {
+			id
+			firstName
+			lastName
+			college
+		}
+	}
+`;
+
 export const CREATE_PROFESSOR = gql`
 	mutation professorInfo($firstName: String!, $lastName: String!, $college: String!) {
 		createProfessor(input: { firstName: $firstName, lastName: $lastName, college: $college }) {
@@ -300,9 +311,7 @@ export const STUDENT = gql`
 export const CREATE_STUDENT = gql`
 	mutation createStudent($ONID: String!) {
 		createStudent(ONID: $ONID) {
-			student {
-				ONID
-			}
+			ONID
 		}
 	}
 `;

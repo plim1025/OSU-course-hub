@@ -4,6 +4,7 @@ import { Arg, Field, InputType, Mutation, Query, Resolver } from 'type-graphql';
 import { Course } from '../entity/Course';
 import { CourseProfessor } from '../entity/CourseProfessor';
 import { Professor } from '../entity/Professor';
+import { Comment } from '../entity/Comment';
 import { Colleges, Terms } from '../util';
 
 @InputType()
@@ -45,6 +46,35 @@ export class ProfessorResolver {
         const courses = await CourseProfessor.find({ professorID: id });
         const courseIDs = courses.map(course => course.courseID);
         return Course.findByIds(courseIDs);
+    }
+
+    @Query(() => [Professor])
+    async highestRatedProfessors(): Promise<Professor[]> {
+        const comments = await Comment.find({});
+        const professorQualities: any = new Map();
+        comments.forEach(({ professorID, quality }) => {
+            if (professorID) {
+                if (professorID in professorQualities) {
+                    professorQualities[professorID].push(quality);
+                } else {
+                    professorQualities[professorID] = [quality];
+                }
+            }
+        });
+        const professorQualitiesArr: [number, number][] = [];
+        Object.keys(professorQualities).forEach(id => {
+            const avgQuality =
+                professorQualities[id].reduce((a: number, b: number) => a + b) /
+                professorQualities[id].length;
+            professorQualitiesArr.push([parseInt(id), avgQuality]);
+        });
+        professorQualitiesArr.sort((a, b) => b[1] - a[1]);
+        const topFiveRatedProfessors: number[] = [];
+        for (let i = 0; i < Math.min(5, professorQualitiesArr.length); i++) {
+            topFiveRatedProfessors.push(professorQualitiesArr[i][0]);
+        }
+        const professors = await Professor.findByIds(topFiveRatedProfessors);
+        return professors;
     }
 
     @Mutation(() => Professor)
