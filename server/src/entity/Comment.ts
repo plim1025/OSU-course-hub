@@ -18,6 +18,10 @@ export class Comment extends BaseEntity {
     @PrimaryGeneratedColumn()
     readonly id: number;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    anonymous?: boolean;
+
     @Field()
     @Column()
     text: string;

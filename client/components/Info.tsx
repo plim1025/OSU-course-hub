@@ -63,7 +63,7 @@ const Info: React.FC<Props> = ({ course, professor }) => {
 					Quality:
 					<span style={variable}>
 						{qualities.length
-							? qualities.reduce((a, b) => a + b, 0) / qualities.length
+							? (qualities.reduce((a, b) => a + b, 0) / qualities.length).toFixed(1)
 							: 0}
 					</span>
 					<span style={constant}>/5</span>
@@ -72,7 +72,7 @@ const Info: React.FC<Props> = ({ course, professor }) => {
 					Difficulty:
 					<span style={variable}>
 						{difficulties.length
-							? difficulties.reduce((a, b) => a + b, 0) / difficulties.length
+							? (difficulties.reduce((a, b) => a + b, 0) / difficulties.length).toFixed(1)
 							: 0}
 					</span>
 					<span style={constant}>/5</span>

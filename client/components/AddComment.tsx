@@ -7,6 +7,7 @@ import { useMutation } from '@apollo/client';
 
 const AddComment: React.FC = () => {
 	const [values, setValues] = useState({
+		anonymous: false,
 		text: '',
 		campus: 'Corvallis',
 		quality: 5,
@@ -54,6 +55,14 @@ const AddComment: React.FC = () => {
 		}
 	};
 
+	const handleAnonymous = (e: React.FormEvent) => {
+		if(values.anonymous === true){
+			setValues({ ...values, anonymous: false });
+		} else {
+			setValues({ ...values, anonymous: true });
+		}
+	};
+
 	return (
 		<div>
 			<Button variant='outline-info' onClick={handleShow}>
@@ -66,6 +75,15 @@ const AddComment: React.FC = () => {
 						<Modal.Title>Add Comment</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
+						<Form.Group controlId='anonymous'>
+							<Form.Check
+								className='mr-3'
+								type='checkbox'
+								name='anonymous'
+								label='Anonymous'
+								onChange={handleAnonymous}
+							/>
+						</Form.Group>
 						<Form.Group controlId='text'>
 							<Form.Label>Comment</Form.Label>
 							<Form.Control

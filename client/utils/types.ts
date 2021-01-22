@@ -35,6 +35,7 @@ export interface CommentData {
 
 export interface CommentType {
 	id: string;
+	anonymous?: boolean;
 	text: string;
 	difficulty: number;
 	quality: number;

@@ -10,12 +10,12 @@ import Error from '../../components/404';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
+import AddComment from '../../components/AddComment';
 
 const CourseComments = ({ id }) => {
 	const { loading, error, data } = useQuery<CommentData>(COURSE_COMMENTS, {
 		variables: { courseID: parseInt(id) },
 	});
-
 	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
@@ -51,6 +51,7 @@ const CoursePage = () => {
 			</Head>
 			<Header searchbarToggled={true} />
 			<Info course={data.course} />
+			<AddComment />
 			<CourseComments id={data.course.id} />
 		</>
 	);

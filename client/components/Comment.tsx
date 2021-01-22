@@ -11,14 +11,13 @@ interface Props {
 const Comment: React.FC<Props> = ({ comment }) => {
 	const studentID = window.sessionStorage.getItem('request-onid');
 	const { loading, error, data } = useQuery<StudentType>(STUDENT, {
-		variables: { ONID: studentID },
-		skip: !studentID,
+		variables: { ONID: comment.ONID },
+		skip: !comment.ONID,
 	});
 
 	const [likeOrDislike, setLikeOrDislike] = useState(0);
 	const [addLike] = useMutation(LIKE_COMMENT);
 	const [addDislike] = useMutation(DISLIKE_COMMENT);
-
 	useEffect(() => {
 		if (data) {
 			if (data.student.likedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
@@ -40,8 +39,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>
 				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
-					{/* {comment.anonymous ? '' : comment.ONID} */}
-					{comment.ONID}
+					{comment.anonymous ? 'Anonymous' : comment.ONID}
 				</Card.Title>
 				<Card.Text className='text-right ml-auto text-muted'>
 					<strong>Created At</strong> {new Date(comment.createdAt).toDateString()}

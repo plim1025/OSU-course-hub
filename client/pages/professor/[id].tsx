@@ -10,6 +10,7 @@ import Error from '../../components/404';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
+import AddComment from '../../components/AddComment';
 
 const ProfessorComments = ({ id }) => {
 	const { loading, error, data } = useQuery<CommentData>(PROFESSOR_COMMENTS, {
@@ -20,6 +21,7 @@ const ProfessorComments = ({ id }) => {
 	} else if (loading) {
 		return <div>Loading...</div>;
 	}
+	console.log(data.comments)
 	return (
 		<Container>
 			<h3>Comments:</h3>
@@ -50,6 +52,7 @@ const ProfessorPage = () => {
 			</Head>
 			<Header searchbarToggled={true} />
 			<Info professor={data.professor} />
+			<AddComment />
 			<ProfessorComments id={data.professor.id} />
 		</>
 	);
