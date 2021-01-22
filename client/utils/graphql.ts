@@ -311,9 +311,7 @@ export const STUDENT = gql`
 export const CREATE_STUDENT = gql`
 	mutation createStudent($ONID: String!) {
 		createStudent(ONID: $ONID) {
-			student {
-				ONID
-			}
+			ONID
 		}
 	}
 `;
