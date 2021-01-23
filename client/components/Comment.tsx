@@ -16,8 +16,8 @@ const Comment: React.FC<Props> = ({ comment }) => {
 	});
 
 	const [likeOrDislike, setLikeOrDislike] = useState(0);
-	const [addLike] = useMutation(LIKE_COMMENT);
-	const [addDislike] = useMutation(DISLIKE_COMMENT);
+	const [addLike, { likedStudent }] = useMutation(LIKE_COMMENT);
+	const [addDislike, dislikedStudent] = useMutation(DISLIKE_COMMENT);
 
 	useEffect(() => {
 		if (data) {
@@ -98,6 +98,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
 								variables: { ONID: studentID, commentID: parseInt(comment.id) },
 							});
 							setLikeOrDislike(likeOrDislike === -1 ? 0 : -1);
+							console.log(dislikedStudent);
 						}}
 					>
 						Dislike

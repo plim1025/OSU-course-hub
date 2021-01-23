@@ -37,11 +37,11 @@ export class StudentResolver {
         return student;
     }
 
-    @Mutation(() => Student)
+    @Mutation(() => Comment)
     async likeComment(
         @Arg('ONID') ONID: string,
         @Arg('commentID') commentID: number
-    ): Promise<Student> {
+    ): Promise<Comment> {
         const student = await Student.findOne({ ONID });
         const comment = await Comment.findOne({ id: commentID });
         if (student) {
@@ -61,7 +61,7 @@ export class StudentResolver {
                 }
                 await comment.save();
                 await student.save();
-                return student;
+                return comment;
             }
             throw new UserInputError('Validation error(s)', {
                 validationErrors: {
@@ -74,11 +74,11 @@ export class StudentResolver {
         });
     }
 
-    @Mutation(() => Student)
+    @Mutation(() => Comment)
     async dislikeComment(
         @Arg('ONID') ONID: string,
         @Arg('commentID') commentID: number
-    ): Promise<Student> {
+    ): Promise<Comment> {
         const student = await Student.findOne({ ONID });
         const comment = await Comment.findOne({ id: commentID });
         if (student) {
@@ -100,7 +100,7 @@ export class StudentResolver {
 
                 await comment.save();
                 await student.save();
-                return student;
+                return comment;
             }
             throw new UserInputError('Validation error(s)', {
                 validationErrors: {
