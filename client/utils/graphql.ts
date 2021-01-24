@@ -176,10 +176,8 @@ export const COURSE_PROFESSORS = gql`
 export const CREATE_COURSE = gql`
 	mutation createCourse($department: String!, $number: String!) {
 		createCourse(input: { department: $department, number: $number }) {
-			course {
-				department
-				number
-			}
+			department
+			number
 		}
 	}
 `;
@@ -254,12 +252,10 @@ export const HIGHEST_RATED_PROFESSORS = gql`
 export const CREATE_PROFESSOR = gql`
 	mutation professorInfo($firstName: String!, $lastName: String!, $college: String!) {
 		createProfessor(input: { firstName: $firstName, lastName: $lastName, college: $college }) {
-			professor {
-				id
-				firstName
-				lastName
-				college
-			}
+			id
+			firstName
+			lastName
+			college
 		}
 	}
 `;
