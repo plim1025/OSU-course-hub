@@ -8,6 +8,7 @@ import { StudentType } from '../../utils/types';
 import Error from '../../components/404';
 import Header from '../../components/Header';
 import StudentInfo from '../../components/StudentInfo';
+import { Spinner } from 'react-bootstrap';
 
 const StudentPage = () => {
 	const router = useRouter();
@@ -19,7 +20,7 @@ const StudentPage = () => {
 	if (error || !data) {
 		return <Error props='student' />;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	return (
 		<>

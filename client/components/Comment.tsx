@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Row } from 'react-bootstrap';
+import { Button, Card, Row, Spinner } from 'react-bootstrap';
 import { DISLIKE_COMMENT, LIKE_COMMENT, STUDENT } from 'utils/graphql';
 import { CommentType, StudentType } from '../utils/types';
 
@@ -31,7 +31,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
 	}, [data]);
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	} else if (error) {
 		return <div>Error in Comment component</div>;
 	}

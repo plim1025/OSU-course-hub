@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { COURSE, PROFESSOR } from '../utils/graphql';
+import { Spinner } from 'react-bootstrap';
 
 interface Props {
 	courseID?: number;
@@ -17,7 +18,7 @@ const RecentCommentTitle: React.FC<Props> = ({ courseID, professorID }) => {
 	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	return (
 		<div>

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import { COURSE, COURSE_COMMENTS } from 'utils/graphql';
 import { CommentData, CourseType } from '../../utils/types';
 import Error from '../../components/404';
@@ -19,7 +19,7 @@ const CourseComments = ({ id }) => {
 	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	return (
 		<Container>
@@ -41,7 +41,7 @@ const CoursePage = () => {
 	if (error || !data) {
 		return <Error props='course' />;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	return (
 		<>

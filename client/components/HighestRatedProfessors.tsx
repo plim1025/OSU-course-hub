@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Link from 'next/link';
 import React from 'react';
-import { Card, Row } from 'react-bootstrap';
+import { Card, Row, Spinner } from 'react-bootstrap';
 import { HIGHEST_RATED_PROFESSORS, PROFESSOR_COMMENTS } from '../utils/graphql';
 import { ProfessorData } from '../utils/types';
 
@@ -36,7 +36,7 @@ const ProfessorQuality: React.FC<Props> = ({ id }) => {
 	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	const qualities: number[] = [];
 	data.comments.forEach(comment => {
@@ -57,7 +57,7 @@ const HighestRatedProfessors: React.FC = () => {
 	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	return (
 		<div

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import { PROFESSOR, PROFESSOR_COMMENTS } from 'utils/graphql';
 import { CommentType, ProfessorType, CommentData } from '../../utils/types';
 import Error from '../../components/404';
@@ -19,9 +19,8 @@ const ProfessorComments = ({ id }) => {
 	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
-	console.log(data.comments)
 	return (
 		<Container>
 			<h3>Comments:</h3>
@@ -42,7 +41,7 @@ const ProfessorPage = () => {
 	if (error || !data) {
 		return <Error props='professor' />;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	return (
 		<>

@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { CommentData } from '../utils/types';
 import { COURSE_COMMENTS, PROFESSOR_COMMENTS } from '../utils/graphql';
+import { Spinner } from 'react-bootstrap';
 
 const tagBlock = {
 	marginTop: 10,
@@ -39,7 +40,7 @@ const Tags: React.FC<Props> = ({ id, type }) => {
 	if (error || !data) {
 		return <div>Tags Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 
 	let tagSet: Set<string> = new Set();

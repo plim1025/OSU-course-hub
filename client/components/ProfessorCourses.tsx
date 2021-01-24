@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 import { CourseData } from '../utils/types';
 import { PROFESSOR_COURSES } from '../utils/graphql';
+import { Spinner } from 'react-bootstrap';
 
 const courseBlock = {
 	marginTop: 10,
@@ -25,7 +26,7 @@ const ProfessorCourses: React.FC<Props> = ({ id }) => {
 	if (error || !data) {
 		return <div>Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	return (
 		<div style={courseBlock}>

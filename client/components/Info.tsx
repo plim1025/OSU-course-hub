@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { Button, Card, Container } from 'react-bootstrap';
+import { Button, Card, Container, Spinner } from 'react-bootstrap';
 import { COURSE_COMMENTS, PROFESSOR_COMMENTS } from '../utils/graphql';
 import { CommentData, Course, Professor } from '../utils/types';
 import CourseProfessors from './CourseProfessors';
@@ -47,7 +47,7 @@ const Info: React.FC<Props> = ({ course, professor }) => {
 	if (error || !data) {
 		return <div>Info Component Error</div>;
 	} else if (loading) {
-		return <div>Loading...</div>;
+		return <Spinner animation="border" size="sm" />;
 	}
 	const qualities = data.comments.map(comment => comment.quality);
 	const difficulties = data.comments.map(comment => comment.difficulty);
