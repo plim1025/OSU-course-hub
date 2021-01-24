@@ -74,7 +74,8 @@ const Comment: React.FC<Props> = ({ comment }) => {
 			</div>
 			<Card.Text className='mt-3'>Text: {comment.text}</Card.Text>
 			<Card.Text>
-				Likes: {comment.likes} Dislikes: {comment.dislikes}
+				Likes: {comment.likes + (likeOrDislike === 1 ? 1 : 0)} Dislikes:{' '}
+				{comment.dislikes + (likeOrDislike === -1 ? 1 : 0)}
 			</Card.Text>
 			{studentID && (
 				<Row className='pl-3'>
