@@ -12,7 +12,7 @@ const tagList = {
 	marginRight: 5,
 	fontSize: 12,
 	fontWeight: 600,
-	display: 'inline',
+	display: 'inline-block',
 };
 
 const aTag = {
