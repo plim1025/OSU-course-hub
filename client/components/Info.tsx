@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { Button, Card, Container } from 'react-bootstrap';
+import { Card, Container } from 'react-bootstrap';
 import { COURSE_COMMENTS, PROFESSOR_COMMENTS } from '../utils/graphql';
 import { CommentData, Course, Professor } from '../utils/types';
 import CourseProfessors from './CourseProfessors';
@@ -11,11 +11,6 @@ import Tags from './Tags';
 const mainInfo = {
 	fontWeight: 600,
 	marginBottom: 0,
-};
-
-const rateBtn = {
-	marginLeft: 20,
-	background: '#d73f09',
 };
 
 const variable = {
@@ -34,20 +29,15 @@ interface Props {
 }
 
 const Info: React.FC<Props> = ({ course, professor }) => {
-	const { loading, error, data } = useQuery<CommentData>(
-		course ? COURSE_COMMENTS : PROFESSOR_COMMENTS,
-		{
-			variables: {
-				...(course && { courseID: parseInt(course.id) }),
-				...(professor && { professorID: parseInt(professor.id) }),
-			},
-		}
-	);
+	const { loading, data } = useQuery<CommentData>(course ? COURSE_COMMENTS : PROFESSOR_COMMENTS, {
+		variables: {
+			...(course && { courseID: parseInt(course.id) }),
+			...(professor && { professorID: parseInt(professor.id) }),
+		},
+	});
 
-	if (error || !data) {
-		return <div>Info Component Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
+	if (loading || !data) {
+		return <></>;
 	}
 	const qualities = data.comments.map(comment => comment.quality);
 	const difficulties = data.comments.map(comment => comment.difficulty);
@@ -57,7 +47,6 @@ const Info: React.FC<Props> = ({ course, professor }) => {
 				<h1 style={mainInfo}>
 					{course ? `${course.department} ${course.number}` : null}
 					{professor ? `${professor.firstName} ${professor.lastName}` : null}
-					<Button style={rateBtn}>Rate</Button>
 				</h1>
 				<h3>
 					Quality:

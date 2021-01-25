@@ -7,12 +7,10 @@ import { COMMENTS } from '../utils/graphql';
 import RecentCommentTitle from './RecentCommentTitle';
 
 const RecentComments: React.FC = () => {
-	const { loading, error, data } = useQuery<CommentData>(COMMENTS);
+	const { loading, data } = useQuery<CommentData>(COMMENTS);
 
-	if (error || !data) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
+	if (loading || !data) {
+		return <></>;
 	}
 	return (
 		<div

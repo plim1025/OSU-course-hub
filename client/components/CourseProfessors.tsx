@@ -21,14 +21,12 @@ interface Props {
 }
 
 const CourseProfessors: React.FC<Props> = ({ id }) => {
-	const { loading, error, data } = useQuery<ProfessorData>(COURSE_PROFESSORS, {
+	const { loading, data } = useQuery<ProfessorData>(COURSE_PROFESSORS, {
 		variables: { courseID: parseInt(id) },
 	});
 
-	if (error || !data) {
-		return <div>Course Professors Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
+	if (loading || !data) {
+		return <></>;
 	}
 	return (
 		<div style={professorBlock}>

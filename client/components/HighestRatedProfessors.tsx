@@ -30,13 +30,12 @@ interface Props {
 }
 
 const ProfessorQuality: React.FC<Props> = ({ id }) => {
-	const { loading, error, data } = useQuery(PROFESSOR_COMMENTS, {
+	const { loading, data } = useQuery(PROFESSOR_COMMENTS, {
 		variables: { professorID: parseInt(id) },
 	});
-	if (error || !data) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
+
+	if (loading || !data) {
+		return <></>;
 	}
 	const qualities: number[] = [];
 	data.comments.forEach(comment => {
@@ -52,12 +51,10 @@ const ProfessorQuality: React.FC<Props> = ({ id }) => {
 };
 
 const HighestRatedProfessors: React.FC = () => {
-	const { loading, error, data } = useQuery<ProfessorData>(HIGHEST_RATED_PROFESSORS);
+	const { loading, data } = useQuery<ProfessorData>(HIGHEST_RATED_PROFESSORS);
 
-	if (error || !data) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
+	if (loading || !data) {
+		return <></>;
 	}
 	return (
 		<div

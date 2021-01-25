@@ -12,14 +12,12 @@ interface Props {
 
 const StudentInfo: React.FC<Props> = props => {
 	const { student } = props;
-	const { loading, error, data } = useQuery<CommentData>(STUDENT_COMMENTS, {
+	const { loading, data } = useQuery<CommentData>(STUDENT_COMMENTS, {
 		variables: { ONID: student.ONID },
 	});
 
-	if (error || !data) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
+	if (loading || !data) {
+		return <></>;
 	}
 	return (
 		<div>

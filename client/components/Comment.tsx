@@ -10,7 +10,7 @@ interface Props {
 
 const Comment: React.FC<Props> = ({ comment }) => {
 	const studentID = window.sessionStorage.getItem('request-onid');
-	const { loading, error, data } = useQuery<StudentType>(STUDENT, {
+	const { loading, data } = useQuery<StudentType>(STUDENT, {
 		variables: { ONID: studentID },
 		skip: !studentID,
 	});
@@ -31,10 +31,8 @@ const Comment: React.FC<Props> = ({ comment }) => {
 		}
 	}, [data]);
 
-	if (loading) {
-		return <div>Loading...</div>;
-	} else if (error) {
-		return <div>Error in Comment component</div>;
+	if (loading || (studentID && !data)) {
+		return <></>;
 	}
 	return (
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
