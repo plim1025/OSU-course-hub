@@ -40,16 +40,10 @@ const Searchbar: React.FC<Props> = props => {
 	const router = useRouter();
 	const [menu, openMenu] = useState(false);
 	const [inputValue, setInputValue] = useState('');
-	const {
-		loading: loadingProfessors,
-		error: professorsError,
-		data: professorsData,
-	} = useQuery<ProfessorData>(PROFESSORS);
-	const {
-		loading: loadingCourses,
-		error: coursesError,
-		data: coursesData,
-	} = useQuery<CourseData>(COURSES);
+	const { loading: loadingProfessors, data: professorsData } = useQuery<ProfessorData>(
+		PROFESSORS
+	);
+	const { loading: loadingCourses, data: coursesData } = useQuery<CourseData>(COURSES);
 
 	const handleInputChange = (newValue: string, { action }: { action: InputActionTypes }) => {
 		if (action === 'input-change') {
@@ -61,18 +55,17 @@ const Searchbar: React.FC<Props> = props => {
 
 	const handleChange = (newValue: any) => {
 		openMenu(false);
-		router.push(`../${newValue.type}/${newValue.id}`);
+		router.push(`/${newValue.type}/${newValue.id}`);
 	};
 
-	if (loadingProfessors || loadingCourses) {
-		return <Spinner animation="border" size="sm" />;
-	} else if (professorsError || coursesError) {
-		return <div>Error</div>;
+	if (loadingProfessors || loadingCourses || !professorsData || !coursesData) {
+		return <></>;
 	}
 	return (
 		<Form style={{ ...props.style, ...(props.size === 'lg' ? largeWrapper : smallWrapper) }}>
 			<Select
 				inputValue={inputValue}
+				value={null}
 				inputId='searchbar-select'
 				styles={select}
 				cacheOptions

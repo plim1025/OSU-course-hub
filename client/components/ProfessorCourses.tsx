@@ -19,14 +19,12 @@ interface Props {
 }
 
 const ProfessorCourses: React.FC<Props> = ({ id }) => {
-	const { loading, error, data } = useQuery<CourseData>(PROFESSOR_COURSES, {
+	const { loading, data } = useQuery<CourseData>(PROFESSOR_COURSES, {
 		variables: { professorID: parseInt(id) },
 	});
 
-	if (error || !data) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <Spinner animation="border" size="sm" />;
+	if (loading || !data) {
+		return <></>;
 	}
 	return (
 		<div style={courseBlock}>

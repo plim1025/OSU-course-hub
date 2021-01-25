@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { CommentData } from '../utils/types';
 import { COURSE_COMMENTS, PROFESSOR_COMMENTS } from '../utils/graphql';
-import { Spinner } from 'react-bootstrap';
+import { CommentData } from '../utils/types';
 
 const tagBlock = {
 	marginTop: 10,
@@ -27,7 +26,7 @@ interface Props {
 }
 
 const Tags: React.FC<Props> = ({ id, type }) => {
-	const { loading, error, data } = useQuery<CommentData>(
+	const { loading, data } = useQuery<CommentData>(
 		type === 'professor' ? PROFESSOR_COMMENTS : COURSE_COMMENTS,
 		{
 			variables: {
@@ -37,10 +36,8 @@ const Tags: React.FC<Props> = ({ id, type }) => {
 		}
 	);
 
-	if (error || !data) {
-		return <div>Tags Error</div>;
-	} else if (loading) {
-		return <Spinner animation="border" size="sm" />;
+	if (loading || !data) {
+		return <></>;
 	}
 
 	let tagSet: Set<string> = new Set();

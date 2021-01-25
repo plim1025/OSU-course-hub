@@ -10,9 +10,9 @@ interface Props {
 
 const Comment: React.FC<Props> = ({ comment }) => {
 	const studentID = window.sessionStorage.getItem('request-onid');
-	const { loading, error, data } = useQuery<StudentType>(STUDENT, {
-		variables: { ONID: comment.ONID },
-		skip: !comment.ONID,
+	const { loading, data } = useQuery<StudentType>(STUDENT, {
+		variables: { ONID: studentID },
+		skip: !studentID,
 	});
 
 	const [likeOrDislike, setLikeOrDislike] = useState(0);
@@ -30,10 +30,8 @@ const Comment: React.FC<Props> = ({ comment }) => {
 		}
 	}, [data]);
 
-	if (loading) {
-		return <Spinner animation="border" size="sm" />;
-	} else if (error) {
-		return <div>Error in Comment component</div>;
+	if (loading || (studentID && !data)) {
+		return <></>;
 	}
 	return (
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
@@ -72,7 +70,8 @@ const Comment: React.FC<Props> = ({ comment }) => {
 			</div>
 			<Card.Text className='mt-3'>Text: {comment.text}</Card.Text>
 			<Card.Text>
-				Likes: {comment.likes} Dislikes: {comment.dislikes}
+				Likes: {comment.likes + (likeOrDislike === 1 ? 1 : 0)} Dislikes:{' '}
+				{comment.dislikes + (likeOrDislike === -1 ? 1 : 0)}
 			</Card.Text>
 			{studentID && (
 				<Row className='pl-3'>

@@ -1,25 +1,24 @@
 import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Error from 'next/error';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { Container, Spinner } from 'react-bootstrap';
 import { PROFESSOR, PROFESSOR_COMMENTS } from 'utils/graphql';
-import { CommentType, ProfessorType, CommentData } from '../../utils/types';
-import Error from '../../components/404';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
+import { CommentData, ProfessorType } from '../../utils/types';
 import AddComment from '../../components/AddComment';
 
 const ProfessorComments = ({ id }) => {
-	const { loading, error, data } = useQuery<CommentData>(PROFESSOR_COMMENTS, {
+	const { loading, data } = useQuery<CommentData>(PROFESSOR_COMMENTS, {
 		variables: { professorID: parseInt(id) },
 	});
-	if (error || !data) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <Spinner animation="border" size="sm" />;
+
+	if (loading || !data) {
+		return <></>;
 	}
 	return (
 		<Container>
@@ -33,15 +32,19 @@ const ProfessorComments = ({ id }) => {
 
 const ProfessorPage = () => {
 	const router = useRouter();
-	const { loading, error, data } = useQuery<ProfessorType>(PROFESSOR, {
-		variables: { professorID: parseInt(router.query.id as string) },
+	const { loading, data } = useQuery<ProfessorType>(PROFESSOR, {
+		variables: {
+			professorID: /^\d+$/.test(router.query.id as string)
+				? parseInt(router.query.id as string)
+				: null,
+		},
 		skip: !router.query.id,
 	});
 
-	if (error || !data) {
-		return <Error props='professor' />;
-	} else if (loading) {
-		return <Spinner animation="border" size="sm" />;
+	if (loading || !router.query.id) {
+		return <></>;
+	} else if (!data) {
+		return <Error statusCode={404} />;
 	}
 	return (
 		<>
