@@ -7,17 +7,15 @@ interface Props {
 }
 
 const RecentCommentTitle: React.FC<Props> = ({ courseID, professorID }) => {
-	const { loading, error, data } = useQuery(courseID ? COURSE : PROFESSOR, {
+	const { loading, data } = useQuery(courseID ? COURSE : PROFESSOR, {
 		variables: {
 			...(courseID && { courseID: courseID }),
 			...(professorID && { professorID: professorID }),
 		},
 	});
 
-	if (error || !data) {
-		return <div>Error</div>;
-	} else if (loading) {
-		return <div>Loading...</div>;
+	if (loading || !data) {
+		return <></>;
 	}
 	return (
 		<div>

@@ -1,9 +1,8 @@
-import { fromPromise } from '@apollo/client';
-import React, { useState } from 'react';
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { Grades, Campuses, Tags } from '../utils/util';
-import { CREATE_COMMENT } from '../utils/graphql';
 import { useMutation } from '@apollo/client';
+import React, { useState } from 'react';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
+import { CREATE_COMMENT } from '../utils/graphql';
+import { Campuses, Grades, Tags } from '../utils/util';
 
 const AddComment: React.FC = () => {
 	const [values, setValues] = useState({
@@ -16,7 +15,7 @@ const AddComment: React.FC = () => {
 		gradeReceived: 'N/A',
 		tags: [],
 	});
-	const [createComment, { comments }] = useMutation(CREATE_COMMENT);
+	const [createComment] = useMutation(CREATE_COMMENT);
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
@@ -29,9 +28,8 @@ const AddComment: React.FC = () => {
 		setShow(false);
 	};
 
-	const handleRating = (e: React.FormEvent) => {
+	const handleRating = (e: React.FormEvent) =>
 		setValues({ ...values, [e.target.name]: parseFloat(e.target.value) });
-	};
 
 	const handleChange = (e: React.FormEvent) => {
 		if (e.target.name == 'recommend' || e.target.name == 'baccCore') {
@@ -59,7 +57,6 @@ const AddComment: React.FC = () => {
 			<Button variant='outline-info' onClick={handleShow}>
 				New Comment
 			</Button>
-
 			<Modal show={show} onHide={handleClose}>
 				<Form onSubmit={handleSubmit} className='p-4'>
 					<Modal.Header closeButton>
