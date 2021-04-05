@@ -15,16 +15,20 @@ const Comment: React.FC<Props> = ({ comment }) => {
 		skip: !studentID,
 	});
 
+	const [initLikeOrDislike, setInitLikeOrDislike] = useState(0);
 	const [likeOrDislike, setLikeOrDislike] = useState(0);
 	const [addLike] = useMutation(LIKE_COMMENT);
 	const [addDislike] = useMutation(DISLIKE_COMMENT);
 	useEffect(() => {
 		if (data) {
 			if (data.student.likedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
+				setInitLikeOrDislike(1)
 				setLikeOrDislike(1);
 			} else if (data.student.dislikedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
+				setInitLikeOrDislike(-1)
 				setLikeOrDislike(-1);
 			} else {
+				setInitLikeOrDislike(0)
 				setLikeOrDislike(0);
 			}
 		}
@@ -70,8 +74,8 @@ const Comment: React.FC<Props> = ({ comment }) => {
 			</div>
 			<Card.Text className='mt-3'>Text: {comment.text}</Card.Text>
 			<Card.Text>
-				Likes: {comment.likes + (likeOrDislike === 1 ? 1 : 0)} Dislikes:{' '}
-				{comment.dislikes + (likeOrDislike === -1 ? 1 : 0)}
+				Likes: {comment.likes + (initLikeOrDislike === 1 ? -1 : 0) + (likeOrDislike === 1 ? 1 : 0)} Dislikes:{' '}
+				{comment.dislikes + (initLikeOrDislike === -1 ? -1 : 0) + (likeOrDislike === -1 ? 1 : 0)}
 			</Card.Text>
 			{studentID && (
 				<Row className='pl-3'>

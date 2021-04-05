@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Error from 'next/error';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Spinner } from 'react-bootstrap';
 import { PROFESSOR, PROFESSOR_COMMENTS } from 'utils/graphql';
 import Comment from '../../components/Comment';
@@ -20,8 +20,10 @@ const ProfessorComments = ({ id }) => {
 	if (loading || !data) {
 		return <></>;
 	}
+	
 	return (
 		<Container>
+			<AddComment />
 			<h3>Comments:</h3>
 			{data.comments.map(comment => (
 				<Comment key={comment.id} comment={comment} />
@@ -54,7 +56,6 @@ const ProfessorPage = () => {
 			</Head>
 			<Header searchbarToggled={true} />
 			<Info professor={data.professor} />
-			<AddComment />
 			<ProfessorComments id={data.professor.id} />
 		</>
 	);

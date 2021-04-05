@@ -1,8 +1,14 @@
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { CREATE_COMMENT } from '../utils/graphql';
+import { CREATE_COMMENT, COMMENTS } from '../utils/graphql';
 import { Campuses, Grades, Tags } from '../utils/util';
+import Router from 'next/router';
+
+const newComment ={
+	marginLeft: '70px',
+	marginBottom: '30px',
+}
 
 const AddComment: React.FC = () => {
 	const [values, setValues] = useState({
@@ -16,7 +22,7 @@ const AddComment: React.FC = () => {
 		gradeReceived: 'N/A',
 		tags: [],
 	});
-	const [createComment] = useMutation(CREATE_COMMENT);
+	const [createComment, {data}] = useMutation(CREATE_COMMENT);
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
@@ -25,14 +31,18 @@ const AddComment: React.FC = () => {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		const studentID = window.sessionStorage.getItem('request-onid');
-		createComment({ variables: { ...values, ONID: studentID, courseID: 1 } });
+		if(Router.pathname === "/course/[id]")
+			createComment({ variables: { ...values, ONID: studentID, courseID: parseInt(Router.query.id as string) } });
+		else if(Router.pathname === "/professor/[id]")
+			createComment({ variables: { ...values, ONID: studentID, professorID: parseInt(Router.query.id as string) } });
+		
 		setShow(false);
 	};
 
-	const handleRating = (e: React.FormEvent) =>
+	const handleRating = (e: any) =>
 		setValues({ ...values, [e.target.name]: parseFloat(e.target.value) });
 
-	const handleChange = (e: React.FormEvent) => {
+	const handleChange = (e: any) => {
 		if (e.target.name == 'recommend' || e.target.name == 'baccCore') {
 			const option = e.target.value == 'Yes' ? true : false;
 			setValues({ ...values, [e.target.name]: option });
@@ -63,7 +73,7 @@ const AddComment: React.FC = () => {
 
 	return (
 		<div>
-			<Button variant='outline-info' onClick={handleShow}>
+			<Button variant='outline-info' onClick={handleShow} style={newComment}>
 				New Comment
 			</Button>
 			<Modal show={show} onHide={handleClose}>

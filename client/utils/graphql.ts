@@ -5,6 +5,7 @@ export const COMMENTS = gql`
 	query comments {
 		comments {
 			id
+			anonymous
 			text
 			ONID
 			courseID
