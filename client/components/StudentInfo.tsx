@@ -19,6 +19,7 @@ const StudentInfo: React.FC<Props> = props => {
 	if (loading || !data) {
 		return <></>;
 	}
+
 	return (
 		<div>
 			<Container>
@@ -35,7 +36,7 @@ const StudentInfo: React.FC<Props> = props => {
 					</h5>
 				</Card>
 				{data
-					? data.comments.map(comment => <Comment key={comment.id} comment={comment} />)
+					? data.comments.slice().reverse().map(comment => <Comment key={comment.id} comment={comment} />)
 					: null}
 			</Container>
 		</div>

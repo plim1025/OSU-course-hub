@@ -6,7 +6,7 @@ import { Campuses, Grades, Tags } from '../utils/util';
 import Router from 'next/router';
 
 const newComment ={
-	marginLeft: '70px',
+	//marginLeft: '70px',
 	marginBottom: '30px',
 }
 
@@ -22,7 +22,7 @@ const AddComment: React.FC = () => {
 		gradeReceived: 'N/A',
 		tags: [],
 	});
-	const [createComment, {data}] = useMutation(CREATE_COMMENT);
+	const [createComment] = useMutation(CREATE_COMMENT);
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);

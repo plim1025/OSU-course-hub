@@ -25,7 +25,7 @@ const ProfessorComments = ({ id }) => {
 		<Container>
 			<AddComment />
 			<h3>Comments:</h3>
-			{data.comments.map(comment => (
+			{data.comments.slice().reverse().map(comment => (
 				<Comment key={comment.id} comment={comment} />
 			))}
 		</Container>

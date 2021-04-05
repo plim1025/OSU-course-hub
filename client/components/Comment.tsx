@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Row, Spinner } from 'react-bootstrap';
 import { DISLIKE_COMMENT, LIKE_COMMENT, STUDENT } from 'utils/graphql';
 import { CommentType, StudentType } from '../utils/types';
+import Router from 'next/router';
 
 interface Props {
 	comment: CommentType;
@@ -37,9 +38,20 @@ const Comment: React.FC<Props> = ({ comment }) => {
 	if (loading || (studentID && !data)) {
 		return <></>;
 	}
+
 	return (
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>
+				{/*{(Router.pathname !== "/student/[id]") ? 
+				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
+					{comment.anonymous ? 'Anonymous' : comment.ONID}
+				</Card.Title> : ((comment.professorID) ? 
+				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
+					{comment.professorID}
+				</Card.Title> : 
+				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
+					{comment.courseID}
+				</Card.Title>)}*/}
 				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
 					{comment.anonymous ? 'Anonymous' : comment.ONID}
 				</Card.Title>
@@ -79,7 +91,10 @@ const Comment: React.FC<Props> = ({ comment }) => {
 			</Card.Text>
 			{studentID && (
 				<Row className='pl-3'>
-					<Button
+					{(comment.ONID === studentID) ?
+					null :
+						<div>
+						<Button
 						className='mr-3'
 						variant={likeOrDislike === 1 ? 'primary' : 'outline-primary'}
 						onClick={() => {
@@ -88,10 +103,10 @@ const Comment: React.FC<Props> = ({ comment }) => {
 							});
 							setLikeOrDislike(likeOrDislike === 1 ? 0 : 1);
 						}}
-					>
-						Like
-					</Button>
-					<Button
+						>
+							Like
+						</Button>
+						<Button
 						className='mr-3'
 						variant={likeOrDislike === -1 ? 'primary' : 'outline-primary'}
 						onClick={() => {
@@ -100,9 +115,10 @@ const Comment: React.FC<Props> = ({ comment }) => {
 							});
 							setLikeOrDislike(likeOrDislike === -1 ? 0 : -1);
 						}}
-					>
-						Dislike
-					</Button>
+						>
+							Dislike
+						</Button></div>			
+					}
 				</Row>
 			)}
 		</Card>
