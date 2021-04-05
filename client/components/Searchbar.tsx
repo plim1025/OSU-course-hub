@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/dist/client/router';
 import React, { CSSProperties, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Spinner } from 'react-bootstrap';
 import Select, { InputActionTypes } from 'react-select';
 import { COURSES, PROFESSORS } from 'utils/graphql';
 import { CourseData, ProfessorData } from 'utils/types';

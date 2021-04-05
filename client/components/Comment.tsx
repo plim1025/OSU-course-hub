@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Row } from 'react-bootstrap';
+import { Button, Card, Row, Spinner } from 'react-bootstrap';
 import { DISLIKE_COMMENT, LIKE_COMMENT, STUDENT } from 'utils/graphql';
 import { CommentType, StudentType } from '../utils/types';
 
@@ -15,17 +15,20 @@ const Comment: React.FC<Props> = ({ comment }) => {
 		skip: !studentID,
 	});
 
+	const [initLikeOrDislike, setInitLikeOrDislike] = useState(0);
 	const [likeOrDislike, setLikeOrDislike] = useState(0);
 	const [addLike] = useMutation(LIKE_COMMENT);
 	const [addDislike] = useMutation(DISLIKE_COMMENT);
-
 	useEffect(() => {
 		if (data) {
 			if (data.student.likedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
+				setInitLikeOrDislike(1)
 				setLikeOrDislike(1);
 			} else if (data.student.dislikedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
+				setInitLikeOrDislike(-1)
 				setLikeOrDislike(-1);
 			} else {
+				setInitLikeOrDislike(0)
 				setLikeOrDislike(0);
 			}
 		}
@@ -38,8 +41,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>
 				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
-					{/* {comment.anonymous ? '' : comment.ONID} */}
-					{comment.ONID}
+					{comment.anonymous ? 'Anonymous' : comment.ONID}
 				</Card.Title>
 				<Card.Text className='text-right ml-auto text-muted'>
 					<strong>Created At</strong> {new Date(comment.createdAt).toDateString()}
@@ -72,8 +74,8 @@ const Comment: React.FC<Props> = ({ comment }) => {
 			</div>
 			<Card.Text className='mt-3'>Text: {comment.text}</Card.Text>
 			<Card.Text>
-				Likes: {comment.likes + (likeOrDislike === 1 ? 1 : 0)} Dislikes:{' '}
-				{comment.dislikes + (likeOrDislike === -1 ? 1 : 0)}
+				Likes: {comment.likes + (initLikeOrDislike === 1 ? -1 : 0) + (likeOrDislike === 1 ? 1 : 0)} Dislikes:{' '}
+				{comment.dislikes + (initLikeOrDislike === -1 ? -1 : 0) + (likeOrDislike === -1 ? 1 : 0)}
 			</Card.Text>
 			{studentID && (
 				<Row className='pl-3'>

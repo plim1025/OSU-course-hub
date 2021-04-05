@@ -3,13 +3,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Error from 'next/error';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React from 'react';
-import { Container } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Spinner } from 'react-bootstrap';
 import { PROFESSOR, PROFESSOR_COMMENTS } from 'utils/graphql';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
 import { CommentData, ProfessorType } from '../../utils/types';
+import AddComment from '../../components/AddComment';
 
 const ProfessorComments = ({ id }) => {
 	const { loading, data } = useQuery<CommentData>(PROFESSOR_COMMENTS, {
@@ -19,8 +20,10 @@ const ProfessorComments = ({ id }) => {
 	if (loading || !data) {
 		return <></>;
 	}
+	
 	return (
 		<Container>
+			<AddComment />
 			<h3>Comments:</h3>
 			{data.comments.map(comment => (
 				<Comment key={comment.id} comment={comment} />

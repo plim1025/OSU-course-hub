@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Link from 'next/link';
 import React from 'react';
-import { Card, Row } from 'react-bootstrap';
+import { Card, Row, Spinner } from 'react-bootstrap';
 import { HIGHEST_RATED_PROFESSORS, PROFESSOR_COMMENTS } from '../utils/graphql';
 import { ProfessorData } from '../utils/types';
 
@@ -25,6 +25,14 @@ const item = {
 	margin: 0,
 };
 
+const title = {
+	//background: 'blue',
+	":hover": {
+		background: 'red',
+		cursor: 'pointer',
+	}
+}
+
 interface Props {
 	id: string;
 }
@@ -44,7 +52,7 @@ const ProfessorQuality: React.FC<Props> = ({ id }) => {
 	return (
 		<Card.Text style={item}>
 			Quality:
-			<span style={variable}>{qualities.reduce((a, b) => a + b, 0) / qualities.length}</span>
+			<span style={variable}>{Math.round(qualities.reduce((a, b) => a + b, 0) / qualities.length * 100) / 100}</span>
 			<span style={constant}>/5</span>
 		</Card.Text>
 	);
@@ -87,7 +95,7 @@ const HighestRatedProfessors: React.FC = () => {
 						<Row className='pl-3 pr-4'>
 							<Card.Title>
 								<Link href={`/professor/${professor.id}`}>
-									<b>
+									<b style={title}>
 										{professor.firstName} {professor.lastName}
 									</b>
 								</Link>

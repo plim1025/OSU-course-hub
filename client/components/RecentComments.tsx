@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { Card, Row } from 'react-bootstrap';
+import { Card, Row, Spinner } from 'react-bootstrap';
 import { CommentData } from '../utils/types';
 import { COMMENTS } from '../utils/graphql';
 import RecentCommentTitle from './RecentCommentTitle';

@@ -5,6 +5,7 @@ export const COMMENTS = gql`
 	query comments {
 		comments {
 			id
+			anonymous
 			text
 			ONID
 			courseID
@@ -27,8 +28,10 @@ export const COURSE_COMMENTS = gql`
 	query courseComments($courseID: Float!) {
 		comments: courseComments(courseID: $courseID) {
 			id
+			anonymous
 			text
 			gradeReceived
+			ONID
 			courseID
 			professorID
 			recommend
@@ -48,6 +51,7 @@ export const PROFESSOR_COMMENTS = gql`
 	query professorComments($professorID: Float!) {
 		comments: professorComments(professorID: $professorID) {
 			id
+			anonymous
 			text
 			difficulty
 			quality
@@ -70,6 +74,7 @@ export const STUDENT_COMMENTS = gql`
 	query studentComments($ONID: String!) {
 		comments: studentComments(ONID: $ONID) {
 			id
+			anonymous
 			text
 			gradeReceived
 			courseID
@@ -89,10 +94,11 @@ export const STUDENT_COMMENTS = gql`
 
 export const CREATE_COMMENT = gql`
 	mutation createComment(
+		$anonymous: Boolean
 		$text: String!
 		$ONID: String!
-		$quality: Float!
-		$difficulty: Float!
+		$quality: Int!
+		$difficulty: Int!
 		$professorID: Float
 		$courseID: Float
 		$campus: String
@@ -103,6 +109,7 @@ export const CREATE_COMMENT = gql`
 	) {
 		createComment(
 			input: {
+				anonymous: $anonymous
 				text: $text
 				ONID: $ONID
 				quality: $quality
@@ -116,21 +123,20 @@ export const CREATE_COMMENT = gql`
 				tags: $tags
 			}
 		) {
-			comment {
-				id
-				text
-				ONID
-				courseID
-				professorID
-				campus
-				recommend
-				baccCore
-				gradeReceived
-				tags
-				createdAt
-				likes
-				dislikes
-			}
+			id
+			anonymous
+			text
+			ONID
+			courseID
+			professorID
+			campus
+			recommend
+			baccCore
+			gradeReceived
+			tags
+			createdAt
+			likes
+			dislikes
 		}
 	}
 `;
