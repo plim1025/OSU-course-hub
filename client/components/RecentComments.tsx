@@ -41,7 +41,7 @@ const RecentComments: React.FC = () => {
 								professorID={comment.professorID}
 							/>
 							<Card.Text className='text-right ml-auto'>
-								Created on: <b>{new Date(comment.createdAt).toDateString()}</b>
+								<b>{new Date(comment.createdAt).toDateString()}</b>
 							</Card.Text>
 						</Row>
 						<br />

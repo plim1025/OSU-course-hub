@@ -1,7 +1,8 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import React, { useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { CREATE_COMMENT, COMMENTS } from '../utils/graphql';
+import { CREATE_COMMENT, COMMENTS, STUDENT_COMMENTS } from '../utils/graphql';
+import { CommentData, Student } from '../utils/types';
 import { Campuses, Grades, Tags } from '../utils/util';
 import Router from 'next/router';
 
@@ -71,11 +72,39 @@ const AddComment: React.FC = () => {
 		}
 	};
 
+	const checkIfStudentComment = () => {
+		const studentID = window.sessionStorage.getItem('request-onid');
+		const { loading, data } = useQuery<CommentData>(STUDENT_COMMENTS, {
+			variables: { ONID: studentID },
+			skip: !studentID,
+		});
+
+		if (loading || !data) {
+			return true;
+		}
+
+		if(Router.pathname === "/course/[id]"){
+			//check if one of the student's comments has the course id
+			if(data.comments.filter((comment) => comment.courseID == parseInt(Router.query.id as string)).length == 0)
+				return false
+			else
+				return true
+		}
+		else if(Router.pathname === "/professor/[id]"){
+			//check if one of the student's comments has the professor id
+			if(data.comments.filter((comment) => comment.professorID == parseInt(Router.query.id as string)).length == 0)
+				return false
+			else
+				return true
+		}
+	}
+
 	return (
 		<div>
-			<Button variant='outline-info' onClick={handleShow} style={newComment}>
+			{!checkIfStudentComment() &&
+			(<Button variant='outline-info' onClick={handleShow} style={newComment}>
 				New Comment
-			</Button>
+			</Button>)}
 			<Modal show={show} onHide={handleClose}>
 				<Form onSubmit={handleSubmit}>
 					<Modal.Header closeButton>
