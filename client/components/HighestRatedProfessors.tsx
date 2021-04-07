@@ -27,10 +27,10 @@ const item = {
 
 const title = {
 	//background: 'blue',
-	":hover": {
+	/*":hover": {
 		background: 'red',
 		cursor: 'pointer',
-	}
+	}*/
 }
 
 interface Props {

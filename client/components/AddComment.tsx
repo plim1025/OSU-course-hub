@@ -7,7 +7,6 @@ import { Campuses, Grades, Tags } from '../utils/util';
 import Router from 'next/router';
 
 const newComment ={
-	//marginLeft: '70px',
 	marginBottom: '30px',
 }
 
@@ -52,11 +51,11 @@ const AddComment: React.FC = () => {
 		}
 	};
 
-	const handleTags = (e: React.FormEvent) => {
-		const idx = values.tags.indexOf(e.target.name);
+	const handleTags = (e: any) => {
+		const idx = values.tags.indexOf(e.target.name as never);
 
 		if (idx === -1) {
-			setValues({ ...values, tags: [...values.tags, e.target.name] });
+			setValues({ ...values, tags: [...values.tags as never, e.target.name as never] });
 		} else {
 			const newTags = values.tags;
 			newTags.splice(idx);
@@ -97,6 +96,8 @@ const AddComment: React.FC = () => {
 			else
 				return true
 		}
+
+		return true
 	}
 
 	return (

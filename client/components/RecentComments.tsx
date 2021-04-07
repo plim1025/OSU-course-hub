@@ -12,6 +12,10 @@ const RecentComments: React.FC = () => {
 	if (loading || !data) {
 		return <></>;
 	}
+
+	var comments = [...data.comments]
+	comments.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+
 	return (
 		<div
 			style={{
@@ -25,9 +29,8 @@ const RecentComments: React.FC = () => {
 			className='border'
 		>
 			<h4 style={{ textAlign: 'center', padding: '10px' }}>Recent Comments:</h4>
-			{data.comments
+			{comments
 				.slice(0, Math.min(4, data.comments.length))
-				.reverse()
 				.map(comment => (
 					<Card
 						style={{ width: '80%', padding: '10px', marginTop: '10px' }}

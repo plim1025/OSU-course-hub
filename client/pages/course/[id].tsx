@@ -20,10 +20,19 @@ const CourseComments = ({ id }) => {
 	if (loading || !data) {
 		return <></>;
 	}
+
+	var comments = [...data.comments]
+	comments.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+	/*comments.sort(function(a, b){
+		var dateA = +new Date(a.createdAt);
+		var dateB = +new Date(b.createdAt);
+		return dateB - dateA;
+	})*/
+
 	return (
 		<Container>
 			<h3>Comments:</h3>
-			{data.comments.slice().reverse().map(comment => (
+			{comments.map(comment => (
 				<Comment key={comment.id} comment={comment} />
 			))}
 		</Container>

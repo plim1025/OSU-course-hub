@@ -20,12 +20,15 @@ const ProfessorComments = ({ id }) => {
 	if (loading || !data) {
 		return <></>;
 	}
+
+	var comments = [...data.comments]
+	comments.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
 	
 	return (
 		<Container>
 			<AddComment />
 			<h3>Comments:</h3>
-			{data.comments.slice().reverse().map(comment => (
+			{comments.map(comment => (
 				<Comment key={comment.id} comment={comment} />
 			))}
 		</Container>
