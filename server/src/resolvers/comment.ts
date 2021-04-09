@@ -9,6 +9,9 @@ import { Campuses, Grades, Tags } from '../util';
 
 @InputType()
 class CommentInput {
+    @Field({ nullable: true })
+    anonymous?: boolean;
+
     @Field()
     @MaxLength(524)
     text: string;
@@ -84,6 +87,7 @@ export class CommentResolver {
     async createComment(
         @Arg('input')
         {
+            anonymous,
             text,
             difficulty,
             quality,
@@ -119,6 +123,7 @@ export class CommentResolver {
             const professor = await Professor.find({ id: professorID });
             if (professor) {
                 const comment = await Comment.create({
+                    anonymous,
                     text,
                     difficulty,
                     quality,
@@ -139,6 +144,7 @@ export class CommentResolver {
         const course = await Course.find({ id: courseID });
         if (course) {
             const comment = await Comment.create({
+                anonymous,
                 text,
                 difficulty,
                 quality,

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 import { CourseData } from '../utils/types';
 import { PROFESSOR_COURSES } from '../utils/graphql';
+import { Spinner } from 'react-bootstrap';
 
 const courseBlock = {
 	marginTop: 10,

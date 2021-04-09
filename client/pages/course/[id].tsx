@@ -4,12 +4,13 @@ import Error from 'next/error';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import { COURSE, COURSE_COMMENTS } from 'utils/graphql';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
 import { CommentData, CourseType } from '../../utils/types';
+import AddComment from '../../components/AddComment';
 
 const CourseComments = ({ id }) => {
 	const { loading, data } = useQuery<CommentData>(COURSE_COMMENTS, {
@@ -53,6 +54,7 @@ const CoursePage = () => {
 			</Head>
 			<Header searchbarToggled={true} />
 			<Info course={data.course} />
+			<AddComment />
 			<CourseComments id={data.course.id} />
 		</>
 	);

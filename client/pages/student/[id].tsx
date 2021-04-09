@@ -11,11 +11,13 @@ import { StudentType } from '../../utils/types';
 
 const StudentPage = () => {
 	const router = useRouter();
+	console.log(router.query.id)
 	const { loading, data } = useQuery<StudentType>(STUDENT, {
 		variables: {
-			ONID: /^\d+$/.test(router.query.id as string)
+			ONID: router.query.id
+			/*ONID: /^\d+$/.test(router.query.id as string)
 				? parseInt(router.query.id as string)
-				: null,
+				: null,*/
 		},
 		skip: !router.query.id,
 	});
