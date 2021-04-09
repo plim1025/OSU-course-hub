@@ -3,8 +3,10 @@ import { Button, Modal, Form } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 import { CREATE_COURSE, CREATE_PROFESSOR } from 'utils/graphql';
 import { Colleges, Departments } from '../utils/util';
+import { useRouter } from 'next/router';
 
 export default function AddProfessor() {
+	const router = useRouter();
 	const [values, setValues] = useState({
 		type: 'course',
 		department: '',
@@ -31,11 +33,6 @@ export default function AddProfessor() {
 			// console.log({ deparment: values.department, number: values.number });
 			setCourse({ variables: { department: values.department, number: values.number } });
 		} else if (values.type == 'professor') {
-			// console.log({
-			// 	firstName: values.firstname,
-			// 	lastName: values.lastname,
-			// 	college: values.college,
-			// });
 			setProfessor({
 				variables: {
 					firstName: values.firstname,
@@ -47,6 +44,7 @@ export default function AddProfessor() {
 			alert('Invalid type error from AddProfessor.tsx');
 		}
 		setShow(false);
+		router.reload();
 	};
 
 	return (
