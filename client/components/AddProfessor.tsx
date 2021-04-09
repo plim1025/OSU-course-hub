@@ -23,7 +23,7 @@ export default function AddProfessor() {
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
-	const handleChange = (e: React.FormEvent) => {
+	const handleChange = (e: any) => {
 		setValues({ ...values, [e.target.name]: e.target.value });
 	};
 
