@@ -6,6 +6,11 @@ import { CommentData } from '../utils/types';
 import { COMMENTS } from '../utils/graphql';
 import RecentCommentTitle from './RecentCommentTitle';
 
+const date = {
+	margin: 0,
+	color: '#4a4a4a',
+}
+
 const RecentComments: React.FC = () => {
 	const { loading, data } = useQuery<CommentData>(COMMENTS);
 
@@ -43,8 +48,8 @@ const RecentComments: React.FC = () => {
 								courseID={comment.courseID}
 								professorID={comment.professorID}
 							/>
-							<Card.Text className='text-right ml-auto'>
-								<b>{new Date(comment.createdAt).toDateString()}</b>
+							<Card.Text style={date} className='text-right ml-auto'>
+								{new Date(comment.createdAt).toDateString()}
 							</Card.Text>
 						</Row>
 						<br />

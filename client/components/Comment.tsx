@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Row, Spinner } from 'react-bootstrap';
-import { DISLIKE_COMMENT, LIKE_COMMENT, STUDENT } from 'utils/graphql';
+import { DISLIKE_COMMENT, LIKE_COMMENT, STUDENT, COURSE, PROFESSOR } from 'utils/graphql';
 import { CommentType, StudentType } from '../utils/types';
 import Router from 'next/router';
 
@@ -14,6 +14,13 @@ const Comment: React.FC<Props> = ({ comment }) => {
 	const { loading, data } = useQuery<StudentType>(STUDENT, {
 		variables: { ONID: studentID },
 		skip: !studentID,
+	});
+
+	const { loading: prof_course_loading, data: prof_course_data } = useQuery(comment.courseID ? COURSE : PROFESSOR, {
+		variables: {
+			...(comment.courseID && { courseID: comment.courseID }),
+			...(comment.professorID && { professorID: comment.professorID }),
+		},
 	});
 
 	const [initLikeOrDislike, setInitLikeOrDislike] = useState(0);
@@ -35,26 +42,23 @@ const Comment: React.FC<Props> = ({ comment }) => {
 		}
 	}, [data]);
 
-	if (loading || (studentID && !data)) {
+	if (loading || prof_course_loading || (studentID && !data) || !prof_course_data) {
 		return <></>;
 	}
 
 	return (
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>
-				{/*{(Router.pathname !== "/student/[id]") ? 
+				{(Router.pathname !== "/student/[id]") ? 
 				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
 					{comment.anonymous ? 'Anonymous' : comment.ONID}
 				</Card.Title> : ((comment.professorID) ? 
 				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
-					{comment.professorID}
+					{prof_course_data.professor.firstName} {prof_course_data.professor.lastName}
 				</Card.Title> : 
 				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
-					{comment.courseID}
-				</Card.Title>)}*/}
-				<Card.Title className='lead' style={{ fontSize: '1.5rem' }}>
-					{comment.anonymous ? 'Anonymous' : comment.ONID}
-				</Card.Title>
+					{prof_course_data.course.department} {prof_course_data.course.number}
+				</Card.Title>)}
 				<Card.Text className='text-right ml-auto text-muted'>
 					<strong>Created At</strong> {new Date(comment.createdAt).toDateString()}
 				</Card.Text>
