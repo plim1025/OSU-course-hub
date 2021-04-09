@@ -77,7 +77,7 @@ const AddComment: React.FC = () => {
 				New Comment
 			</Button>
 			<Modal show={show} onHide={handleClose}>
-				<Form onSubmit={handleSubmit}>
+				<Form onSubmit={handleSubmit} className='p-4'>
 					<Modal.Header closeButton>
 						<Modal.Title>Add Comment</Modal.Title>
 					</Modal.Header>

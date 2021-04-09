@@ -4,6 +4,7 @@ import { Button, Nav, Navbar } from 'react-bootstrap';
 import { CREATE_STUDENT } from '../utils/graphql';
 import { Auth } from './Auth';
 import Searchbar from './Searchbar';
+import AddProfessor from './AddProfessor';
 
 interface Props {
 	searchbarToggled: boolean;
@@ -53,6 +54,7 @@ const Header: React.FC<Props> = props => {
 				<img src={'/favicon.png'} style={logo} className='d-inline-block align-center' />
 				OSU Course Hub
 			</Navbar.Brand>
+			{!props.searchbarToggled && <AddProfessor />}
 			{props.searchbarToggled ? (
 				<Searchbar style={headerSearchBarStyle} showButton={false} size='sm' />
 			) : null}
