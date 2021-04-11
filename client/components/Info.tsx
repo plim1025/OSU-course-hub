@@ -78,7 +78,7 @@ const Info: React.FC<Props> = ({ course, professor, comments }) => {
 				</h5>
 				{course ? <CourseProfessors id={course.id} /> : null}
 				{professor ? <ProfessorCourses id={professor.id} /> : null}
-				{course ? <Tags id={course.id} type='course' /> : null}
+				{course ? <Tags id={course.id} type='course' comments={comments} /> : null}
 				{professor ? <Tags id={professor.id} type='professor' comments={comments} /> : null}
 			</Card>
 		</Container>

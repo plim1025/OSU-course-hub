@@ -11,10 +11,9 @@ interface Props {
 	setShow: (value: boolean) => void;
 	handleClose: () => void;
 	addOneComment: (comment: CommentType) => void;
-	comments: CommentData;
 }
 
-const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment, comments}) => {
+const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment}) => {
 	const [values, setValues] = useState({
 		anonymous: false,
 		text: '',
