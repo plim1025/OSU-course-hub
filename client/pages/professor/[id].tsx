@@ -2,10 +2,10 @@ import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Error from 'next/error';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
-import { Container, Spinner } from 'react-bootstrap';
-import { PROFESSOR, PROFESSOR_COMMENTS } from 'utils/graphql';
+import { Container, Spinner, Button } from 'react-bootstrap';
+import { PROFESSOR, PROFESSOR_COMMENTS, STUDENT_COMMENTS } from 'utils/graphql';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
@@ -16,30 +16,48 @@ const ProfessorComments = ({ prof_comments, updateProfessor }) => {
 	/*const { loading, data } = useQuery<CommentData>(PROFESSOR_COMMENTS, {
 		variables: { professorID: parseInt(id) },
 	});*/
-	const [comments, setComments] = useState(prof_comments);
+	const [comments, setComments] = useState(prof_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+	const [show, setShow] = useState(false);
+	const handleClose = () => setShow(false);
+	const handleShow = () => setShow(true);
 
-	console.log("here")
+	if(!comments){
+		return <></>
+	}
 
-	useEffect(() => {
-		console.log("here2")
-	
+	useEffect(() => {	
 		setComments(prof_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
-	})
+	}, [prof_comments])
 	
-	console.log(prof_comments)
-	console.log(comments)
+
+	const newComment = {
+		marginBottom: '30px',
+	}
 
 	const deleteOneComment = (commentID: number) => {
-		console.log(commentID)
-		console.log("here")
 
-		setComments(comments.filter((comment) => commentID != parseInt(comment['id'])))
-		updateProfessor(comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+		//setComments(comments.filter((comment) => commentID != parseInt(comment['id'])))
+		const updated_comments = comments.filter((comment) => commentID != parseInt(comment['id']))
+		updateProfessor(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+	}
+
+	const checkIfStudentComment = () => {
+		const studentID = window.sessionStorage.getItem('request-onid');
+
+		if(comments.filter((comment) => comment.ONID == studentID).length == 0)
+			return false
+		else
+			return true
+
 	}
 
 	return (
 		<Container>
-			<AddComment />
+			{!checkIfStudentComment() &&
+			(<Button variant='outline-info' onClick={handleShow} style={newComment}>
+				New Comment
+			</Button>)}
+			<AddComment show={show} setShow={setShow} handleClose={handleClose}/>
 			<h3>Comments:</h3>
 			{comments.map(comment => (
 				<Comment key={comment.id} comment={comment} deleteOneComment={deleteOneComment} />
@@ -65,7 +83,6 @@ const ProfessorPage = () => {
 
 	const [professor, setProfessor] = useState()
 	const [comments, setComments] = useState([])
-	const [update, setUpdate] = useState(0)
 
 	useEffect(() => {
 		if(data){
@@ -83,13 +100,8 @@ const ProfessorPage = () => {
 	}
 
 	const updateProfessor = (updated_comments) => {
-		console.log("here3")
-		//setUpdate(1)
 		setComments(updated_comments)
 	}
-
-	console.log("here4")
-	console.log(professor)
 
 	return (
 		<>

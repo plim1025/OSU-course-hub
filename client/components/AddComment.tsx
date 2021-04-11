@@ -6,11 +6,13 @@ import { CommentData, Student } from '../utils/types';
 import { Campuses, Grades, Tags } from '../utils/util';
 import Router from 'next/router';
 
-const newComment = {
-	marginBottom: '30px',
+interface Props {
+	show: boolean;
+	setShow: (value: boolean) => void;
+	handleClose: () => void;
 }
 
-const AddComment: React.FC = () => {
+const AddComment: React.FC<Props> = ({show, setShow, handleClose}) => {
 	const [values, setValues] = useState({
 		anonymous: false,
 		text: '',
@@ -23,9 +25,6 @@ const AddComment: React.FC = () => {
 		tags: [],
 	});
 	const [createComment] = useMutation(CREATE_COMMENT);
-	const [show, setShow] = useState(false);
-	const handleClose = () => setShow(false);
-	const handleShow = () => setShow(true);
 	const rating = [5, 4, 3, 2, 1];
 
 	const handleSubmit = (e: React.FormEvent) => {
@@ -71,41 +70,10 @@ const AddComment: React.FC = () => {
 		}
 	};
 
-	const checkIfStudentComment = () => {
-		const studentID = window.sessionStorage.getItem('request-onid');
-		const { loading, data } = useQuery<CommentData>(STUDENT_COMMENTS, {
-			variables: { ONID: studentID },
-			skip: !studentID,
-		});
-
-		if (loading || !data) {
-			return true;
-		}
-
-		if(Router.pathname === "/course/[id]"){
-			//check if one of the student's comments has the course id
-			if(data.comments.filter((comment) => comment.courseID == parseInt(Router.query.id as string)).length == 0)
-				return false
-			else
-				return true
-		}
-		else if(Router.pathname === "/professor/[id]"){
-			//check if one of the student's comments has the professor id
-			if(data.comments.filter((comment) => comment.professorID == parseInt(Router.query.id as string)).length == 0)
-				return false
-			else
-				return true
-		}
-
-		return true
-	}
+	console.log("here")
 
 	return (
 		<div>
-			{!checkIfStudentComment() &&
-			(<Button variant='outline-info' onClick={handleShow} style={newComment}>
-				New Comment
-			</Button>)}
 			<Modal show={show} onHide={handleClose}>
 				<Form onSubmit={handleSubmit}>
 					<Modal.Header closeButton>

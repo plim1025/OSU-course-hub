@@ -5,7 +5,6 @@ import { DISLIKE_COMMENT, LIKE_COMMENT, DELETE_COMMENT, STUDENT, COURSE, PROFESS
 import { CommentType, StudentType } from '../utils/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-//import Radium from 'radium';
 import Router from 'next/router';
 
 /*
@@ -64,8 +63,6 @@ const Comment: React.FC<Props> = ({ comment, deleteOneComment }) => {
 		return <></>;
 	}
 
-	console.log(document.body);
-
 	return (
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>
@@ -84,7 +81,7 @@ const Comment: React.FC<Props> = ({ comment, deleteOneComment }) => {
 				</Card.Text>
 				{studentID === comment.ONID ? <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => {
 					deleteComment({variables: {commentID: parseInt(comment.id)}})
-					deleteOneComment(comment.id)
+					deleteOneComment(parseInt(comment.id))
 					//window.location.reload(true)
 				}} /> : null}
 			</Row>

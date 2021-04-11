@@ -23,25 +23,12 @@ const aTag = {
 interface Props {
 	id: string;
 	type: 'professor' | 'course';
+	comments: CommentData;
 }
 
-const Tags: React.FC<Props> = ({ id, type }) => {
-	const { loading, data } = useQuery<CommentData>(
-		type === 'professor' ? PROFESSOR_COMMENTS : COURSE_COMMENTS,
-		{
-			variables: {
-				...(type === 'course' && { courseID: parseInt(id) }),
-				...(type === 'professor' && { professorID: parseInt(id) }),
-			},
-		}
-	);
-
-	if (loading || !data) {
-		return <></>;
-	}
-
+const Tags: React.FC<Props> = ({ id, type, comments }) => {
 	let tagSet: Set<string> = new Set();
-	data.comments.forEach(comment => comment.tags.forEach(tag => tagSet.add(tag)));
+	comments.forEach(comment => comment.tags.forEach(tag => tagSet.add(tag)));
 	let tags: string[] = [];
 	tags = [...tagSet];
 

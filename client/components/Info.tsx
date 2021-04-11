@@ -30,7 +30,6 @@ interface Props {
 }
 
 const Info: React.FC<Props> = ({ course, professor, comments }) => {
-	console.log("here5")
 	/*const { loading, data } = useQuery<CommentData>(course ? COURSE_COMMENTS : PROFESSOR_COMMENTS, {
 		variables: {
 			...(course && { courseID: parseInt(course.id) }),
@@ -80,7 +79,7 @@ const Info: React.FC<Props> = ({ course, professor, comments }) => {
 				{course ? <CourseProfessors id={course.id} /> : null}
 				{professor ? <ProfessorCourses id={professor.id} /> : null}
 				{course ? <Tags id={course.id} type='course' /> : null}
-				{professor ? <Tags id={professor.id} type='professor' /> : null}
+				{professor ? <Tags id={professor.id} type='professor' comments={comments} /> : null}
 			</Card>
 		</Container>
 	);
