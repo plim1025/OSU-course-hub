@@ -1,15 +1,32 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Row, Spinner } from 'react-bootstrap';
-import { DISLIKE_COMMENT, LIKE_COMMENT, STUDENT, COURSE, PROFESSOR } from 'utils/graphql';
+import { DISLIKE_COMMENT, LIKE_COMMENT, DELETE_COMMENT, STUDENT, COURSE, PROFESSOR } from 'utils/graphql';
 import { CommentType, StudentType } from '../utils/types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+//import Radium from 'radium';
 import Router from 'next/router';
+
+/*
+var styles = {
+	delete_icon: {
+		marginLeft: '10px',
+		marginTop: '3px',
+		color: 'red',
+		':hover': {
+			cursor: 'pointer',
+			color: '#943984',
+		}
+	}
+}*/
 
 interface Props {
 	comment: CommentType;
+	deleteOneComment: (commentID: number) => void;
 }
 
-const Comment: React.FC<Props> = ({ comment }) => {
+const Comment: React.FC<Props> = ({ comment, deleteOneComment }) => {
 	const studentID = window.sessionStorage.getItem('request-onid');
 	const { loading, data } = useQuery<StudentType>(STUDENT, {
 		variables: { ONID: studentID },
@@ -27,6 +44,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
 	const [likeOrDislike, setLikeOrDislike] = useState(0);
 	const [addLike] = useMutation(LIKE_COMMENT);
 	const [addDislike] = useMutation(DISLIKE_COMMENT);
+	const [deleteComment] = useMutation(DELETE_COMMENT);
 	useEffect(() => {
 		if (data) {
 			if (data.student.likedCommentIDs.indexOf(parseInt(comment.id)) !== -1) {
@@ -46,6 +64,8 @@ const Comment: React.FC<Props> = ({ comment }) => {
 		return <></>;
 	}
 
+	console.log(document.body);
+
 	return (
 		<Card className='shadow mt-5 mb-4 p-4 w-75'>
 			<Row className='pl-3 pr-4'>
@@ -62,6 +82,11 @@ const Comment: React.FC<Props> = ({ comment }) => {
 				<Card.Text className='text-right ml-auto text-muted'>
 					<strong>Created At</strong> {new Date(comment.createdAt).toDateString()}
 				</Card.Text>
+				{studentID === comment.ONID ? <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => {
+					deleteComment({variables: {commentID: parseInt(comment.id)}})
+					deleteOneComment(comment.id)
+					//window.location.reload(true)
+				}} /> : null}
 			</Row>
 			<Card.Text className='mt-2 text-left' style={{ whiteSpace: 'pre-wrap' }}>
 				<strong>Campus: </strong>

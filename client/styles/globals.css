@@ -33,3 +33,13 @@ a {
 	padding: 20px 30px;
 	transform: translate(-100px, 0);
 }
+
+.delete-icon {
+	margin-left: 10px;
+	margin-top: 3px;
+}
+
+.delete-icon:hover {
+	color: red;
+	cursor: pointer;
+}

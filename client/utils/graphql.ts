@@ -143,8 +143,8 @@ export const CREATE_COMMENT = gql`
 `;
 
 export const DELETE_COMMENT = gql`
-	mutation deleteComment($id: Float!) {
-		deleteComment(id: $id)
+	mutation deleteComment($commentID: Float!) {
+		deleteComment(commentID: $commentID)
 	}
 `;
 

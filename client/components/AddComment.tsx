@@ -6,7 +6,7 @@ import { CommentData, Student } from '../utils/types';
 import { Campuses, Grades, Tags } from '../utils/util';
 import Router from 'next/router';
 
-const newComment ={
+const newComment = {
 	marginBottom: '30px',
 }
 

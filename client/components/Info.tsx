@@ -26,21 +26,29 @@ const constant = {
 interface Props {
 	course?: Course;
 	professor?: Professor;
+	comments: CommentData;
 }
 
-const Info: React.FC<Props> = ({ course, professor }) => {
-	const { loading, data } = useQuery<CommentData>(course ? COURSE_COMMENTS : PROFESSOR_COMMENTS, {
+const Info: React.FC<Props> = ({ course, professor, comments }) => {
+	console.log("here5")
+	/*const { loading, data } = useQuery<CommentData>(course ? COURSE_COMMENTS : PROFESSOR_COMMENTS, {
 		variables: {
 			...(course && { courseID: parseInt(course.id) }),
 			...(professor && { professorID: parseInt(professor.id) }),
 		},
-	});
+	});*/
 
-	if (loading || !data) {
+	/*if (loading || !data) {
 		return <></>;
+	}*/
+
+	//console.log(data.comments)
+	console.log(comments)
+	let qualities = [], difficulties = [];
+	if(comments){
+		qualities = comments.map(comment => comment.quality);
+		difficulties = comments.map(comment => comment.difficulty);
 	}
-	const qualities = data.comments.map(comment => comment.quality);
-	const difficulties = data.comments.map(comment => comment.difficulty);
 	return (
 		<Container className='mt-3'>
 			<Card className='mb-5 p-4 w-75'>
