@@ -80,6 +80,7 @@ const Comment: React.FC<Props> = ({ comment, deleteOneComment }) => {
 					<strong>Created At</strong> {new Date(comment.createdAt).toDateString()}
 				</Card.Text>
 				{studentID === comment.ONID ? <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => {
+					console.log(comment)
 					deleteComment({variables: {commentID: parseInt(comment.id)}})
 					deleteOneComment(parseInt(comment.id))
 					//window.location.reload(true)

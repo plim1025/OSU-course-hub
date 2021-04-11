@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import React, { useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { CREATE_COMMENT, COMMENTS, STUDENT_COMMENTS } from '../utils/graphql';
-import { CommentData, Student } from '../utils/types';
+import { CommentData, Student, CommentType } from '../utils/types';
 import { Campuses, Grades, Tags } from '../utils/util';
 import Router from 'next/router';
 
@@ -10,9 +10,11 @@ interface Props {
 	show: boolean;
 	setShow: (value: boolean) => void;
 	handleClose: () => void;
+	addOneComment: (comment: CommentType) => void;
+	comments: CommentData;
 }
 
-const AddComment: React.FC<Props> = ({show, setShow, handleClose}) => {
+const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment, comments}) => {
 	const [values, setValues] = useState({
 		anonymous: false,
 		text: '',
@@ -30,11 +32,37 @@ const AddComment: React.FC<Props> = ({show, setShow, handleClose}) => {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		const studentID = window.sessionStorage.getItem('request-onid');
-		if(Router.pathname === "/course/[id]")
-			createComment({ variables: { ...values, ONID: studentID, courseID: parseInt(Router.query.id as string) } });
-		else if(Router.pathname === "/professor/[id]")
-			createComment({ variables: { ...values, ONID: studentID, professorID: parseInt(Router.query.id as string) } });
+		let comment: CommentType;
+		if(Router.pathname === "/course/[id]"){
+			createComment({ variables: { ...values, ONID: studentID, courseID: parseInt(Router.query.id as string) } })
+			.then((data) => {
+				comment = data.data.createComment
+				console.log(comment)
+				addOneComment(comment)
+			})
+			.catch((error) => console.log(error))
+		}
+		else if(Router.pathname === "/professor/[id]"){
+			createComment({ variables: { ...values, ONID: studentID, professorID: parseInt(Router.query.id as string) } })
+			.then((data) => {
+				comment = data.data.createComment
+				console.log(comment)
+				addOneComment(comment)
+			})
+			.catch((error) => console.log(error))
+		}
 		
+		setValues({
+			anonymous: false,
+			text: '',
+			campus: 'Corvallis',
+			quality: 5,
+			difficulty: 5,
+			recommend: true,
+			baccCore: true,
+			gradeReceived: 'N/A',
+			tags: [],
+		})
 		setShow(false);
 	};
 

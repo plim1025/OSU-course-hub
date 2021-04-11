@@ -5,37 +5,41 @@ import Head from 'next/head';
 import Router, { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 import { Container, Spinner, Button } from 'react-bootstrap';
-import { PROFESSOR, PROFESSOR_COMMENTS, STUDENT_COMMENTS } from 'utils/graphql';
+import { PROFESSOR, PROFESSOR_COMMENTS, STUDENT_COMMENTS, COMMENTS } from 'utils/graphql';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
-import { CommentData, ProfessorType } from '../../utils/types';
+import { CommentData, ProfessorType, CommentType } from '../../utils/types';
 import AddComment from '../../components/AddComment';
 
-const ProfessorComments = ({ prof_comments, updateProfessor }) => {
-	/*const { loading, data } = useQuery<CommentData>(PROFESSOR_COMMENTS, {
-		variables: { professorID: parseInt(id) },
-	});*/
+const ProfessorComments = ({ prof_comments, updateProfessor, updateAllComments, all_comments }) => {
 	const [comments, setComments] = useState(prof_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+	const [allComments, setAllComments] = useState(all_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)).reverse());
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
-	if(!comments){
-		return <></>
-	}
-
 	useEffect(() => {	
 		setComments(prof_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
-	}, [prof_comments])
+		setAllComments(all_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)).reverse());
+	}, [prof_comments, all_comments])
 	
+	if (!comments) {
+		return <></>;
+	}
 
 	const newComment = {
 		marginBottom: '30px',
 	}
 
-	const deleteOneComment = (commentID: number) => {
+	const addOneComment = (comment: CommentType) => {
+		comments.unshift(comment)
+		allComments.unshift(comment)
+		updateProfessor(comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+		updateAllComments(allComments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+	}
 
+	const deleteOneComment = (commentID: number) => {
 		//setComments(comments.filter((comment) => commentID != parseInt(comment['id'])))
 		const updated_comments = comments.filter((comment) => commentID != parseInt(comment['id']))
 		updateProfessor(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
@@ -51,13 +55,15 @@ const ProfessorComments = ({ prof_comments, updateProfessor }) => {
 
 	}
 
+	console.log(allComments)
+
 	return (
 		<Container>
 			{!checkIfStudentComment() &&
 			(<Button variant='outline-info' onClick={handleShow} style={newComment}>
 				New Comment
 			</Button>)}
-			<AddComment show={show} setShow={setShow} handleClose={handleClose}/>
+			<AddComment show={show} setShow={setShow} handleClose={handleClose} addOneComment={addOneComment} comments={allComments}/>
 			<h3>Comments:</h3>
 			{comments.map(comment => (
 				<Comment key={comment.id} comment={comment} deleteOneComment={deleteOneComment} />
@@ -81,8 +87,11 @@ const ProfessorPage = () => {
 		variables: { professorID: parseInt(router.query.id as string) },
 	});
 
+	const { loading: loading_all_comments, data: data_all_comments } = useQuery<CommentData>(COMMENTS);
+
 	const [professor, setProfessor] = useState()
 	const [comments, setComments] = useState([])
+	const [allComments, setAllComments] = useState([])
 
 	useEffect(() => {
 		if(data){
@@ -91,12 +100,19 @@ const ProfessorPage = () => {
 		if(data_comments){
 			setComments(data_comments.comments)
 		}
+		if(data_all_comments){
+			setAllComments(data_all_comments.comments);
+		}
 	}, [data, data_comments])
 
-	if (loading || loading_comments || !router.query.id) {
+	if (loading || loading_comments  || loading_all_comments || !router.query.id) {
 		return <></>;
 	} else if (!data) {
 		return <Error statusCode={404} />;
+	}
+
+	const updateAllComments = (updated_comments) => {
+		setAllComments(updated_comments)
 	}
 
 	const updateProfessor = (updated_comments) => {
@@ -111,7 +127,8 @@ const ProfessorPage = () => {
 			</Head>
 			<Header searchbarToggled={true} />
 			<Info professor={data.professor} comments={comments} />
-			<ProfessorComments prof_comments={comments} updateProfessor={updateProfessor} />
+			<ProfessorComments prof_comments={comments} updateProfessor={updateProfessor} 
+				updateAllComments={updateAllComments} all_comments={allComments} />
 		</>
 	);
 };

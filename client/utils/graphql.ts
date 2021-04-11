@@ -130,6 +130,8 @@ export const CREATE_COMMENT = gql`
 			ONID
 			courseID
 			professorID
+			difficulty
+			quality
 			campus
 			recommend
 			baccCore
