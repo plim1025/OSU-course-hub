@@ -98,7 +98,7 @@ const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment}
 	return (
 		<div>
 			<Modal show={show} onHide={handleClose}>
-				<Form onSubmit={handleSubmit}>
+				<Form onSubmit={handleSubmit} className='p-4'>
 					<Modal.Header closeButton>
 						<Modal.Title>Add Comment</Modal.Title>
 					</Modal.Header>

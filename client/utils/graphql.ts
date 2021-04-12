@@ -185,10 +185,8 @@ export const COURSE_PROFESSORS = gql`
 export const CREATE_COURSE = gql`
 	mutation createCourse($department: String!, $number: String!) {
 		createCourse(input: { department: $department, number: $number }) {
-			course {
-				department
-				number
-			}
+			department
+			number
 		}
 	}
 `;
@@ -263,12 +261,10 @@ export const HIGHEST_RATED_PROFESSORS = gql`
 export const CREATE_PROFESSOR = gql`
 	mutation professorInfo($firstName: String!, $lastName: String!, $college: String!) {
 		createProfessor(input: { firstName: $firstName, lastName: $lastName, college: $college }) {
-			professor {
-				id
-				firstName
-				lastName
-				college
-			}
+			id
+			firstName
+			lastName
+			college
 		}
 	}
 `;
@@ -328,9 +324,9 @@ export const CREATE_STUDENT = gql`
 export const LIKE_COMMENT = gql`
 	mutation likeComment($ONID: String!, $commentID: Float!) {
 		likeComment(ONID: $ONID, commentID: $commentID) {
-			ONID
-			likedCommentIDs
-			dislikedCommentIDs
+			id
+			likes
+			dislikes
 		}
 	}
 `;
@@ -338,9 +334,9 @@ export const LIKE_COMMENT = gql`
 export const DISLIKE_COMMENT = gql`
 	mutation dislikeComment($ONID: String!, $commentID: Float!) {
 		dislikeComment(ONID: $ONID, commentID: $commentID) {
-			ONID
-			likedCommentIDs
-			dislikedCommentIDs
+			id
+			likes
+			dislikes
 		}
 	}
 `;

@@ -20,7 +20,7 @@ const Home: React.FC = () => {
 		<>
 			<Head>
 				<title>OSU Course Hub</title>
-				<link rel='icon' href='/favicon.png' />
+				{/* <link rel='icon' href='/favicon.png' /> */}
 			</Head>
 			<Header searchbarToggled={false} />
 			<Searchbar showButton={true} size='lg' />
