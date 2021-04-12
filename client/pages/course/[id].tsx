@@ -4,7 +4,7 @@ import Error from 'next/error';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, {useState, useEffect} from 'react';
-import { Container, Spinner, Button } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 import { COURSE, COURSE_COMMENTS, COMMENTS } from 'utils/graphql';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
@@ -40,7 +40,6 @@ const CourseComments = ({ course_comments, updateCourse, updateAllComments, all_
 	}
 
 	const deleteOneComment = (commentID: number) => {
-		//setComments(comments.filter((comment) => commentID != parseInt(comment['id'])))
 		const updated_comments = comments.filter((comment) => commentID != parseInt(comment['id']))
 		updateCourse(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 	}
@@ -54,8 +53,6 @@ const CourseComments = ({ course_comments, updateCourse, updateAllComments, all_
 			return true
 
 	}
-
-	console.log(allComments)
 
 	return (
 		<Container>
@@ -89,9 +86,9 @@ const CoursePage = () => {
 
 	const { loading: loading_all_comments, data: data_all_comments } = useQuery<CommentData>(COMMENTS);
 
-	const [course, setCourse] = useState()
-	const [comments, setComments] = useState([])
-	const [allComments, setAllComments] = useState([])
+	const [course, setCourse] = useState<any>()
+	const [comments, setComments] = useState<any>([])
+	const [allComments, setAllComments] = useState<any>([])
 
 	useEffect(() => {
 		if(data){
@@ -126,7 +123,7 @@ const CoursePage = () => {
 				<link rel='icon' href='/favicon.png' />
 			</Head>
 			<Header searchbarToggled={true} />
-			<Info course={data.course} comments={comments} />
+			<Info course={course} comments={comments} />
 			<CourseComments course_comments={comments} updateCourse={updateCourse} 
 				updateAllComments={updateAllComments} all_comments={allComments} />
 		</>

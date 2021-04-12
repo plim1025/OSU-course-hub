@@ -1,13 +1,11 @@
-import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { Card, Container, Spinner } from 'react-bootstrap';
-import { STUDENT_COMMENTS } from '../utils/graphql';
-import { CommentData, Student } from '../utils/types';
+import { Card } from 'react-bootstrap';
+import { CommentData, Student, CommentType } from '../utils/types';
 
 interface Props {
 	student: Student;
-	comments: CommentData;
+	comments: CommentType[];
 }
 
 const StudentInfo: React.FC<Props> = props => {

@@ -1,9 +1,7 @@
-import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Card, Container } from 'react-bootstrap';
-import { COURSE_COMMENTS, PROFESSOR_COMMENTS } from '../utils/graphql';
-import { CommentData, Course, Professor } from '../utils/types';
+import { CommentData, Course, Professor, CommentType } from '../utils/types';
 import CourseProfessors from './CourseProfessors';
 import ProfessorCourses from './ProfessorCourses';
 import Tags from './Tags';
@@ -26,24 +24,11 @@ const constant = {
 interface Props {
 	course?: Course;
 	professor?: Professor;
-	comments: CommentData;
+	comments: CommentType[];
 }
 
 const Info: React.FC<Props> = ({ course, professor, comments }) => {
-	/*const { loading, data } = useQuery<CommentData>(course ? COURSE_COMMENTS : PROFESSOR_COMMENTS, {
-		variables: {
-			...(course && { courseID: parseInt(course.id) }),
-			...(professor && { professorID: parseInt(professor.id) }),
-		},
-	});*/
-
-	/*if (loading || !data) {
-		return <></>;
-	}*/
-
-	//console.log(data.comments)
-	console.log(comments)
-	let qualities = [], difficulties = [];
+	let qualities: number[] = [], difficulties: number[] = [];
 	if(comments){
 		qualities = comments.map(comment => comment.quality);
 		difficulties = comments.map(comment => comment.difficulty);
@@ -78,8 +63,8 @@ const Info: React.FC<Props> = ({ course, professor, comments }) => {
 				</h5>
 				{course ? <CourseProfessors id={course.id} /> : null}
 				{professor ? <ProfessorCourses id={professor.id} /> : null}
-				{course ? <Tags id={course.id} type='course' comments={comments} /> : null}
-				{professor ? <Tags id={professor.id} type='professor' comments={comments} /> : null}
+				{course ? <Tags comments={comments} /> : null}
+				{professor ? <Tags comments={comments} /> : null}
 			</Card>
 		</Container>
 	);

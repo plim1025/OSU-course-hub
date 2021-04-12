@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Link from 'next/link';
 import React from 'react';
-import { Card, Row, Spinner } from 'react-bootstrap';
+import { Card, Row } from 'react-bootstrap';
 import { HIGHEST_RATED_PROFESSORS, PROFESSOR_COMMENTS } from '../utils/graphql';
 import { ProfessorData } from '../utils/types';
 
@@ -24,14 +24,6 @@ const department = {
 const item = {
 	margin: 0,
 };
-
-const title = {
-	//background: 'blue',
-	/*":hover": {
-		background: 'red',
-		cursor: 'pointer',
-	}*/
-}
 
 interface Props {
 	id: string;
@@ -95,7 +87,7 @@ const HighestRatedProfessors: React.FC = () => {
 						<Row className='pl-3 pr-4'>
 							<Card.Title>
 								<Link href={`/professor/${professor.id}`}>
-									<b style={title}>
+									<b>
 										{professor.firstName} {professor.lastName}
 									</b>
 								</Link>

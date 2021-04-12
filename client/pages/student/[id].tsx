@@ -13,7 +13,6 @@ import Comment from '../../components/Comment';
 
 const StudentPage = () => {
 	const router = useRouter();
-	console.log(router.query.id)
 	const { loading, data } = useQuery<StudentType>(STUDENT, {
 		variables: {
 			ONID: router.query.id
@@ -28,8 +27,8 @@ const StudentPage = () => {
 		variables: { ONID: router.query.id },
 	});
 
-	const [student, setStudent] = useState()
-	const [comments, setComments] = useState([])
+	const [student, setStudent] = useState<any>()
+	const [comments, setComments] = useState<any>([])
 
 	useEffect(() => {
 		if(data){
@@ -40,7 +39,7 @@ const StudentPage = () => {
 		}
 	}, [data, data_comments])
 
-	if (loading || loading_comments ||  !router.query.id) {
+	if (loading || loading_comments || !router.query.id) {
 		return <></>;
 	} else if (!data) {
 		return <Error statusCode={404} />;

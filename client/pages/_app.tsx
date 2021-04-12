@@ -4,20 +4,14 @@ import { AppProps } from 'next/app';
 import React from 'react';
 import '../styles/globals.css';
 import { useApollo } from '../utils/withApollo';
-//import Radium from 'radium';
 
 let App: React.FC<AppProps> = ({ Component, pageProps }) => {
 	const apolloClient = useApollo(pageProps.initialApolloState);
 	return (
-		//<StyleRoot>
-			<ApolloProvider client={apolloClient}>
-				<Component {...pageProps} />
-			</ApolloProvider>
-		//</StyleRoot>
+		<ApolloProvider client={apolloClient}>
+			<Component {...pageProps} />
+		</ApolloProvider>
 	);
 };
-
-//const StyleRoot = Radium.StyleRoot;
-//App = Radium(App)
 
 export default App;

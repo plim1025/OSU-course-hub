@@ -1,6 +1,4 @@
-import { useQuery } from '@apollo/client';
-import { COURSE_COMMENTS, PROFESSOR_COMMENTS } from '../utils/graphql';
-import { CommentData } from '../utils/types';
+import { CommentData, CommentType } from '../utils/types';
 
 const tagBlock = {
 	marginTop: 10,
@@ -21,12 +19,10 @@ const aTag = {
 };
 
 interface Props {
-	id: string;
-	type: 'professor' | 'course';
-	comments: CommentData;
+	comments: CommentType[];
 }
 
-const Tags: React.FC<Props> = ({ id, type, comments }) => {
+const Tags: React.FC<Props> = ({ comments }) => {
 	let tagSet: Set<string> = new Set();
 	comments.forEach(comment => comment.tags.forEach(tag => tagSet.add(tag)));
 	let tags: string[] = [];

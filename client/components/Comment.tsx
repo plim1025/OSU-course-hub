@@ -7,19 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Router from 'next/router';
 
-/*
-var styles = {
-	delete_icon: {
-		marginLeft: '10px',
-		marginTop: '3px',
-		color: 'red',
-		':hover': {
-			cursor: 'pointer',
-			color: '#943984',
-		}
-	}
-}*/
-
 interface Props {
 	comment: CommentType;
 	deleteOneComment: (commentID: number) => void;
@@ -80,10 +67,8 @@ const Comment: React.FC<Props> = ({ comment, deleteOneComment }) => {
 					<strong>Created At</strong> {new Date(comment.createdAt).toDateString()}
 				</Card.Text>
 				{studentID === comment.ONID ? <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => {
-					console.log(comment)
 					deleteComment({variables: {commentID: parseInt(comment.id)}})
 					deleteOneComment(parseInt(comment.id))
-					//window.location.reload(true)
 				}} /> : null}
 			</Row>
 			<Card.Text className='mt-2 text-left' style={{ whiteSpace: 'pre-wrap' }}>

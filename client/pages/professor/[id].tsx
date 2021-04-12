@@ -4,8 +4,8 @@ import Error from 'next/error';
 import Head from 'next/head';
 import Router, { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
-import { Container, Spinner, Button } from 'react-bootstrap';
-import { PROFESSOR, PROFESSOR_COMMENTS, STUDENT_COMMENTS, COMMENTS } from 'utils/graphql';
+import { Container, Button } from 'react-bootstrap';
+import { PROFESSOR, PROFESSOR_COMMENTS, COMMENTS } from 'utils/graphql';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
@@ -40,7 +40,6 @@ const ProfessorComments = ({ prof_comments, updateProfessor, updateAllComments, 
 	}
 
 	const deleteOneComment = (commentID: number) => {
-		//setComments(comments.filter((comment) => commentID != parseInt(comment['id'])))
 		const updated_comments = comments.filter((comment) => commentID != parseInt(comment['id']))
 		updateProfessor(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 	}
@@ -54,8 +53,6 @@ const ProfessorComments = ({ prof_comments, updateProfessor, updateAllComments, 
 			return true
 
 	}
-
-	console.log(allComments)
 
 	return (
 		<Container>
@@ -89,9 +86,9 @@ const ProfessorPage = () => {
 
 	const { loading: loading_all_comments, data: data_all_comments } = useQuery<CommentData>(COMMENTS);
 
-	const [professor, setProfessor] = useState()
-	const [comments, setComments] = useState([])
-	const [allComments, setAllComments] = useState([])
+	const [professor, setProfessor] = useState<any>()
+	const [comments, setComments] = useState<any>([])
+	const [allComments, setAllComments] = useState<any>([])
 
 	useEffect(() => {
 		if(data){
@@ -126,7 +123,7 @@ const ProfessorPage = () => {
 				<link rel='icon' href='/favicon.png' />
 			</Head>
 			<Header searchbarToggled={true} />
-			<Info professor={data.professor} comments={comments} />
+			<Info professor={professor} comments={comments} />
 			<ProfessorComments prof_comments={comments} updateProfessor={updateProfessor} 
 				updateAllComments={updateAllComments} all_comments={allComments} />
 		</>

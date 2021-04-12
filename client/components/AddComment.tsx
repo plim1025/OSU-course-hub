@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React, { useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { CREATE_COMMENT, COMMENTS, STUDENT_COMMENTS } from '../utils/graphql';
+import { CREATE_COMMENT } from '../utils/graphql';
 import { CommentData, Student, CommentType } from '../utils/types';
 import { Campuses, Grades, Tags } from '../utils/util';
 import Router from 'next/router';
@@ -36,7 +36,6 @@ const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment}
 			createComment({ variables: { ...values, ONID: studentID, courseID: parseInt(Router.query.id as string) } })
 			.then((data) => {
 				comment = data.data.createComment
-				console.log(comment)
 				addOneComment(comment)
 			})
 			.catch((error) => console.log(error))
@@ -45,7 +44,6 @@ const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment}
 			createComment({ variables: { ...values, ONID: studentID, professorID: parseInt(Router.query.id as string) } })
 			.then((data) => {
 				comment = data.data.createComment
-				console.log(comment)
 				addOneComment(comment)
 			})
 			.catch((error) => console.log(error))
@@ -96,8 +94,6 @@ const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment}
 			setValues({ ...values, anonymous: true });
 		}
 	};
-
-	console.log("here")
 
 	return (
 		<div>
