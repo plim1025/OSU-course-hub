@@ -1,8 +1,8 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { CREATE_COMMENT } from '../utils/graphql';
-import { CommentData, Student, CommentType } from '../utils/types';
+import { CommentType } from '../utils/types';
 import { Campuses, Grades, Tags } from '../utils/util';
 import Router from 'next/router';
 
@@ -87,7 +87,7 @@ const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment}
 		}
 	};
 
-	const handleAnonymous = (e: React.FormEvent) => {
+	const handleAnonymous = () => {
 		if(values.anonymous === true){
 			setValues({ ...values, anonymous: false });
 		} else {

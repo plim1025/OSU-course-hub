@@ -13,8 +13,8 @@ import { CommentData, CourseType, CommentType } from '../../utils/types';
 import AddComment from '../../components/AddComment';
 
 const CourseComments = ({ course_comments, updateCourse, updateAllComments, all_comments }) => {
-	const [comments, setComments] = useState(course_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
-	const [allComments, setAllComments] = useState(all_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)).reverse());
+	const [comments, setComments] = useState(course_comments);
+	const [allComments, setAllComments] = useState(all_comments);
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
@@ -44,19 +44,16 @@ const CourseComments = ({ course_comments, updateCourse, updateAllComments, all_
 		updateCourse(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 	}
 
-	const checkIfStudentComment = () => {
+	const checkIfStudentHasComment = () => {
 		const studentID = window.sessionStorage.getItem('request-onid');
 
-		if(comments.filter((comment) => comment.ONID == studentID).length == 0)
-			return false
-		else
-			return true
+		return comments.filter((comment) => comment.ONID == studentID).length == 0 ? false : true
 
 	}
 
 	return (
 		<Container>
-			{!checkIfStudentComment() &&
+			{!checkIfStudentHasComment() &&
 			(<Button variant='outline-info' onClick={handleShow} style={newComment}>
 				New Comment
 			</Button>)}
