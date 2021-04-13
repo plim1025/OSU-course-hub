@@ -12,7 +12,7 @@ import Info from '../../components/Info';
 import { CommentData, ProfessorType, CommentType } from '../../utils/types';
 import AddComment from '../../components/AddComment';
 
-const ProfessorComments = ({ prof_comments, updateProfessor, updateAllComments, all_comments }) => {
+const ProfessorComments = ({ prof_comments, all_comments, updateComments, updateAllComments }) => {
 	const [comments, setComments] = useState(prof_comments);
 	const [allComments, setAllComments] = useState(all_comments);
 	const [show, setShow] = useState(false);
@@ -35,13 +35,13 @@ const ProfessorComments = ({ prof_comments, updateProfessor, updateAllComments, 
 	const addOneComment = (comment: CommentType) => {
 		comments.unshift(comment)
 		allComments.unshift(comment)
-		updateProfessor(comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+		updateComments(comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 		updateAllComments(allComments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 	}
 
 	const deleteOneComment = (commentID: number) => {
 		const updated_comments = comments.filter((comment) => commentID != parseInt(comment['id']))
-		updateProfessor(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+		updateComments(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 	}
 
 	const checkIfStudentHasComment = () => {
@@ -109,7 +109,7 @@ const ProfessorPage = () => {
 		setAllComments(updated_comments)
 	}
 
-	const updateProfessor = (updated_comments) => {
+	const updateComments = (updated_comments) => {
 		setComments(updated_comments)
 	}
 
@@ -121,8 +121,8 @@ const ProfessorPage = () => {
 			</Head>
 			<Header searchbarToggled={true} />
 			<Info professor={professor} comments={comments} />
-			<ProfessorComments prof_comments={comments} updateProfessor={updateProfessor} 
-				updateAllComments={updateAllComments} all_comments={allComments} />
+			<ProfessorComments prof_comments={comments} all_comments={allComments} 
+				updateComments={updateComments} updateAllComments={updateAllComments} />
 		</>
 	);
 };

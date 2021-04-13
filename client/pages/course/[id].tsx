@@ -12,7 +12,7 @@ import Info from '../../components/Info';
 import { CommentData, CourseType, CommentType } from '../../utils/types';
 import AddComment from '../../components/AddComment';
 
-const CourseComments = ({ course_comments, updateCourse, updateAllComments, all_comments }) => {
+const CourseComments = ({ course_comments, all_comments, updateComments, updateAllComments }) => {
 	const [comments, setComments] = useState(course_comments);
 	const [allComments, setAllComments] = useState(all_comments);
 	const [show, setShow] = useState(false);
@@ -35,13 +35,13 @@ const CourseComments = ({ course_comments, updateCourse, updateAllComments, all_
 	const addOneComment = (comment: CommentType) => {
 		comments.unshift(comment)
 		allComments.unshift(comment)
-		updateCourse(comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+		updateComments(comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 		updateAllComments(allComments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 	}
 
 	const deleteOneComment = (commentID: number) => {
 		const updated_comments = comments.filter((comment) => commentID != parseInt(comment['id']))
-		updateCourse(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+		updateComments(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 	}
 
 	const checkIfStudentHasComment = () => {
@@ -109,7 +109,7 @@ const CoursePage = () => {
 		setAllComments(updated_comments)
 	}
 
-	const updateCourse = (updated_comments) => {
+	const updateComments = (updated_comments) => {
 		setComments(updated_comments)
 	}
 
@@ -121,8 +121,8 @@ const CoursePage = () => {
 			</Head>
 			<Header searchbarToggled={true} />
 			<Info course={course} comments={comments} />
-			<CourseComments course_comments={comments} updateCourse={updateCourse} 
-				updateAllComments={updateAllComments} all_comments={allComments} />
+			<CourseComments course_comments={comments} all_comments={allComments} 
+				updateComments={updateComments} updateAllComments={updateAllComments} />
 		</>
 	);
 };
