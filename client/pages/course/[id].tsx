@@ -77,10 +77,6 @@ const CoursePage = () => {
 		skip: !router.query.id,
 	});
 
-	const { loading: loading_comments, data: data_comments } = useQuery<CommentData>(COURSE_COMMENTS, {
-		variables: { courseID: parseInt(router.query.id as string) },
-	});
-
 	const { loading: loading_all_comments, data: data_all_comments } = useQuery<CommentData>(COMMENTS);
 
 	const [course, setCourse] = useState<any>()
@@ -91,15 +87,13 @@ const CoursePage = () => {
 		if(data){
 			setCourse(data.course)
 		}
-		if(data_comments){
-			setComments(data_comments.comments)
-		}
 		if(data_all_comments){
 			setAllComments(data_all_comments.comments);
+			setComments(data_all_comments.comments.filter((comment) => comment.courseID === parseInt(router.query.id as string)));
 		}
-	}, [data, data_comments])
+	}, [data, data_all_comments])
 
-	if (loading || loading_comments  || loading_all_comments || !router.query.id) {
+	if (loading || loading_all_comments || !router.query.id) {
 		return <></>;
 	} else if (!data) {
 		return <Error statusCode={404} />;

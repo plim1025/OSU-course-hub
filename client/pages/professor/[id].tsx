@@ -40,7 +40,7 @@ const ProfessorComments = ({ prof_comments, all_comments, updateComments, update
 	}
 
 	const deleteOneComment = (commentID: number) => {
-		const updated_comments = comments.filter((comment) => commentID != parseInt(comment['id']))
+		const updated_comments = comments.filter((comment) => commentID != parseInt(comment['id']));
 		updateComments(updated_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 	}
 
@@ -77,29 +77,23 @@ const ProfessorPage = () => {
 		skip: !router.query.id,
 	});
 
-	const { loading: loading_comments, data: data_comments } = useQuery<CommentData>(PROFESSOR_COMMENTS, {
-		variables: { professorID: parseInt(router.query.id as string) },
-	});
-
 	const { loading: loading_all_comments, data: data_all_comments } = useQuery<CommentData>(COMMENTS);
 
-	const [professor, setProfessor] = useState<any>()
-	const [comments, setComments] = useState<any>([])
-	const [allComments, setAllComments] = useState<any>([])
+	const [professor, setProfessor] = useState<any>();
+	const [comments, setComments] = useState<any>([]);
+	const [allComments, setAllComments] = useState<any>([]);
 
 	useEffect(() => {
 		if(data){
 			setProfessor(data.professor)
 		}
-		if(data_comments){
-			setComments(data_comments.comments)
-		}
 		if(data_all_comments){
 			setAllComments(data_all_comments.comments);
+			setComments(data_all_comments.comments.filter((comment) => comment.professorID === parseInt(router.query.id as string)));
 		}
-	}, [data, data_comments])
+	}, [data, data_all_comments])
 
-	if (loading || loading_comments  || loading_all_comments || !router.query.id) {
+	if (loading || loading_all_comments || !router.query.id) {
 		return <></>;
 	} else if (!data) {
 		return <Error statusCode={404} />;
