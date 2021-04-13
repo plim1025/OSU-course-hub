@@ -5,7 +5,7 @@ import Head from 'next/head';
 import Router, { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
-import { PROFESSOR, PROFESSOR_COMMENTS, COMMENTS } from 'utils/graphql';
+import { PROFESSOR, COMMENTS } from 'utils/graphql';
 import Comment from '../../components/Comment';
 import Header from '../../components/Header';
 import Info from '../../components/Info';
@@ -22,7 +22,7 @@ const ProfessorComments = ({ prof_comments, all_comments, updateComments, update
 	useEffect(() => {	
 		setComments(prof_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
 		setAllComments(all_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)).reverse());
-	}, [prof_comments, all_comments])
+	}, [prof_comments, all_comments]);
 	
 	if (!comments) {
 		return <></>;
@@ -91,20 +91,12 @@ const ProfessorPage = () => {
 			setAllComments(data_all_comments.comments);
 			setComments(data_all_comments.comments.filter((comment) => comment.professorID === parseInt(router.query.id as string)));
 		}
-	}, [data, data_all_comments])
+	}, [data, data_all_comments]);
 
 	if (loading || loading_all_comments || !router.query.id) {
 		return <></>;
 	} else if (!data) {
 		return <Error statusCode={404} />;
-	}
-
-	const updateAllComments = (updated_comments) => {
-		setAllComments(updated_comments)
-	}
-
-	const updateComments = (updated_comments) => {
-		setComments(updated_comments)
 	}
 
 	return (
@@ -116,7 +108,7 @@ const ProfessorPage = () => {
 			<Header searchbarToggled={true} />
 			<Info professor={professor} comments={comments} />
 			<ProfessorComments prof_comments={comments} all_comments={allComments} 
-				updateComments={updateComments} updateAllComments={updateAllComments} />
+				updateComments={setComments} updateAllComments={setAllComments} />
 		</>
 	);
 };

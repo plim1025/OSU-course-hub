@@ -9,7 +9,7 @@ import RecentCommentTitle from './RecentCommentTitle';
 const date = {
 	margin: 0,
 	color: '#4a4a4a',
-}
+};
 
 const RecentComments: React.FC = () => {
 	const { loading, data } = useQuery<CommentData>(COMMENTS);
@@ -18,7 +18,7 @@ const RecentComments: React.FC = () => {
 		return <></>;
 	}
 
-	var comments = [...data.comments]
+	var comments = [...data.comments];
 	comments.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
 
 	return (

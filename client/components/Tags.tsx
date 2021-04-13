@@ -20,7 +20,7 @@ const aTag = {
 
 interface Props {
 	comments: CommentType[];
-}
+};
 
 const Tags: React.FC<Props> = ({ comments }) => {
 	let tagSet: Set<string> = new Set();
