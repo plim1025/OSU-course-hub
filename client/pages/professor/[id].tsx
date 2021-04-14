@@ -16,8 +16,6 @@ const ProfessorComments = ({ prof_comments, all_comments, updateComments, update
 	const [comments, setComments] = useState(prof_comments);
 	const [allComments, setAllComments] = useState(all_comments);
 	const [show, setShow] = useState(false);
-	const handleClose = () => setShow(false);
-	const handleShow = () => setShow(true);
 
 	useEffect(() => {	
 		setComments(prof_comments.slice().sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
@@ -54,10 +52,10 @@ const ProfessorComments = ({ prof_comments, all_comments, updateComments, update
 	return (
 		<Container>
 			{!checkIfStudentHasComment() &&
-			(<Button variant='outline-info' onClick={handleShow} style={newComment}>
+			(<Button variant='outline-info' onClick={() => setShow(true)} style={newComment}>
 				New Comment
 			</Button>)}
-			<AddComment show={show} setShow={setShow} handleClose={handleClose} addOneComment={addOneComment}/>
+			<AddComment show={show} setShow={setShow} addOneComment={addOneComment}/>
 			<h3>Comments:</h3>
 			{comments.map(comment => (
 				<Comment key={comment.id} comment={comment} deleteOneComment={deleteOneComment} />

@@ -9,11 +9,10 @@ import Router from 'next/router';
 interface Props {
 	show: boolean;
 	setShow: (value: boolean) => void;
-	handleClose: () => void;
 	addOneComment: (comment: CommentType) => void;
 }
 
-const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment}) => {
+const AddComment: React.FC<Props> = ({show, setShow, addOneComment}) => {
 	const [values, setValues] = useState({
 		anonymous: false,
 		text: '',
@@ -97,7 +96,7 @@ const AddComment: React.FC<Props> = ({show, setShow, handleClose, addOneComment}
 
 	return (
 		<div>
-			<Modal show={show} onHide={handleClose}>
+			<Modal show={show} onHide={() => setShow(false)}>
 				<Form onSubmit={handleSubmit} className='p-4'>
 					<Modal.Header closeButton>
 						<Modal.Title>Add Comment</Modal.Title>
