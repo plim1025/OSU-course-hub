@@ -38,7 +38,7 @@ const RecentComments: React.FC = () => {
 				.slice(0, Math.min(4, data.comments.length))
 				.map(comment => (
 					<Card
-						style={{ width: '80%', padding: '10px', marginTop: '10px' }}
+						style={{ width: '80%', maxWidth: '600px', padding: '10px', marginTop: '10px' }}
 						bg='light'
 						border='dark'
 						key={comment.id}

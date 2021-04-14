@@ -59,7 +59,7 @@ const Info: React.FC<Props> = ({ course, professor, comments }) => {
 					<span style={constant}>/5</span>
 				</h3>
 				<h5>
-					Based on <b>{qualities.length}</b> ratings.
+					Based on <b>{qualities.length}</b> rating{qualities.length == 1 ? null : 's'}.
 				</h5>
 				{course ? <CourseProfessors id={course.id} /> : null}
 				{professor ? <ProfessorCourses id={professor.id} /> : null}

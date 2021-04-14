@@ -75,6 +75,7 @@ const HighestRatedProfessors: React.FC = () => {
 						display: 'flex',
 						justifyContent: 'center',
 						width: '80%',
+						maxWidth: '600px',
 						marginRight: '30px',
 					}}
 					key={professor.id}

@@ -118,6 +118,7 @@ const AddComment: React.FC<Props> = ({show, setShow, addOneComment}) => {
 								rows={5}
 								name='text'
 								onChange={handleChange}
+								maxLength={300}
 							/>
 						</Form.Group>
 						<Form.Group controlId='campus'>
