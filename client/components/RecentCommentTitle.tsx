@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client';
 import { COURSE, PROFESSOR } from '../utils/graphql';
-import { Spinner } from 'react-bootstrap';
 
 interface Props {
 	courseID?: number;

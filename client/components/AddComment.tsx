@@ -1,16 +1,18 @@
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { CREATE_COMMENT, COMMENTS } from '../utils/graphql';
+import { CREATE_COMMENT } from '../utils/graphql';
+import { CommentType } from '../utils/types';
 import { Campuses, Grades, Tags } from '../utils/util';
 import Router from 'next/router';
 
-const newComment ={
-	marginLeft: '70px',
-	marginBottom: '30px',
+interface Props {
+	show: boolean;
+	setShow: (value: boolean) => void;
+	addOneComment: (comment: CommentType) => void;
 }
 
-const AddComment: React.FC = () => {
+const AddComment: React.FC<Props> = ({show, setShow, addOneComment}) => {
 	const [values, setValues] = useState({
 		anonymous: false,
 		text: '',
@@ -22,20 +24,41 @@ const AddComment: React.FC = () => {
 		gradeReceived: 'N/A',
 		tags: [],
 	});
-	const [createComment, {data}] = useMutation(CREATE_COMMENT);
-	const [show, setShow] = useState(false);
-	const handleClose = () => setShow(false);
-	const handleShow = () => setShow(true);
+	const [createComment] = useMutation(CREATE_COMMENT);
 	const rating = [5, 4, 3, 2, 1];
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		const studentID = window.sessionStorage.getItem('request-onid');
-		if(Router.pathname === "/course/[id]")
-			createComment({ variables: { ...values, ONID: studentID, courseID: parseInt(Router.query.id as string) } });
-		else if(Router.pathname === "/professor/[id]")
-			createComment({ variables: { ...values, ONID: studentID, professorID: parseInt(Router.query.id as string) } });
+		let comment: CommentType;
+		if(Router.pathname === "/course/[id]"){
+			createComment({ variables: { ...values, ONID: studentID, courseID: parseInt(Router.query.id as string) } })
+			.then((data) => {
+				comment = data.data.createComment
+				addOneComment(comment)
+			})
+			.catch((error) => console.log(error))
+		}
+		else if(Router.pathname === "/professor/[id]"){
+			createComment({ variables: { ...values, ONID: studentID, professorID: parseInt(Router.query.id as string) } })
+			.then((data) => {
+				comment = data.data.createComment
+				addOneComment(comment)
+			})
+			.catch((error) => console.log(error))
+		}
 		
+		setValues({
+			anonymous: false,
+			text: '',
+			campus: 'Corvallis',
+			quality: 5,
+			difficulty: 5,
+			recommend: true,
+			baccCore: true,
+			gradeReceived: 'N/A',
+			tags: [],
+		})
 		setShow(false);
 	};
 
@@ -51,11 +74,11 @@ const AddComment: React.FC = () => {
 		}
 	};
 
-	const handleTags = (e: React.FormEvent) => {
-		const idx = values.tags.indexOf(e.target.name);
+	const handleTags = (e: any) => {
+		const idx = values.tags.indexOf(e.target.name as never);
 
 		if (idx === -1) {
-			setValues({ ...values, tags: [...values.tags, e.target.name] });
+			setValues({ ...values, tags: [...values.tags as never, e.target.name as never] });
 		} else {
 			const newTags = values.tags;
 			newTags.splice(idx);
@@ -63,7 +86,7 @@ const AddComment: React.FC = () => {
 		}
 	};
 
-	const handleAnonymous = (e: React.FormEvent) => {
+	const handleAnonymous = () => {
 		if(values.anonymous === true){
 			setValues({ ...values, anonymous: false });
 		} else {
@@ -73,10 +96,7 @@ const AddComment: React.FC = () => {
 
 	return (
 		<div>
-			<Button variant='outline-info' onClick={handleShow} style={newComment}>
-				New Comment
-			</Button>
-			<Modal show={show} onHide={handleClose}>
+			<Modal show={show} onHide={() => setShow(false)}>
 				<Form onSubmit={handleSubmit} className='p-4'>
 					<Modal.Header closeButton>
 						<Modal.Title>Add Comment</Modal.Title>
@@ -98,6 +118,7 @@ const AddComment: React.FC = () => {
 								rows={5}
 								name='text'
 								onChange={handleChange}
+								maxLength={300}
 							/>
 						</Form.Group>
 						<Form.Group controlId='campus'>

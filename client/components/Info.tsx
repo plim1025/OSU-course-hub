@@ -1,9 +1,7 @@
-import { useQuery } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Card, Container } from 'react-bootstrap';
-import { COURSE_COMMENTS, PROFESSOR_COMMENTS } from '../utils/graphql';
-import { CommentData, Course, Professor } from '../utils/types';
+import { CommentData, Course, Professor, CommentType } from '../utils/types';
 import CourseProfessors from './CourseProfessors';
 import ProfessorCourses from './ProfessorCourses';
 import Tags from './Tags';
@@ -26,21 +24,15 @@ const constant = {
 interface Props {
 	course?: Course;
 	professor?: Professor;
+	comments: CommentType[];
 }
 
-const Info: React.FC<Props> = ({ course, professor }) => {
-	const { loading, data } = useQuery<CommentData>(course ? COURSE_COMMENTS : PROFESSOR_COMMENTS, {
-		variables: {
-			...(course && { courseID: parseInt(course.id) }),
-			...(professor && { professorID: parseInt(professor.id) }),
-		},
-	});
-
-	if (loading || !data) {
-		return <></>;
+const Info: React.FC<Props> = ({ course, professor, comments }) => {
+	let qualities: number[] = [], difficulties: number[] = [];
+	if(comments){
+		qualities = comments.map(comment => comment.quality);
+		difficulties = comments.map(comment => comment.difficulty);
 	}
-	const qualities = data.comments.map(comment => comment.quality);
-	const difficulties = data.comments.map(comment => comment.difficulty);
 	return (
 		<Container className='mt-3'>
 			<Card className='mb-5 p-4 w-75'>
@@ -67,12 +59,12 @@ const Info: React.FC<Props> = ({ course, professor }) => {
 					<span style={constant}>/5</span>
 				</h3>
 				<h5>
-					Based on <b>{qualities.length}</b> ratings.
+					Based on <b>{qualities.length}</b> rating{qualities.length == 1 ? null : 's'}.
 				</h5>
 				{course ? <CourseProfessors id={course.id} /> : null}
 				{professor ? <ProfessorCourses id={professor.id} /> : null}
-				{course ? <Tags id={course.id} type='course' /> : null}
-				{professor ? <Tags id={professor.id} type='professor' /> : null}
+				{course ? <Tags comments={comments} /> : null}
+				{professor ? <Tags comments={comments} /> : null}
 			</Card>
 		</Container>
 	);

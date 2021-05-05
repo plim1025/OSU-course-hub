@@ -77,6 +77,7 @@ export const STUDENT_COMMENTS = gql`
 			anonymous
 			text
 			gradeReceived
+			ONID
 			courseID
 			professorID
 			recommend
@@ -129,6 +130,8 @@ export const CREATE_COMMENT = gql`
 			ONID
 			courseID
 			professorID
+			difficulty
+			quality
 			campus
 			recommend
 			baccCore
@@ -142,8 +145,8 @@ export const CREATE_COMMENT = gql`
 `;
 
 export const DELETE_COMMENT = gql`
-	mutation deleteComment($id: Float!) {
-		deleteComment(id: $id)
+	mutation deleteComment($commentID: Float!) {
+		deleteComment(commentID: $commentID)
 	}
 `;
 
